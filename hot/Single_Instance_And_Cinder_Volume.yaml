@@ -1,0 +1,67 @@
+heat_template_version: 2013-05-23
+
+description: >
+  NeCTAR Sample Template showing how to create a Nova instance, a Cinder volume and attach the volume to the instance.
+  The template uses only Heat OpenStack native resource types.
+  It is a customization for the NeCTAR environment of the template named NovaInstanceWithCinderVolume_Native.yaml
+  in the OpenStack heat template repository.
+
+parameters:
+  key_name:
+    type: string
+    description:
+      Name of an existing key pair to enable SSH access to the instance.
+  instance_type:
+    type: string
+    description: Type of the instance to be created.
+    default: m1.small
+    constraints:
+      - allowed_values: [m1.small, m1.medium, m1.large, m1.xlarge, m1.xxlarge]
+        description:
+          Must be a valid NeCTAR flavour.
+  image_id:
+    type: string
+    description: ID of the image to use for the instance to be created.
+    default: 'b7833395-2ab9-429c-bcf9-100d0e4754ed'
+  availability_zone:
+    type: string
+    description: The NeCTAR zone in which the VM is to run
+    default: melbourne-qh2
+    constraints:
+      - allowed_values: [melbourne-qh2, monash, qld, sa]
+        description:
+          The NeCTAR zones to launch the instance.
+  volume_size:
+    type: number
+    description: Size of the volume to be created.
+    default: 1
+    constraints:
+      - range: { min: 1, max: 1024 }
+        description: must be between 1 and 1024 Gb.
+
+
+resources:
+  nova_instance:
+    type: OS::Nova::Server
+    properties:
+      availability_zone: { get_param: availability_zone }
+      image: { get_param: image_id}
+      flavor: { get_param: instance_type }
+      key_name: { get_param: key_name }
+  cinder_volume:
+    type: OS::Cinder::Volume
+    properties:
+      size: { get_param: volume_size }
+      availability_zone: { get_param: availability_zone }
+  volume_attachment:
+    type: OS::Cinder::VolumeAttachment
+    properties:
+      volume_id: { get_resource: cinder_volume }
+      instance_uuid: { get_resource: nova_instance }
+      mountpoint: /dev/vdc
+
+outputs:
+  instance_ip:
+    description: Public IP address of the newly created Nova instance.
+    value: { get_attr: [nova_instance, first_address] }
+
