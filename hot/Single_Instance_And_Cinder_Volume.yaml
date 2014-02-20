@@ -3,6 +3,8 @@ heat_template_version: 2013-05-23
 description: >
   NeCTAR Sample Template showing how to create a Nova instance, a Cinder volume and attach the volume to the instance.
   The template uses only Heat OpenStack native resource types.
+  This is a 'hot' template: and as such doesn't support mappings. The string 'heat_template_version' in the
+  version identifier above flags that this is the new format template.
   It is a customization for the NeCTAR environment of the template named NovaInstanceWithCinderVolume_Native.yaml
   in the OpenStack heat template repository.
 
@@ -21,7 +23,7 @@ parameters:
           Must be a valid NeCTAR flavour.
   image_id:
     type: string
-    description: ID of the image to use for the instance to be created.
+    description: ID of the image to use for the instance to be created (should work with all NeCTAR images)
     default: 'b7833395-2ab9-429c-bcf9-100d0e4754ed'
   availability_zone:
     type: string
