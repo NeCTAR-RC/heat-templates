@@ -66,6 +66,7 @@ Resources:
       # the following are project specific, and will have to be adjusted.
       SecurityGroups: [default, webserver]
       # the following is written to /var/lib/cloud/data/cfn-userdata
+      # note the call to cfn-init which causes the AWS::CloudFomration::Init to be actioned
       UserData:
         Fn::Base64:
           Fn::Join:
