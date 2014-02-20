@@ -27,10 +27,10 @@ parameters:
     default: 'b7833395-2ab9-429c-bcf9-100d0e4754ed'
   availability_zone:
     type: string
-    description: The NeCTAR zone in which the VM is to run
+    description: The NeCTAR zone in which the VM is to run (must have block storage)
     default: melbourne-qh2
     constraints:
-      - allowed_values: [melbourne-qh2, monash, qld, sa]
+      - allowed_values: [melbourne-qh2, melbourne-np, monash, qld]
         description:
           The NeCTAR zones to launch the instance.
   volume_size:
