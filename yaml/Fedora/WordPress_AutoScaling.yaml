@@ -6,7 +6,8 @@ Description: 'NeCTAR Sample Template:
   This template installs an autoscaling WordPress deployment using a local MySQL database
   to store the data.
   It is a customization for the NeCTAR environment of the template named AutoScalingCeilometer.yaml
-  in the OpenStack heat template repository'
+  in the OpenStack heat template repository.
+  It will not work for general NeCTAR users - you have to be an Administrator to run it.'
 Parameters:
   # First off, the parameters that affect the environment
   KeyName:
