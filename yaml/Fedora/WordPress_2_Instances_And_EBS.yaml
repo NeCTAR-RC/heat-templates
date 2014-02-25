@@ -68,7 +68,8 @@ Parameters:
 
 Resources:
   # Creating a security group is possible: but it does eat into the number of groups that you are limited to (10)
-  # When you delete the stack, the security group is deleted as well.
+  # When you delete the stack, the security group is deleted as well. Unless an image outside of the stack
+  # is making use of it - in which case, the stack won't delete properly.
   WikiDatabaseSecurityGroup:
     Type: "AWS::EC2::SecurityGroup"
     Properties:
@@ -81,8 +82,8 @@ Resources:
           CidrIp: "0.0.0.0/0"
         -
           IpProtocol: "tcp"
-          FromPort: "80"
-          ToPort: "80"
+          FromPort: "3306"
+          ToPort: "3306"
           CidrIp: "0.0.0.0/0"
         -
           IpProtocol: "tcp"
@@ -155,12 +156,7 @@ Resources:
               - ".* TO \""
               -
                 Ref: "DBUsername"
-              - "\"@\""
-              -
-                Fn::GetAtt
-                  - "WebServer"
-                  - "PublicIp"
-              - "\"\n"
+              - "\"@\"%\"\n"
               - "IDENTIFIED BY \""
               -
                 Ref: "DBPassword"
@@ -183,6 +179,7 @@ Resources:
           Value: "Wiki Data Volume"
   WebServer:
     Type: "AWS::EC2::Instance"
+    # The following forces the creation of this resource to wait until the WikiDatabas is completed.
     DependsOn: "WikiDatabase"
     Metadata:
       AWS::CloudFormation::Init:
@@ -197,16 +194,15 @@ Resources:
                 enabled: "true"
                 ensureRunning: "true"
     Properties:
-      # the following is currently the only fedora image with heat-cfntools installed
+      # a fedora image with heat-cfntools installed
       ImageId: b7833395-2ab9-429c-bcf9-100d0e4754ed
       InstanceType:
         Ref: "InstanceType"
       KeyName:
         Ref: "KeyName"
       AvailabilityZone: {Ref: AvailabilityZone}
-      SecurityGroups:
-        -
-          Ref: "WikiDatabaseSecurityGroup"
+      # the following are project specific, and will have to be adjusted.
+      SecurityGroups: [default, webserver]
       UserData:
         Fn::Base64:
           Fn::Join:
@@ -227,7 +223,7 @@ Resources:
                 Ref: "DBPassword"
               - "/ --e s/localhost/"
               -
-                Fn::GetAtt
+                Fn::GetAtt:
                   - "WikiDatabase"
                   - "PublicIp"
               - "/ /usr/share/wordpress/wp-config.php\n"
