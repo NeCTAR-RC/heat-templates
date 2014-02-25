@@ -149,7 +149,7 @@ Resources:
               mysqld: {enabled: 'true', ensureRunning: 'true'}
               httpd: {enabled: 'true', ensureRunning: 'true'}
     Properties:
-      # the following is currently the only fedora image with heat-cfntools installed
+      # a fedora image with heat-cfntools installed
       ImageId: b7833395-2ab9-429c-bcf9-100d0e4754ed
       InstanceType: {Ref: InstanceType}
       KeyName: {Ref: KeyName}
