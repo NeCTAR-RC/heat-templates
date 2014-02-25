@@ -5,6 +5,7 @@ Description: >
   The template uses only Heat OpenStack native resource types.
   It limits the images that can be used to the official NeCTAR ones, mapping their id's to the input parameter
   ImageName. This allows anyone using this template to enter a userfriendly name rather than a very long image id...
+  Note that the default security group will be used...
 
 Parameters:
   KeyName:
