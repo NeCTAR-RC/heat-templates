@@ -2,9 +2,10 @@ HeatTemplateFormatVersion: '2013-05-23'
 
 Description: >
   NeCTAR Sample Template showing how to create just a security group.
-  Of interest is that the created security will cary on being usable even if this stack is suspended.
-  And if used by an image, you won't be able to successfully delete this security group until the image
-  is terminated.
+  Of interest is that the created security group will still be usable in the project,
+  even if this stack is suspended.
+  And if in use by an image, you won't be able to successfully delete this security group until the image
+  is terminated...
 
 Resources:
   # Creating a security group is possible: but it does eat into the number of groups that you are limited to (10)
