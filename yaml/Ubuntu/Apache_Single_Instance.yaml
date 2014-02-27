@@ -27,7 +27,9 @@ Resources:
             systemd:
               apache2: {enabled: 'true', ensureRunning: 'true'}
     Properties:
-      # the following is currently the only ubuntu image with heat-cfntools installed
+      # the following is a private image in which the heat-cfntools have been installed
+      # you will have to install them into your own ubuntu instance if you want to make
+      # use of the heat-cfntools
       ImageId: 6464e3f6-3e39-4b78-811f-de6511b42585
       InstanceType: {Ref: InstanceType}
       KeyName: {Ref: KeyName}
