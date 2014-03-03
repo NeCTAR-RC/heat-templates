@@ -13,7 +13,7 @@ Parameters:
   InstanceType:
     Description: The NeCTAR flavour the webserver is to run on
     Type: String
-    Default: m1.large
+    Default: m1.small
     AllowedValues: [m1.small, m1.medium, m1.large, m1.xlarge, m1.xxlarge]
     ConstraintDescription: must be a valid NeCTAR flavour.
   AvailabilityZone:
@@ -32,13 +32,13 @@ Parameters:
     MinLength: '1', MaxLength: '16', AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*',
     ConstraintDescription: must begin with a letter and contain only
       alphanumeric characters.}
-  DBPassword: {Default: admin, NoEcho: 'true',
+  DBPassword: {Default: changeThisNow, NoEcho: 'true',
     Description: The WordPress database admin account password, Type: String,
-    MinLength: '1', MaxLength: '41', AllowedPattern: '[a-zA-Z0-9]*',
+    MinLength: '4', MaxLength: '41', AllowedPattern: '[a-zA-Z0-9]*',
     ConstraintDescription: must contain only alphanumeric characters.}
-  DBRootPassword: {Default: admin, NoEcho: 'true',
+  DBRootPassword: {Default: andChangeThisOneToo, NoEcho: 'true',
     Description: Root password for MySQL, Type: String,
-    MinLength: '1', MaxLength: '41', AllowedPattern: '[a-zA-Z0-9]*',
+    MinLength: '4', MaxLength: '41', AllowedPattern: '[a-zA-Z0-9]*',
     ConstraintDescription: must contain only alphanumeric characters.}
 
 Resources:
