@@ -33,11 +33,11 @@ Parameters:
     ConstraintDescription: must begin with a letter and contain only
       alphanumeric characters.}
   DBPassword: {NoEcho: 'true',
-    Description: The WordPress database admin account password, Type: String,
+    Description: The WordPress database admin account password (must be > 6 chars long), Type: String,
     MinLength: '6', MaxLength: '41', AllowedPattern: '[a-zA-Z0-9]*',
     ConstraintDescription: must be at least 6 characters long and contain only alphanumeric characters.}
   DBRootPassword: {NoEcho: 'true',
-    Description: Root password for MySQL, Type: String,
+    Description: Root password for MySQL (must be > 6 chars long), Type: String,
     MinLength: '6', MaxLength: '41', AllowedPattern: '[a-zA-Z0-9]*',
     ConstraintDescription: must be at least 6 characters long contain only alphanumeric characters.}
 
