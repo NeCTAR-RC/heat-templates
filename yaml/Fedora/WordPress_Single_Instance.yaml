@@ -27,21 +27,42 @@ Parameters:
     MaxLength: '64', AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*',
     ConstraintDescription: must begin with a letter and contain only
       alphanumeric characters.}
-  DBUsername: {Default: admin, NoEcho: 'true',
+  DBUsername: {Default: stackadmin, NoEcho: 'true',
     Description: The WordPress database admin account username, Type: String,
     MinLength: '1', MaxLength: '16', AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*',
     ConstraintDescription: must begin with a letter and contain only
       alphanumeric characters.}
-  DBPassword: {Default: changeThisNow, NoEcho: 'true',
+  DBPassword: {NoEcho: 'true',
     Description: The WordPress database admin account password, Type: String,
-    MinLength: '4', MaxLength: '41', AllowedPattern: '[a-zA-Z0-9]*',
-    ConstraintDescription: must contain only alphanumeric characters.}
-  DBRootPassword: {Default: andChangeThisOneToo, NoEcho: 'true',
+    MinLength: '6', MaxLength: '41', AllowedPattern: '[a-zA-Z0-9]*',
+    ConstraintDescription: must be at least 6 characters long and contain only alphanumeric characters.}
+  DBRootPassword: {NoEcho: 'true',
     Description: Root password for MySQL, Type: String,
-    MinLength: '4', MaxLength: '41', AllowedPattern: '[a-zA-Z0-9]*',
-    ConstraintDescription: must contain only alphanumeric characters.}
+    MinLength: '6', MaxLength: '41', AllowedPattern: '[a-zA-Z0-9]*',
+    ConstraintDescription: must be at least 6 characters long contain only alphanumeric characters.}
 
 Resources:
+  # Creating a security group is possible: but it does eat into the number of groups that you are limited to (10)
+  WikiDatabaseSecurityGroup:
+    Type: "AWS::EC2::SecurityGroup"
+    Properties:
+      GroupDescription: "Enable HTTP access via port 80 plus SSH access"
+      SecurityGroupIngress:
+        -
+          IpProtocol: "icmp"
+          FromPort: "-1"
+          ToPort: "-1"
+          CidrIp: "0.0.0.0/0"
+        -
+          IpProtocol: "tcp"
+          FromPort: "80"
+          ToPort: "80"
+          CidrIp: "0.0.0.0/0"
+        -
+          IpProtocol: "tcp"
+          FromPort: "22"
+          ToPort: "22"
+          CidrIp: "0.0.0.0/0"
   WikiDatabase:
     Type: AWS::EC2::Instance
     Metadata:
@@ -63,8 +84,8 @@ Resources:
       InstanceType: {Ref: InstanceType}
       KeyName: {Ref: KeyName}
       AvailabilityZone: {Ref: AvailabilityZone}
-      # the following are project specific, and will have to be adjusted.
-      SecurityGroups: [default, webserver]
+      # the following will break if you have maxed out your security group limit (10).
+      SecurityGroups: [{Ref: WikiDatabaseSecurityGroup}]
       # the following is written to /var/lib/cloud/data/cfn-userdata
       # note the call to cfn-init which causes the AWS::CloudFomration::Init to be actioned
       UserData:
