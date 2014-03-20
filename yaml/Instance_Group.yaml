@@ -1,0 +1,65 @@
+HeatTemplateFormatVersion: '2012-12-12'
+
+Description: "Template to create multiple instances."
+
+Parameters:
+  KeyName:
+    Description: "Name of an existing Nectar KeyPair (enables SSH access to the instances)"
+    Type: "String"
+  InstanceType:
+    Description: "The NeCTAR flavour the webserver is to run on"
+    Type: String
+    Default: m1.small
+    AllowedValues: [m1.small, m1.medium, m1.large, m1.xlarge, m1.xxlarge]
+    ConstraintDescription: "Must be a valid NeCTAR flavour."
+  ImageId:
+    Description: "The id of the image to use"
+    Type: "String"
+    Default: "b7833395-2ab9-429c-bcf9-100d0e4754ed"
+    ConstraintDescription: "Must be an existing NeCTAR image."
+  # We will limit the maximum number of instances to 2. Just because.
+  InstanceCount:
+    Default: "1"
+    MinValue: "1"
+    MaxValue: "2"
+    Description: "The number of instances to create"
+    Type: "Number"
+
+Resources:
+  ServerGroup:
+    Type: "OS::Heat::InstanceGroup"
+    Properties:
+      LaunchConfigurationName:
+        Ref: "ServerConfig"
+      Size:
+        Ref: "InstanceCount"
+      AvailabilityZones:
+        Fn::GetAZs: ""
+      # We will add some metadata to each instance created.
+      Tags:
+        -
+          Key: "First"
+          Value: "Verity"
+
+  ServerConfig:
+    Type: "AWS::AutoScaling::LaunchConfiguration"
+    Properties:
+      ImageId:
+        Ref: "ImageId"
+      InstanceType:
+        Ref: "InstanceType"
+      KeyName:
+        Ref: "KeyName"
+      NovaSchedulerHints:
+        -
+          Key: "part"
+          Value: "long"
+        -
+          Key: "ready"
+          Value: "short"
+      UserData:
+        Fn::Base64:
+          Fn::Join:
+            - ""
+            -
+              - "#!/bin/bash -v\n"
