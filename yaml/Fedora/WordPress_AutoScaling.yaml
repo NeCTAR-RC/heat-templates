@@ -42,7 +42,9 @@ Parameters:
     Description: Root password for MySQL, Type: String,
     MinLength: '1', MaxLength: '41', AllowedPattern: '[a-zA-Z0-9]*',
     ConstraintDescription: must contain only alphanumeric characters.}
+
 Resources:
+  # the following currently requires that person using the template be a NeCTAR administrator.
   CfnUser: {Type: 'AWS::IAM::User'}
   WebServerKeys:
     Type: AWS::IAM::AccessKey
