@@ -64,9 +64,10 @@ Resources:
   CinderVolume:
     Type: OS::Cinder::Volume
     Properties:
+      # small, but this is just a demo
       size: "2"
       availability_zone: { Ref: AvailabilityZone }
-      # we will copy this volume so that we don't have to rebuild it
+      # we will copy this volume full of data: in that way we don't have to rebuild it
       source_volid: 11be09d6-52f4-4443-a0a5-f5618775ea24
   VolumeAttachment:
     Type: OS::Cinder::VolumeAttachment
