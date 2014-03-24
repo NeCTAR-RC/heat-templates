@@ -24,7 +24,7 @@ Parameters:
     AllowedValues: [Fedora19, Fedora20, Centos5.10, Centos6.5, Debian6, Debian7, SL6.4, Ubuntu13.10, Ubuntu12.10, Ubuntu12.04]
   AvailabilityZone:
     Type: String
-    Tescription: The NeCTAR zone in which the VM is to run (must have block storage)
+    Description: The NeCTAR zone in which the VM is to run (must have block storage)
     Default: melbourne-qh2
     AllowedValues: [melbourne-qh2, melbourne-np, monash, qld]
   VolumeSize:
