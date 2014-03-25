@@ -1,0 +1,132 @@
+HeatTemplateFormatVersion: '2012-12-12'
+
+Description: "Template to create a small gluster cluster."
+
+Parameters:
+  KeyName:
+    Default: nectar_dev
+    Description: "Name of an existing Nectar KeyPair (enables SSH access to the instances)"
+    Type: "String"
+  # We will limit the maximum number of instances to 10. Just because.
+  InstanceCount:
+    Default: "2"
+    MinValue: "1"
+    MaxValue: "10"
+    Description: "The number of instances to create"
+    Type: "Number"
+  InstanceType:
+    Type: String
+    Description: Type of the instance to be created.
+    # default should be m1.xlarge, as we need to have the 200 gig file size of the transient storage.
+    # but for development, this will do...
+    Default: m1.small
+    AllowedValues: [m1.small, m1.medium, m1.large, m1.xlarge, m1.xxlarge]
+
+Resources:
+
+  ServerGroup:
+    Type: "OS::Heat::InstanceGroup"
+    Properties:
+      LaunchConfigurationName:
+        Ref: "ServerConfig"
+      Size:
+        Ref: "InstanceCount"
+      AvailabilityZones:
+        Fn::GetAZs: ""
+      # We will add some metadata to each instance created.
+      Tags:
+        -
+          Key: "Usage"
+          Value: "Gluster"
+
+  ServerConfig:
+    Type: "AWS::AutoScaling::LaunchConfiguration"
+    Properties:
+      ImageId: "6464e3f6-3e39-4b78-811f-de6511b42585"
+      InstanceType:
+        Ref: "InstanceType"
+      KeyName:
+        Ref: "KeyName"
+      NovaSchedulerHints:
+        -
+          Key: "part"
+          Value: "long"
+        -
+          Key: "ready"
+          Value: "short"
+      UserData:
+        Fn::Base64:
+          Fn::Replace:
+          - mount_directory: "/export/gvl-vol-replica"
+          - |
+            #!/bin/bash -x
+            sudo add-apt-repository ppa:semiosis/ubuntu-glusterfs-3.4
+            sudo apt-get update
+            sudo apt-get install -y glusterfs-server xfsprogs
+            # unmount the automatically mounted storage.
+            sudo apt-get umount /mnt
+            sudo mkfs.xfs -f -i size=512 /dev/vdb
+            sudo mkdir -p mount_directory
+            sudo mount /dev/vdb mount_directory
+
+  MasterServer:
+    Type: "AWS::EC2::Instance"
+    Properties:
+      # the following is a private image in which the heat-cfntools have been installed
+      # you will have to install them into your own ubuntu instance if you want to make
+      # use of the heat-cfntools
+      ImageId: "6464e3f6-3e39-4b78-811f-de6511b42585"
+      InstanceType:
+        Ref: "InstanceType"
+      KeyName:
+        Ref: "KeyName"
+      UserData:
+        Fn::Base64:
+          Fn::Replace:
+          - mount_directory: "/export/gvl-vol-replica"
+            instance_list:
+              Fn::GetAtt:
+                - "ServerGroup"
+                - "InstanceList"
+          - |
+            #!/bin/bash -xv
+            add-apt-repository ppa:semiosis/ubuntu-glusterfs-3.4
+            apt-get update
+            apt-get install -y glusterfs-server xfsprogs
+            # unmount the automatically mounted storage.
+            apt-get umount /mnt
+            mkfs.xfs -f -i size=512 /dev/vdb
+            mkdir -p mount_directory
+            mount /dev/vdb mount_directory
+            export INSTANCES="instance_list"
+            IFS=","
+            for instance in $INSTANCES; do gluster peer probe $instance; done
+            COMMAND_TAIL=""
+            COUNTER=0
+            for instance in $INSTANCES; do
+              COMMAND_TAIL+=" $instance:/export/gvl-vol-replica/"
+              COUNTER=$((COUNTER+1))
+            done
+            echo $COMMAND_TAIL
+            echo $COUNTER
+            COMMAND="gluster volume create gvl-volume replica $COUNTER transport tcp $COMMAND_TAIL"
+            echo $COMMAND
+            $COMMAND
+            gluster volume start gvl-volume
+
+Outputs:
+  IPs:
+    Value:
+      Fn::GetAtt:
+        - "ServerGroup"
+        - "InstanceList"
+    Description: "The IP numbers for the slave servers..."
+  ServerIP:
+    Value:
+      Fn::Join:
+      - ''
+      - - sudo mount -t glusterfs
+        - Fn::GetAtt: [MasterServer, PublicIp]
+        - :gvl-volume /mnt/glusterVol
+        - /
+    Description: "The command required to mount the server cluster..."
