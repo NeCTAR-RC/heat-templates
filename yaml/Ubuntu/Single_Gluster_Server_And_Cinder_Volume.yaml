@@ -52,13 +52,13 @@ Resources:
           - mount_directory: "/export/gvl-vol-replica"
           - |
             #!/bin/bash -v
-            sudo add-apt-repository ppa:semiosis/ubuntu-glusterfs-3.4
-            sudo apt-get update
-            sudo apt-get install -y glusterfs-server xfsprogs
+            add-apt-repository ppa:semiosis/ubuntu-glusterfs-3.4
+            apt-get update
+            apt-get install -y glusterfs-server xfsprogs
             # if we copy a volume no need for this line...
-            # sudo mkfs.xfs -i size=512 /dev/vdc
-            sudo mkdir -p mount_directory
-            sudo mount /dev/vdc mount_directory
+            #mkfs.xfs -i size=512 /dev/vdc
+            mkdir -p mount_directory
+            mount /dev/vdc mount_directory
 
   CinderVolume:
     Type: OS::Cinder::Volume
