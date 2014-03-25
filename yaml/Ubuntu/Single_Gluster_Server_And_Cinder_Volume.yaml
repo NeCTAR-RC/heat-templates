@@ -5,7 +5,6 @@ Description: >
 
 Parameters:
   KeyName:
-    Default: nectar_dev
     Type: String
     Description:
       Name of an existing key pair to enable SSH access to the instance.
