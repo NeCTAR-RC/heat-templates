@@ -1,10 +1,10 @@
 HeatTemplateFormatVersion: '2012-12-12'
 
 Description: "Template to create a small gluster cluster."
+# need to add security groups: see http://support.rightscale.com/03-Tutorials/GlusterFS_Setup#Create_the_GlusterFS_Cluster
 
 Parameters:
   KeyName:
-    Default: nectar_dev
     Description: "Name of an existing Nectar KeyPair (enables SSH access to the instances)"
     Type: "String"
   # We will limit the maximum number of instances to 10. Just because.
@@ -23,6 +23,42 @@ Parameters:
     AllowedValues: [m1.small, m1.medium, m1.large, m1.xlarge, m1.xxlarge]
 
 Resources:
+
+  ClusterSecurityGroup:
+    Type: "AWS::EC2::SecurityGroup"
+    Properties:
+      GroupDescription: "Enable access between the machines in the cluster"
+      SecurityGroupIngress:
+        -
+          IpProtocol: "icmp"
+          FromPort: "-1"
+          ToPort: "-1"
+          CidrIp: "0.0.0.0/0"
+        -
+          IpProtocol: "tcp"
+          FromPort: "22"
+          ToPort: "22"
+          CidrIp: "0.0.0.0/0"
+        -
+          IpProtocol: "tcp"
+          FromPort: "111"
+          ToPort: "111"
+          CidrIp: "0.0.0.0/0"
+        -
+          IpProtocol: "udp"
+          FromPort: "111"
+          ToPort: "111"
+          CidrIp: "0.0.0.0/0"
+        -
+          IpProtocol: "tcp"
+          FromPort: "49100"
+          ToPort: "49200"
+          CidrIp: "0.0.0.0/0"
+        -
+          IpProtocol: "tcp"
+          FromPort: "24007"
+          ToPort: "24047"
+          CidrIp: "0.0.0.0/0"
 
   ServerGroup:
     Type: "OS::Heat::InstanceGroup"
@@ -47,6 +83,8 @@ Resources:
         Ref: "InstanceType"
       KeyName:
         Ref: "KeyName"
+      SecurityGroups:
+        - {Ref: ClusterSecurityGroup}
       NovaSchedulerHints:
         -
           Key: "part"
@@ -60,14 +98,16 @@ Resources:
           - mount_directory: "/export/gvl-vol-replica"
           - |
             #!/bin/bash -x
-            sudo add-apt-repository ppa:semiosis/ubuntu-glusterfs-3.4
-            sudo apt-get update
-            sudo apt-get install -y glusterfs-server xfsprogs
-            # unmount the automatically mounted storage.
-            sudo apt-get umount /mnt
-            sudo mkfs.xfs -f -i size=512 /dev/vdb
-            sudo mkdir -p mount_directory
-            sudo mount /dev/vdb mount_directory
+            add-apt-repository ppa:semiosis/ubuntu-glusterfs-3.4
+            apt-get update
+            apt-get install -y glusterfs-server xfsprogs
+            # get rid of annoying message
+            echo "127.0.0.1     $HOSTNAME" | sudo tee -a /etc/hosts
+            # unmount the automatically mounted storage, reformat it and then remount it.
+            umount /mnt
+            mkfs.xfs -f -i size=512 /dev/vdb
+            mkdir -p mount_directory
+            mount /dev/vdb mount_directory
 
   MasterServer:
     Type: "AWS::EC2::Instance"
@@ -80,6 +120,8 @@ Resources:
         Ref: "InstanceType"
       KeyName:
         Ref: "KeyName"
+      SecurityGroups:
+        - {Ref: ClusterSecurityGroup}
       UserData:
         Fn::Base64:
           Fn::Replace:
@@ -93,11 +135,14 @@ Resources:
             add-apt-repository ppa:semiosis/ubuntu-glusterfs-3.4
             apt-get update
             apt-get install -y glusterfs-server xfsprogs
-            # unmount the automatically mounted storage.
-            apt-get umount /mnt
+            # get rid of annoying message
+            echo "127.0.0.1     $HOSTNAME" | sudo tee -a /etc/hosts
+            # unmount the automatically mounted storage, reformat it and then remount it.
+            umount /mnt
             mkfs.xfs -f -i size=512 /dev/vdb
             mkdir -p mount_directory
             mount /dev/vdb mount_directory
+            # now to create the clusters
             export INSTANCES="instance_list"
             IFS=","
             for instance in $INSTANCES; do gluster peer probe $instance; done
@@ -107,10 +152,7 @@ Resources:
               COMMAND_TAIL+=" $instance:/export/gvl-vol-replica/"
               COUNTER=$((COUNTER+1))
             done
-            echo $COMMAND_TAIL
-            echo $COUNTER
             COMMAND="gluster volume create gvl-volume replica $COUNTER transport tcp $COMMAND_TAIL"
-            echo $COMMAND
             $COMMAND
             gluster volume start gvl-volume
 
