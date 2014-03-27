@@ -1,10 +1,10 @@
 HeatTemplateFormatVersion: '2012-12-12'
 
-Description: "Template to create a small gluster cluster."
-# need to add security groups: see http://support.rightscale.com/03-Tutorials/GlusterFS_Setup#Create_the_GlusterFS_Cluster
+Description: "Template to create a small gluster cluster using the transient storage of the VM's."
 
 Parameters:
   KeyName:
+    Default: "nectar_dev"
     Description: "Name of an existing Nectar KeyPair (enables SSH access to the instances)"
     Type: "String"
   # We will limit the maximum number of instances to 10. Just because.
@@ -17,10 +17,15 @@ Parameters:
   InstanceType:
     Type: String
     Description: Type of the instance to be created.
-    # default should be m1.xlarge, as we need to have the 200 gig file size of the transient storage.
+    # You'd really want something like m1.xlarge, to get the larger sized transient storage.
     # but for development, this will do...
-    Default: m1.small
+    Default: "m1.small"
     AllowedValues: [m1.small, m1.medium, m1.large, m1.xlarge, m1.xxlarge]
+  AvailabilityZone:
+    Type: String
+    Default: "melbourne"
+    Description: The NeCTAR zone in which the cluster is to run
+    AllowedValues: [ monash, melbourne-np, nova, melbourne, qld, melbourne-qh2, sa ]
 
 Resources:
 
@@ -135,7 +140,7 @@ Resources:
             add-apt-repository ppa:semiosis/ubuntu-glusterfs-3.4
             apt-get update
             apt-get install -y glusterfs-server xfsprogs
-            # get rid of annoying message
+            # get rid of annoying message shown when running sudo command
             echo "127.0.0.1     $HOSTNAME" | sudo tee -a /etc/hosts
             # unmount the automatically mounted storage, reformat it and then remount it.
             umount /mnt
@@ -147,13 +152,16 @@ Resources:
             IFS=","
             for instance in $INSTANCES; do gluster peer probe $instance; done
             COMMAND_TAIL=""
-            COUNTER=0
+            COUNTER=1
             for instance in $INSTANCES; do
               COMMAND_TAIL+=" $instance:/export/gvl-vol-replica/"
               COUNTER=$((COUNTER+1))
             done
-            COMMAND="gluster volume create gvl-volume replica $COUNTER transport tcp $COMMAND_TAIL"
-            $COMMAND
+            # need to add this machines IP address to the volume create command
+            IP=`ifconfig  | grep 'inet addr:'| grep -v '127.0.0.1' | cut -d: -f2 | awk '{ print $1}'`;
+            COMMAND_TAIL+=" $IP:/export/gvl-vol-replica/"
+            COMMAND="gluster volume create gvl-volume replica $COUNTER transport tcp $COMMAND_TAIL force"
+            eval $COMMAND
             gluster volume start gvl-volume
 
 Outputs:
