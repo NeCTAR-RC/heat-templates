@@ -1,31 +1,34 @@
 HeatTemplateFormatVersion: '2012-12-12'
 
-Description: "Template to create a small gluster cluster using the transient storage of the VM's."
+Description: "Template to create a small gluster cluster using the transient storage of the VM's.
+              Although we ask for an availability zone it is resolutely ignored by the heat instance
+              group resource. So it makes the location of this cluster a little bit hit and miss. Which
+              means that it might not be as performant as desired. :("
 
 Parameters:
   KeyName:
+    Type: "String"
     Default: "nectar_dev"
     Description: "Name of an existing Nectar KeyPair (enables SSH access to the instances)"
-    Type: "String"
   # We will limit the maximum number of instances to 10. Just because.
   InstanceCount:
+    Type: "Number"
     Default: "2"
     MinValue: "1"
     MaxValue: "10"
     Description: "The number of instances to create"
-    Type: "Number"
   InstanceType:
-    Type: String
-    Description: Type of the instance to be created.
+    Type: "String"
     # You'd really want something like m1.xlarge, to get the larger sized transient storage.
     # but for development, this will do...
     Default: "m1.small"
     AllowedValues: [m1.small, m1.medium, m1.large, m1.xlarge, m1.xxlarge]
+    Description: "Type of the instance to be created."
   AvailabilityZone:
-    Type: String
+    Type: "String"
     Default: "melbourne"
-    Description: The NeCTAR zone in which the cluster is to run
     AllowedValues: [ monash, melbourne-np, nova, melbourne, qld, melbourne-qh2, sa ]
+    Description: "The NeCTAR zone in which the cluster is to run. Currently ignored..."
 
 Resources:
 
@@ -68,6 +71,8 @@ Resources:
   ServerGroup:
     Type: "OS::Heat::InstanceGroup"
     Properties:
+      # Availability zones here are both required and yet resolutely ignored.
+      AvailabilityZones: [Ref: "AvailabilityZone"]
       LaunchConfigurationName:
         Ref: "ServerConfig"
       Size:
@@ -117,6 +122,9 @@ Resources:
   MasterServer:
     Type: "AWS::EC2::Instance"
     Properties:
+      # As the server group availability zone isn't implemented yet, we comment this one out
+      #AvailabilityZone:
+      #  Ref: "AvailabilityZone"
       # the following is a private image in which the heat-cfntools have been installed
       # you will have to install them into your own ubuntu instance if you want to make
       # use of the heat-cfntools
