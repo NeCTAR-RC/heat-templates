@@ -22,7 +22,9 @@ Parameters:
 Mappings:
   InstanceId:
    'ubuntu-12.04': {ImageId: 884bfe1b-1c87-4a34-88da-69447b0ab8c6}
+   # TODO: following image doesnt' work properly yet
    'ubuntu-12.10': {ImageId: 50807835-eadf-4692-92e0-1b1ecc1cdfad}
+   # TODO: following image doesn't work properly yet.
    'ubuntu-13.10': {ImageId: 31c3848c-4d88-4e94-99cc-1e8e77c2c8cf}
 
 Resources:
