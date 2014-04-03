@@ -31,7 +31,7 @@ Parameters:
     Description: "The NeCTAR zone in which the cluster is to run. Currently ignored..."
   ImageName:
     Type: String
-    Description: Name of the image to use for the instance to be created (should work with all NeCTAR images)
+    Description: Name of the image to use for the instance to be created
     Default: ubuntu-12.04
     AllowedValues: [ubuntu-12.04, ubuntu-12.10, ubuntu-13.10]
 
