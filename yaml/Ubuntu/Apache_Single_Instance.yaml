@@ -13,6 +13,17 @@ Parameters:
     Default: m1.small
     AllowedValues: [m1.small, m1.medium, m1.large, m1.xlarge, m1.xxlarge]
     ConstraintDescription: must be a valid NeCTAR flavour.
+  ImageName:
+    Type: String
+    Description: Name of the image to use for the instance to be created.
+    Default: ubuntu-12.04
+    AllowedValues: [ubuntu-12.04, ubuntu-12.10, ubuntu-13.10]
+
+Mappings:
+  InstanceId:
+   'ubuntu-12.04': {ImageId: 884bfe1b-1c87-4a34-88da-69447b0ab8c6}
+   'ubuntu-12.10': {ImageId: 50807835-eadf-4692-92e0-1b1ecc1cdfad}
+   'ubuntu-13.10': {ImageId: 31c3848c-4d88-4e94-99cc-1e8e77c2c8cf}
 
 Resources:
   ApacheServer:
@@ -27,10 +38,11 @@ Resources:
             systemd:
               apache2: {enabled: 'true', ensureRunning: 'true'}
     Properties:
-      # the following is a private image in which the heat-cfntools have been installed
-      # you will have to install them into your own ubuntu instance if you want to make
-      # use of the heat-cfntools
-      ImageId: 6464e3f6-3e39-4b78-811f-de6511b42585
+      ImageId:
+        Fn::FindInMap:
+        - InstanceId
+        - {Ref: ImageName}
+        - ImageId
       InstanceType: {Ref: InstanceType}
       KeyName: {Ref: KeyName}
       # the following are project specific, and will have to be adjusted.
