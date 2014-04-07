@@ -1,0 +1,178 @@
+HeatTemplateFormatVersion: '2012-12-12'
+# This template will launch and run, but doesn't actually do to much as the required handles, etc, are not supported
+# in this release of OpenStack.
+
+Description: "Creates an non-autoscaling wordpress application using Ceilometer."
+
+# fails: could be a config issue: http://lists.openstack.org/pipermail/openstack-dev/2013-December/022450.html
+Parameters:
+  KeyName:
+    Default: nectar_dev
+    Description: Name of an existing Nectar KeyPair to enable SSH access to the instances
+    Type: String
+  InstanceType:
+    Description: WebServer instance type
+    Type: String
+    Default: m1.small
+    AllowedValues: [m1.small, m1.medium, m1.large, m1.xlarge, m1.xxlarge]
+    ConstraintDescription: must be a valid Nectar instance type.
+  ImageId:
+    Description: the name or uuid of the image in glance
+    Type: String
+    Default: b7833395-2ab9-429c-bcf9-100d0e4754ed
+  DBUsername: {Default: admin, NoEcho: 'true',
+    Description: The WordPress database admin account username, Type: String,
+    MinLength: '1', MaxLength: '16', AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*',
+    ConstraintDescription: must begin with a letter and contain only alphanumeric characters.}
+  DBPassword: {Default: changeme, NoEcho: 'true',
+    Description: The WordPress database admin account password, Type: String,
+    MinLength: '1', MaxLength: '41', AllowedPattern: '[a-zA-Z0-9]*',
+    ConstraintDescription: must contain only alphanumeric characters.}
+  DBRootPassword: {Default: changemeto, NoEcho: 'true',
+    Description: Root password for MySQL, Type: String,
+    MinLength: '1', MaxLength: '41', AllowedPattern: '[a-zA-Z0-9]*',
+    ConstraintDescription: must contain only alphanumeric characters.}
+  AWSAccessKeyId: {Default: "your key here...", NoEcho: 'true',
+    Description: Your Amazon Accesses key id, Type: String,
+    MinLength: '1', MaxLength: '41',
+    ConstraintDescription: must contain only alphanumeric characters.}
+  AWSSecretKey: {Default: "your secret key here...", NoEcho: 'true',
+    Description: Root password for MySQL, Type: String,
+    MinLength: '1', MaxLength: '41',
+    ConstraintDescription: must contain only alphanumeric characters.}
+Resources:
+  #CfnUser: {Type: 'AWS::IAM::User'}
+  #WebServerKeys:
+  #  Type: AWS::IAM::AccessKey
+  #  Properties:
+  #    UserName: {Ref: CfnUser}
+  WebServerGroup:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    Properties:
+      AvailabilityZones: {'Fn::GetAZs': ''}
+      LaunchConfigurationName: {Ref: LaunchConfig}
+      MinSize: '1'
+      MaxSize: '2'
+      # LoadBalancerNames:
+      # - {Ref: ElasticLoadBalancer}
+      Tags:
+      - {Key: metering.server_group, Value: WebServerGroup}
+  #WebServerScaleUpPolicy:
+  #  Type: AWS::AutoScaling::ScalingPolicy
+  #  Properties:
+  #    AdjustmentType: ChangeInCapacity
+  #    AutoScalingGroupName: {Ref: WebServerGroup}
+  #    Cooldown: '60'
+  #    ScalingAdjustment: '1'
+  #WebServerScaleDownPolicy:
+  #  Type: AWS::AutoScaling::ScalingPolicy
+  #  Properties:
+  #    AdjustmentType: ChangeInCapacity
+  #    AutoScalingGroupName: {Ref: WebServerGroup}
+  #    Cooldown: '60'
+  #    ScalingAdjustment: '-1'
+  CPUAlarmHigh:
+    Type: OS::Ceilometer::Alarm
+    Properties:
+      description: Scale-up if the average CPU > 50% for 1 minute
+      meter_name: cpu_util
+      statistic: avg
+      period: '60'
+      evaluation_periods: '1'
+      threshold: '50'
+      alarm_actions:
+      - "http://alert.com/alert"
+      matching_metadata: {'metadata.user_metadata.groupname': {Ref: 'WebServerGroup'}}
+      comparison_operator: gt
+  CPUAlarmLow:
+    Type: OS::Ceilometer::Alarm
+    Properties:
+      description: Scale-down if the average CPU < 15% for 1 minute
+      meter_name: cpu_util
+      statistic: avg
+      period: '60'
+      evaluation_periods: '1'
+      threshold: '15'
+      alarm_actions:
+      - "http://alert.com/alert"
+      matching_metadata: {'metadata.user_metadata.groupname': {Ref: 'WebServerGroup'}}
+      comparison_operator: lt
+  #ElasticLoadBalancer:
+  #  Type: AWS::ElasticLoadBalancing::LoadBalancer
+  #  Properties:
+  #    AvailabilityZones: {'Fn::GetAZs': ''}
+  #    Listeners:
+  #    - {LoadBalancerPort: '80', InstancePort: '80',
+  #      Protocol: HTTP}
+  #    HealthCheck: {Target: 'HTTP:80/', HealthyThreshold: '3',
+  #      UnhealthyThreshold: '5', Interval: '30', Timeout: '5'}
+  LaunchConfig:
+    Type: AWS::AutoScaling::LaunchConfiguration
+    Metadata:
+      # see http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-init.html !
+      AWS::CloudFormation::Init:
+        config:
+          files:
+            /etc/cfn/cfn-credentials:
+              content:
+                'Fn::Replace':
+                - WebServerKeys: {Ref: AWSAccessKeyId}
+                  WebSecretKey: {Ref: AWSSecretKey}
+                - |
+                  AWSAccessKeyId=WebServerKeys
+                  AWSSecretKey=WebSecretKey
+              mode: '000400'
+              owner: root
+              group: root
+            /tmp/setup.mysql:
+              content:
+                'Fn::Replace':
+                - DBPassword: {Ref: DBPassword}
+                  DBUsername: {Ref: DBUsername}
+                - |
+                  CREATE DATABASE wordpress;
+                  GRANT ALL PRIVILEGES ON wordpress .* TO 'DBUsername'@'localhost' IDENTIFIED BY 'DBPassword';
+                  FLUSH PRIVILEGES;
+                  EXIT
+              mode: '000644'
+              owner: root
+              group: root
+          packages:
+            yum:
+              mariadb: []
+              mariadb-server: []
+              httpd: []
+              wordpress: []
+          services:
+            systemd:
+              mysqld: {enabled: 'true', ensureRunning: 'true'}
+              httpd: {enabled: 'true', ensureRunning: 'true'}
+    Properties:
+      ImageId: {Ref: ImageId}
+      InstanceType: {Ref: InstanceType}
+      KeyName: {Ref: KeyName}
+      UserData:
+        Fn::Base64:
+          Fn::Replace:
+          - 'AWS::StackName': {Ref: 'AWS::StackName'}
+            'AWS::Region': {Ref: 'AWS::Region'}
+            DBRootPassword: {Ref: DBRootPassword}
+            DBPassword: {Ref: DBPassword}
+            DBUsername: {Ref: DBUsername}
+          - |
+            #!/bin/bash -v
+            /opt/aws/bin/cfn-init -s AWS::StackName -r LaunchConfig --region AWS::Region
+            # Setup MySQL root password and create a user
+            mysqladmin -u root password DBRootPassword
+            mysql -u root --password=DBRootPassword < /tmp/setup.mysql
+            sed -i "/Deny from All/d" /etc/httpd/conf.d/wordpress.conf
+            sed -i "/Deny from all/d" /etc/httpd/conf.d/wordpress.conf
+            sed --in-place --e s/database_name_here/wordpress/ --e s/username_here/DBUsername/ --e s/password_here/DBPassword/ /usr/share/wordpress/wp-config.php
+            systemctl restart httpd.service
+# Outputs:
+  #URL:
+  #  Description: The URL of the website
+  #  Value:
+  #    Fn::Replace:
+  #    - IpAddress: {'Fn::GetAtt': [ElasticLoadBalancer, DNSName]}
+  #   - http://IpAddress/wordpress
