@@ -1,0 +1,86 @@
+HeatTemplateFormatVersion: '2012-12-12'
+
+Description: |
+  Template to show the use of an deployment key when pulling from a private repository
+  Deployment keys are useful to gain read only acces to private repositories.
+  In this heat template the deployment key is pasted into a text field.
+  This strips all the line breaks out of it, so the script run on the server then tries to re-assemble it in its
+  original format. This is very brittle as it relies on the input key being in a given format. But for the time being
+  it works...
+  For more see https://confluence.atlassian.com/display/BITBUCKET/Use+deployment+keys
+
+
+Parameters:
+  KeyName:
+    Type: "String"
+    Description: "Name of an existing Nectar KeyPair (enables SSH access to the instances)"
+  InstanceType:
+    Type: "String"
+    Default: "m1.small"
+    AllowedValues: ["m1.small", "m1.medium", "m1.large", "m1.xlarge", "m1.xxlarge"]
+    Description: "Type of the instance to be created."
+  ImageName:
+    Type: String
+    Description: "Name of the image to use for the instance to be created"
+    Default: 'CentOS 6.5'
+    AllowedValues: ['CentOS 6.5', 'CentOS 5.10']
+  DeploymentKey:
+    Type: String
+    # on osx can get this via pbcopy < ~/.ssh/test_key
+    Description: "The deployment key to use to get code from the repository"
+  Timezone:
+    Default: "Australia/Melbourne"
+    Type: "String"
+
+
+Mappings:
+  InstanceId:
+   'CentOS 6.5': {ImageId: 5841b33e-2cdf-45d0-bca7-33c8967d3244}
+   'CentOS 5.10': {ImageId: 11a0a8de-d7d6-420f-b3c7-8f405fd3d5a7}
+
+Resources:
+  SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    #usefull to work out what went wrong :(
+    Properties:
+      GroupDescription: Standard firewall rules
+      SecurityGroupIngress:
+      - {IpProtocol: icmp, FromPort: '-1', ToPort: '-1', CidrIp : 0.0.0.0/0}
+      - {IpProtocol: tcp, FromPort: '22', ToPort: '22', CidrIp: 0.0.0.0/0}
+
+  RedBox:
+    Type: OS::Nova::Server
+    Properties:
+      image:
+        Fn::FindInMap:
+        - InstanceId
+        - {Ref: ImageName}
+        - ImageId
+      flavor: {Ref: InstanceType}
+      key_name: {Ref: KeyName}
+      security_groups: [{Ref: SecurityGroup}]
+      user_data:
+        Fn::Base64:
+          Fn::Replace:
+          - _deployment_key: {Ref: DeploymentKey}
+          - |
+            #!/bin/bash -x
+            # Ok: this is ever so brittle.
+            # So we need to take the key that has been converted into one big string and place it in a file
+            cat > ~/.ssh/temp_key1 << EOF
+            _deployment_key
+            EOF
+            # and put the line endings back into it
+            tr ' ' '\n' < ~/.ssh/temp_key1 > ~/.ssh/temp_key2
+            # then rebuild the whole key from scratch
+            echo "-----BEGIN RSA PRIVATE KEY-----" > ~/.ssh/test_key
+            tail -n -29 ~/.ssh/temp_key2 | head -25 >> ~/.ssh/test_key
+            echo "-----END RSA PRIVATE KEY-----" >> ~/.ssh/test_key
+            # remove our working copies
+            rm -f /root/.ssh/temp_key*
+            # set the correct permissions on the key
+            chmod 400 ~/.ssh/test_key
+            # install mercurial
+            yum -y install hg
+            # and clone our private repository.
+            hg clone -e 'ssh -i ~/.ssh/test_key -o "StrictHostKeyChecking no"' ssh://hg@bitbucket.org/martin_paulo/deployment_key_test
