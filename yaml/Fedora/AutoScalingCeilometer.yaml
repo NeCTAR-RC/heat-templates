@@ -7,7 +7,6 @@ Description: "Creates an non-autoscaling wordpress application using Ceilometer.
 # fails: could be a config issue: http://lists.openstack.org/pipermail/openstack-dev/2013-December/022450.html
 Parameters:
   KeyName:
-    Default: nectar_dev
     Description: Name of an existing Nectar KeyPair to enable SSH access to the instances
     Type: String
   InstanceType:
