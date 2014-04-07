@@ -1,0 +1,88 @@
+HeatTemplateFormatVersion: '2012-12-12'
+# This template will not work for general NeCTAR users until such time as the icehouse release is deployed
+
+Description: "Test..."
+
+Parameters:
+
+  DatabaseType:
+    Default: "db.m1.small"
+    Description: "The database instance type"
+    Type: "String"
+    AllowedValues:
+      - "db.m1.small"
+      - "db.m1.medium"
+      - "db.m1.large"
+      - "db.m1.xlarge"
+    ConstraintDescription: "must contain only alphanumeric characters."
+  DatabaseUser:
+    Default: "admin"
+    NoEcho: "true"
+    Type: "String"
+    Description: "Test database admin account name"
+    MinLength: "1"
+    MaxLength: "16"
+    AllowedPattern: "[a-zA-Z][a-zA-Z0-9]*"
+    ConstraintDescription: "must begin with a letter and contain only alphanumeric characters."
+  DatabasePassword:
+    Default: "admin"
+    NoEcho: "true"
+    Type: "String"
+    Description: "Test database admin account password"
+    MinLength: "1"
+    MaxLength: "41"
+    AllowedPattern: "[a-zA-Z0-9]*"
+    ConstraintDescription: "must contain only alphanumeric characters."
+
+Resources:
+  EC2SecurityGroup:
+    Type: "AWS::EC2::SecurityGroup"
+    Properties:
+      GroupDescription: "Enable HTTP access for Wordpress plus SSH access via port 22"
+      SecurityGroupIngress:
+        -
+          IpProtocol: "tcp"
+          FromPort: "22"
+          ToPort: "22"
+          CidrIp: "0.0.0.0/0"
+        -
+          IpProtocol: "tcp"
+          FromPort: "80"
+          ToPort: "80"
+          CidrIp: "0.0.0.0/0"
+  WordPressDatabase:
+    Type: "AWS::RDS::DBInstance"
+    Properties:
+      AllocatedStorage: "5"
+      DBName: "WordPressDB"
+      Engine: "MySQL"
+      DBInstanceClass:
+        Ref: "DatabaseType"
+      DBSecurityGroups:
+        -
+          Ref: "DBSecurityGroup"
+      MasterUsername:
+        Ref: "DatabaseUser"
+      MasterUserPassword:
+        Ref: "DatabasePassword"
+  DBSecurityGroup:
+    Type: "AWS::RDS::DBSecurityGroup"
+    Properties:
+      DBSecurityGroupIngress:
+        EC2SecurityGroupName:
+          Ref: "EC2SecurityGroup"
+      GroupDescription: "database access"
+
+Outputs:
+  WebsiteURL:
+    Value:
+      Fn::Join:
+        - ""
+        -
+          - "http://"
+          -
+            Fn::GetAtt:
+              - "WordPressDatabase"
+              - "Endpoint.Address"
+          - "/wordpress"
+    Description: "Address of the database..."
