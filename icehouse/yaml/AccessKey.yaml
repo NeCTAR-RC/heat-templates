@@ -1,0 +1,32 @@
+HeatTemplateFormatVersion: '2012-12-12'
+# This template will never work: it simply shows that keys for existing users can't be referenced.
+
+Description: |
+    Template to demonstrate that an EC2 style accesskey can not be associated with a current user.
+    It always has to be a user created in the template.
+    So this template will never succeed.
+
+Parameters:
+  UserName:
+    Description: The username of an existing Nectar user that needs new Amazon access keys generated
+    Type: String
+
+Resources:
+  WebServerAccessKeys:
+    Type: AWS::IAM::AccessKey
+    Properties:
+      UserName: {Ref: UserName}
+
+Outputs:
+  SecretAccessKey:
+    Value:
+      Fn::GetAtt:
+        - "WebServerAccessKeys"
+        - "SecretAccessKey"
+    Description: "The secret access key"
+  UserName:
+    Value:
+      Fn::GetAtt:
+        - "WebServerAccessKeys"
+        - "UserName"
+    Description: "The username associated with the access key"
