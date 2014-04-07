@@ -1,0 +1,22 @@
+HeatTemplateFormatVersion: '2012-12-12'
+# This template will not work for general NeCTAR users until such time as the icehouse release is deployed
+
+Description: "Template to show the creation of a random string..."
+
+Resources:
+  RandomValue:
+    Type: OS::Heat::RandomString
+    Properties:
+      length: 16
+      salt: updateWhenChanged
+      sequence: lettersdigits
+
+
+Outputs:
+  URL:
+    Description: The random string created
+    Value:
+      Fn::Replace:
+      - SomeRandomString: {'Fn::GetAtt': [RandomValue, value]}
+      - The random value SomeRandomString.
+
