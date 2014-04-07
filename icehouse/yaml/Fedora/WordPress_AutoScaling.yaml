@@ -1,6 +1,6 @@
 HeatTemplateFormatVersion: '2012-12-12'
 # This template will not work for general NeCTAR users until such time as the defect
-# outlined at https://bugs.launchpad.net/heat/+bug/1089261 is fixed (possibly icehouse)
+# outlined at https://bugs.launchpad.net/heat/+bug/1089261 is fixed (should be in the icehouse release)
 Description: 'NeCTAR Sample Template:
   WordPress is web software you can use to create a beautiful website or blog.
   This template installs an autoscaling WordPress deployment using a local MySQL database
@@ -113,6 +113,7 @@ Resources:
   LaunchConfig:
     Type: AWS::AutoScaling::LaunchConfiguration
     Metadata:
+      # See http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-init.html
       AWS::CloudFormation::Init:
         config:
           files:
