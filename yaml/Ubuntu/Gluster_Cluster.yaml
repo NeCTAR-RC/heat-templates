@@ -125,9 +125,10 @@ Resources:
             #!/bin/bash -x
             add-apt-repository ppa:semiosis/ubuntu-glusterfs-3.4
             apt-get update
+            apt-get -y upgrade
             apt-get install -y glusterfs-server xfsprogs
             # get rid of annoying message
-            echo "127.0.0.1     $HOSTNAME" | sudo tee -a /etc/hosts
+            echo "127.0.0.1     $HOSTNAME" | tee -a /etc/hosts
             # unmount the automatically mounted storage, reformat it and then remount it.
             umount /mnt
             mkfs.xfs -f -i size=512 /dev/vdb
@@ -166,9 +167,10 @@ Resources:
             #!/bin/bash -xv
             add-apt-repository ppa:semiosis/ubuntu-glusterfs-3.4
             apt-get update
+            apt-get -y upgrade
             apt-get install -y glusterfs-server xfsprogs
             # get rid of annoying message shown when running sudo command
-            echo "127.0.0.1     $HOSTNAME" | sudo tee -a /etc/hosts
+            echo "127.0.0.1     $HOSTNAME" | tee -a /etc/hosts
             # unmount the automatically mounted storage, reformat it and then remount it.
             umount /mnt
             mkfs.xfs -f -i size=512 /dev/vdb
@@ -177,7 +179,12 @@ Resources:
             # now to create the clusters
             export INSTANCES="instance_list"
             IFS=","
-            for instance in $INSTANCES; do gluster peer probe $instance; done
+            for instance in $INSTANCES; do
+              # assumption is that gluster peer probe will return error code if peer isn't set up yet.
+              until gluster peer probe $instance; do echo "Probe failed : $?"; sleep 5; done
+              # now wait for a while as we only want to proceed once the peer is up to speed...
+              sleep 20
+            done
             COMMAND_TAIL=""
             COUNTER=1
             for instance in $INSTANCES; do
