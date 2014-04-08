@@ -8,7 +8,6 @@ Description: "Template to create a small gluster cluster using the transient sto
 Parameters:
   KeyName:
     Type: "String"
-    Default: "nectar_dev"
     Description: "Name of an existing Nectar KeyPair (enables SSH access to the instances)"
   # We will limit the maximum number of instances to 10. Just because.
   InstanceCount:
