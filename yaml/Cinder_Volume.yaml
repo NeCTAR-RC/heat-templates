@@ -1,0 +1,69 @@
+HeatTemplateFormatVersion: '2013-05-23'
+
+
+Description: >
+  NeCTAR Sample Template showing how to create a single Cinder volume
+
+
+Parameters:
+
+  AvailabilityZone:
+    Type: String
+    Description: The NeCTAR zone in which the block storage is to be allocated (must have block storage)
+    Default: melbourne-qh2
+    AllowedValues: [melbourne-qh2, melbourne-np, monash, qld]
+
+  VolumeSize:
+    Type: Number
+    Description: Size of the volume to be created.
+    Default: 1
+    Constraints:
+      - Range: { Min: 1, Max: 1024 }
+        Description: must be between 1 and 1024 Gb.
+
+
+Resources:
+
+  CinderVolume:
+    Type: OS::Cinder::Volume
+    Properties:
+      size: { Ref: VolumeSize }
+      availability_zone: { Ref: AvailabilityZone }
+
+
+Outputs:
+
+  AvailabilityZone:
+    Description: The availability zone in which the volume is located.
+    Value:
+      Fn::GetAtt:
+      - CinderVolume
+      - availability_zone
+
+  DisplayDescription:
+    Description: Description of the volume.
+    Value:
+      Fn::GetAtt:
+      - CinderVolume
+      - display_description
+
+  DisplayName:
+    Description: Name of the volume.
+    Value:
+      Fn::GetAtt:
+      - CinderVolume
+      - display_name
+
+  Status:
+    Description: The current status of the volume.
+    Value:
+      Fn::GetAtt:
+      - CinderVolume
+      - status
+
+  VolumeType:
+    Description: The type of the volume mapping to a backend, if any.
+    Value:
+      Fn::GetAtt:
+      - CinderVolume
+      - volume_type
