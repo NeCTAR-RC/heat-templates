@@ -5,8 +5,10 @@ Description: 'NeCTAR Sample Template
 
 Parameters:
   # First off, the parameters that affect the environment
-  KeyName: {Description: Name of an existing KeyPair
-      to enable SSH access to the instances, Type: String}
+  KeyName:
+    Description: Name of an existing KeyPair to enable SSH access to the instances
+    Type: String
+    Default: nectar_dev
   InstanceType:
     Description: The NeCTAR flavour the webserver is to run on
     Type: String
@@ -30,6 +32,8 @@ Mappings:
 Resources:
   ApacheServer:
     Type: AWS::EC2::Instance
+    # A deletion policy of Retain will leave this instance behind when this template is torn down.
+    # DeletionPolicy: Retain
     Metadata:
       AWS::CloudFormation::Init:
         config:
