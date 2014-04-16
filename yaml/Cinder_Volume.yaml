@@ -2,7 +2,8 @@ HeatTemplateFormatVersion: '2013-05-23'
 
 
 Description: >
-  NeCTAR Sample Template showing how to create a single Cinder volume
+  NeCTAR Sample Template showing how to create a single Cinder volume and have it remain behind
+  when the template is destroyed.
 
 
 Parameters:
@@ -25,6 +26,9 @@ Parameters:
 Resources:
 
   CinderVolume:
+    # DeletionPolicy has a default value of 'Delete'.
+    # A value of 'Retain' means that the volume will be left behind when the stack is deleted.
+    DeletionPolicy: "Retain"
     Type: OS::Cinder::Volume
     Properties:
       size: { Ref: VolumeSize }
