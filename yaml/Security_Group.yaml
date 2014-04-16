@@ -9,7 +9,9 @@ Description: >
 
 Resources:
   # Creating a security group is possible: but it does eat into the number of groups that you are limited to (10)
-  WikiDatabaseSecurityGroup:
+  NewSecurityGroup:
+    # The following line, if uncommented, will leave the security group behind when the stack is deleted.
+    # DeletionPolicy: "Retain"
     Type: "AWS::EC2::SecurityGroup"
     Properties:
       GroupDescription: "Enable HTTP access via port 80 plus SSH access"
