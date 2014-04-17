@@ -1,0 +1,154 @@
+HeatTemplateFormatVersion: '2012-12-12'
+
+
+Description: >
+    A very artificial template: it creates three Ubuntu instances running Apache, but makes
+    the second wait for the first to be created, and the third to wait for both the first and
+    the second.
+
+
+Parameters:
+
+  KeyName:
+    Description: Name of an existing KeyPair to enable SSH access to the instances
+    Type: String
+    Default: nectar_dev
+
+  InstanceType:
+    Description: The NeCTAR flavour the webserver is to run on
+    Type: String
+    Default: m1.small
+    AllowedValues: [m1.small, m1.medium, m1.large, m1.xlarge, m1.xxlarge]
+    ConstraintDescription: must be a valid NeCTAR flavour.
+
+  ImageName:
+    Type: String
+    Description: Name of the image to use for the instance to be created.
+    Default: ubuntu-12.04
+    AllowedValues: [ubuntu-12.04, ubuntu-12.10, ubuntu-13.10]
+
+
+Mappings:
+
+  InstanceId:
+   'ubuntu-12.04': {ImageId: 884bfe1b-1c87-4a34-88da-69447b0ab8c6}
+   # TODO: following image doesnt' work properly yet
+   'ubuntu-12.10': {ImageId: 50807835-eadf-4692-92e0-1b1ecc1cdfad}
+   # TODO: following image doesn't work properly yet.
+   'ubuntu-13.10': {ImageId: 31c3848c-4d88-4e94-99cc-1e8e77c2c8cf}
+
+
+Resources:
+
+  FirstApacheServer:
+    Type: AWS::EC2::Instance
+    Metadata:
+      AWS::CloudFormation::Init:
+        config:
+          packages:
+            apt:
+              apache2: []
+          services:
+            systemd:
+              apache2: {enabled: 'true', ensureRunning: 'true'}
+    Properties:
+      ImageId:
+        Fn::FindInMap:
+        - InstanceId
+        - {Ref: ImageName}
+        - ImageId
+      InstanceType: {Ref: InstanceType}
+      KeyName: {Ref: KeyName}
+      # the following are project specific, and will have to be adjusted.
+      SecurityGroups: [default, webserver]
+      # the following is written to /var/lib/cloud/data/cfn-userdata
+      # note the call to cfn-init which causes the AWS::CloudFomration::Init to be actioned
+      UserData: |
+        #!/bin/bash -v
+        /usr/local/bin/cfn-init
+
+  SecondApacheServer:
+    Type: AWS::EC2::Instance
+    DependsOn: FirstApacheServer
+    Metadata:
+      AWS::CloudFormation::Init:
+        config:
+          packages:
+            apt:
+              apache2: []
+          services:
+            systemd:
+              apache2: {enabled: 'true', ensureRunning: 'true'}
+    Properties:
+      ImageId:
+        Fn::FindInMap:
+        - InstanceId
+        - {Ref: ImageName}
+        - ImageId
+      InstanceType: {Ref: InstanceType}
+      KeyName: {Ref: KeyName}
+      # the following are project specific, and will have to be adjusted.
+      SecurityGroups: [default, webserver]
+      # the following is written to /var/lib/cloud/data/cfn-userdata
+      # note the call to cfn-init which causes the AWS::CloudFomration::Init to be actioned
+      UserData: |
+        #!/bin/bash -v
+        /usr/local/bin/cfn-init
+
+  ThirdApacheServer:
+    Type: AWS::EC2::Instance
+    DependsOn: [FirstApacheServer, SecondApacheServer]
+    Metadata:
+      AWS::CloudFormation::Init:
+        config:
+          packages:
+            apt:
+              apache2: []
+          services:
+            systemd:
+              apache2: {enabled: 'true', ensureRunning: 'true'}
+    Properties:
+      ImageId:
+        Fn::FindInMap:
+        - InstanceId
+        - {Ref: ImageName}
+        - ImageId
+      InstanceType: {Ref: InstanceType}
+      KeyName: {Ref: KeyName}
+      # the following are project specific, and will have to be adjusted.
+      SecurityGroups: [default, webserver]
+      # the following is written to /var/lib/cloud/data/cfn-userdata
+      # note the call to cfn-init which causes the AWS::CloudFomration::Init to be actioned
+      UserData: |
+        #!/bin/bash -v
+        /usr/local/bin/cfn-init
+
+
+Outputs:
+
+  FirstWebsiteURL:
+    Value:
+      Fn::Join:
+      - ''
+      - - http://
+        - Fn::GetAtt: [FirstApacheServer, PublicIp]
+        - /
+    Description: URL for first Apache server
+
+  SecondWebsiteURL:
+    Value:
+      Fn::Join:
+      - ''
+      - - http://
+        - Fn::GetAtt: [SecondApacheServer, PublicIp]
+        - /
+    Description: URL for second Apache server
+
+  ThirdWebsiteURL:
+    Value:
+      Fn::Join:
+      - ''
+      - - http://
+        - Fn::GetAtt: [ThirdApacheServer, PublicIp]
+        - /
+    Description: URL for third Apache server
