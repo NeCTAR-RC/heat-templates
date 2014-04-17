@@ -1,25 +1,29 @@
 HeatTemplateFormatVersion: '2012-12-12'
 
+
 Description: 'NeCTAR Sample Template
   Just a simple template to install Apache on a single Ubuntu instance.'
 
+
 Parameters:
-  # First off, the parameters that affect the environment
+
   KeyName:
     Description: Name of an existing KeyPair to enable SSH access to the instances
     Type: String
-    Default: nectar_dev
+
   InstanceType:
     Description: The NeCTAR flavour the webserver is to run on
     Type: String
     Default: m1.small
     AllowedValues: [m1.small, m1.medium, m1.large, m1.xlarge, m1.xxlarge]
     ConstraintDescription: must be a valid NeCTAR flavour.
+
   ImageName:
     Type: String
     Description: Name of the image to use for the instance to be created.
     Default: ubuntu-12.04
     AllowedValues: [ubuntu-12.04, ubuntu-12.10, ubuntu-13.10]
+
 
 Mappings:
   InstanceId:
@@ -29,7 +33,9 @@ Mappings:
    # TODO: following image doesn't work properly yet.
    'ubuntu-13.10': {ImageId: 31c3848c-4d88-4e94-99cc-1e8e77c2c8cf}
 
+
 Resources:
+
   ApacheServer:
     Type: AWS::EC2::Instance
     # A deletion policy of Retain will leave this instance behind when this template is torn down.
@@ -59,7 +65,9 @@ Resources:
         #!/bin/bash -v
         /usr/local/bin/cfn-init
 
+
 Outputs:
+
   WebsiteURL:
     Value:
       Fn::Join:
@@ -68,4 +76,3 @@ Outputs:
         - Fn::GetAtt: [ApacheServer, PublicIp]
         - /
     Description: URL for Apache server
-

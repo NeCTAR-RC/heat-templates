@@ -12,7 +12,6 @@ Parameters:
   KeyName:
     Description: Name of an existing KeyPair to enable SSH access to the instances
     Type: String
-    Default: nectar_dev
 
   InstanceType:
     Description: The NeCTAR flavour the webserver is to run on
