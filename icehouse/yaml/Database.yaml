@@ -1,5 +1,6 @@
 HeatTemplateFormatVersion: '2012-12-12'
 # This template will not work for general NeCTAR users until such time as the icehouse release is deployed
+# And the Resource type AWS::RDS::DBSecurityGroup is supported.
 
 Description: "Test..."
 

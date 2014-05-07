@@ -7,8 +7,9 @@ Resources:
   RandomValue:
     Type: OS::Heat::RandomString
     Properties:
+      # AES key must be either 16, 24, or 32 bytes long
       length: 16
-      salt: updateWhenChanged
+      salt: updateWhenChange
       sequence: lettersdigits
 
 

@@ -13,6 +13,11 @@ Parameters:
   KeyName:
     Description: Name of an existing KeyPair to enable SSH access to the instances
     Type: String
+  AvailabilityZone:
+    Type: String
+    Description: The NeCTAR zone in which the VM is to run (must have block storage)
+    Default: havana
+    AllowedValues: [havana, icehouse]
   InstanceType:
     Description: The NeCTAR flavour the webserver is to run on
     Type: String
