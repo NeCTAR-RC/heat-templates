@@ -1,7 +1,7 @@
 HeatTemplateFormatVersion: '2012-12-12'
 
 
-Description: 'NeCTAR Sample Template - one of the simplest possible. It just fires up an instance of ubuntu'
+Description: 'NeCTAR Sample Template - A very simple one that just fires up an instance of ubuntu'
 
 
 Parameters:
@@ -32,11 +32,13 @@ Resources:
 
 Outputs:
 
-  WebsiteURL:
+  SshCommand:
+    Description: The command to use to ssh into the instance
     Value:
       Fn::Join:
       - ''
-      - - http://
+      - - ssh ubunutu@
         - Fn::GetAtt: [ApacheServer, PublicIp]
-        - /
-    Description: URL for Apache server
+        - -i ~/.ssh/
+        - {Ref: KeyName}
+        - .pem
