@@ -1,0 +1,84 @@
+HeatTemplateFormatVersion: '2012-12-12'
+
+
+Description: 'NeCTAR Sample Template
+  A template that installs some of the OpenStack command line tools on a single Ubuntu instance.
+  It also asks for your environment variables required to run the tools, and puts them into the
+  ec2-user environment. The required values are found on the API Access tab of the
+  https://dashboard.rc.nectar.org.au/project/access_and_security/'
+
+
+Parameters:
+
+  KeyName:
+    Description: Name of an existing KeyPair to enable SSH access to the instances
+    Type: String
+  AuthUrl:
+    Description: The Keystone authentication url
+    Default: https://keystone.rc.nectar.org.au:5000/v2.0/
+    Type: String
+  TenantId:
+    Description: Your NeCTAR project id
+    Type: String
+  TenantName:
+    Description: Your NeCTAR tenant name
+    Type: String
+  UserName:
+    Description: Name of an existing KeyPair to enable SSH access to the instances
+    Type: String
+  Password:
+    Description: The password for command line usage.
+    NoEcho: 'true'
+    Type: String
+
+
+Resources:
+
+  CommandLineTools:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: 563219b9-7d1d-44b4-a6b5-37f351799bc9
+      InstanceType: m1.small
+      KeyName: {Ref: KeyName}
+      UserData:
+        Fn::Base64:
+          Fn::Replace:
+          - AuthUrl: {Ref: AuthUrl}
+            TenantId: {Ref: TenantId}
+            TenantName: {Ref: TenantName}
+            UserName: {Ref: UserName}
+            Password: {Ref: Password}
+          - |
+            #!/bin/bash -v
+            # https://wiki.debian.org/EnvironmentVariables
+            apt-get update && sudo apt-get -y upgrade
+            # set the default shell in /etc/passwd to bash for the ec2-user
+            usermod -s /bin/bash ec2-user
+            cat >> /home/ec2-user/.profile << EOF
+            export OS_AUTH_URL=AuthUrl
+            export OS_TENANT_ID=TenantId
+            export OS_TENANT_NAME=TenantName
+            export OS_USERNAME=UserName
+            export OS_PASSWORD=Password
+            EOF
+            apt-get -y install python-ceilometerclient
+            apt-get -y install python-cinderclient
+            apt-get -y install python-glanceclient
+            apt-get -y install python-heatclient
+            apt-get -y install python-keystoneclient
+            apt-get -y install python-novaclient
+            apt-get -y install python-swiftclient
+
+
+Outputs:
+
+  SshCommand:
+    Description: The command to use to ssh into the instance
+    Value:
+      Fn::Join:
+      - ''
+      - - ssh ec2-user@
+        - Fn::GetAtt: [CommandLineTools, PublicIp]
+        - " -i ~/.ssh/"
+        - {Ref: KeyName}
+        - .pem
