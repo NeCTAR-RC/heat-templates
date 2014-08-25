@@ -17,6 +17,10 @@ Parameters:
     Description: The Keystone authentication url
     Default: https://keystone.rc.nectar.org.au:5000/v2.0/
     Type: String
+  ImageId:
+    Description: The id of the Ubuntu image to use (This default NeCTAR image id may have been retired)
+    Default: 563219b9-7d1d-44b4-a6b5-37f351799bc9
+    Type: String
   TenantId:
     Description: Your NeCTAR project id
     Type: String
@@ -24,10 +28,10 @@ Parameters:
     Description: Your NeCTAR tenant name
     Type: String
   UserName:
-    Description: Name of an existing KeyPair to enable SSH access to the instances
+    Description: The user name that you use to log onto the NeCTAR cloud via the dashboard
     Type: String
   Password:
-    Description: The password for command line usage.
+    Description: The password for command line usage (Not your AAF password!)
     NoEcho: 'true'
     Type: String
 
@@ -37,7 +41,7 @@ Resources:
   CommandLineTools:
     Type: AWS::EC2::Instance
     Properties:
-      ImageId: 563219b9-7d1d-44b4-a6b5-37f351799bc9
+      ImageId: {Ref: ImageId}
       InstanceType: m1.small
       KeyName: {Ref: KeyName}
       UserData:
