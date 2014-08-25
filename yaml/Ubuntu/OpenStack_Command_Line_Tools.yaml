@@ -77,7 +77,7 @@ Resources:
 Outputs:
 
   SshCommand:
-    Description: The command to use to ssh into the instance
+    Description: The command to use to ssh into the instance (assuming your key is in ~./ssh/)
     Value:
       Fn::Join:
       - ''
