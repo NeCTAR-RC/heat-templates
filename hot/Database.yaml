@@ -1,0 +1,39 @@
+heat_template_version: 2013-05-23
+# This template will not work for general NeCTAR users
+# You need to have been granted acces rights to Trove for this to work...
+
+
+description: >
+  NeCTAR Sample Template showing how to create a Trove database instance.
+  Be warned: this template will not work if you don't have access rights to Trove!
+
+
+parameters:
+  password:
+    type: string
+    label: DB User Password
+    description:  Password for the database user (must be < 6 characters long).
+    hidden: true
+    constraints:
+      - length: { min: 6}
+        description: Passwords must be at least 6 characters in length.
+
+resources:
+  sample_database:
+    type: OS::Trove::Instance
+    properties:
+      name: my_heat_trove_instance
+      availability_zone: melbourne-np
+      databases: [{ name: mytrovedb }, ]
+      flavor: 512MB Instance
+      size: 2
+      users: [{ password: { get_param: password }, name: mytroveuser, databases: [mytrovedb] }, ]
+
+
+outputs:
+  host_name:
+    description: The host name of the data store.
+    value: { get_attr: [sample_database, hostname] }
+  host_href:
+    description: The href of the data store.
+    value: { get_attr: [sample_database, href] }
