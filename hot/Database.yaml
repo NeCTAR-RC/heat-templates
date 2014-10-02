@@ -21,9 +21,9 @@ parameters:
 resources:
   sample_database:
     type: OS::Trove::Instance
+    # Currently trove lives in its own availability_zone, so do not use the availability_zone attribute.
     properties:
       name: my_heat_trove_instance
-      availability_zone: melbourne-np
       databases: [{ name: mytrovedb }, ]
       flavor: 512MB Instance
       size: 1
