@@ -72,6 +72,8 @@ Resources:
             apt-get -y install python-keystoneclient
             apt-get -y install python-novaclient
             apt-get -y install python-swiftclient
+            apt-get -y install python-troveclient
+            apt-get -y install python-designateclient
 
 
 Outputs:
