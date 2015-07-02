@@ -23,12 +23,6 @@ Parameters:
     Default: m2.tiny
     ConstraintDescription: must be a valid NeCTAR flavour.
 
-  AvailabilityZone:
-    Description: The NeCTAR zone in which the VM is to run
-    Default: melbourne
-    Type: String
-    AllowedValues: [melbourne, monash, qld, sa]
-
   ImageId:
      Description: A fedora image
      Default: d3bae233-a0cd-4533-a710-d7aa9de0a4b7
