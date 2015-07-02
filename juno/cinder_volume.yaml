@@ -35,7 +35,7 @@ resources:
 
   # http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Cinder::Volume
   cinder_volume:
-    deletion_policy: Delete  # 'Retain' will keep it after the stack is gone, 'Snapshot' will make a copy.
+    deletion_policy: Delete  # 'Retain' will keep it after the stack is gone.
     type: OS::Cinder::Volume
     properties:
       size: { get_param:  volume_size }
