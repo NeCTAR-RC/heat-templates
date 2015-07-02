@@ -1,6 +1,5 @@
 HeatTemplateFormatVersion: '2012-12-12'
-# This template will not work for general NeCTAR users until such time as the defect
-# outlined at https://bugs.launchpad.net/heat/+bug/1089261 is fixed (should be in the icehouse release)
+# This template now works, but the load balancer seems broken :(
 
 Description: 'NeCTAR Sample Template:
   WordPress is web software you can use to create a beautiful website or blog.
@@ -50,7 +49,7 @@ Parameters:
     ConstraintDescription: must contain only alphanumeric characters.}
 
 Resources:
-  # the following currently requires that person using the template be a NeCTAR administrator.
+
   CfnUser: {Type: 'AWS::IAM::User'}
 
   WebServerKeys:
