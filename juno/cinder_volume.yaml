@@ -1,0 +1,62 @@
+# http://docs.openstack.org/developer/heat/template_guide/hot_spec.html#heat-template-version
+heat_template_version: 2014-10-16
+
+description: >
+  NeCTAR Sample Template showing how to create a single Cinder volume.
+
+parameters:
+  availability_zone:
+    type: string
+    label: Availability Zone
+    description: The NeCTAR zone in which the block storage is to be allocated (must have block storage)
+    default: melbourne-qh2
+    constraints:
+      - allowed_values: [ melbourne-qh2, melbourne-np, monash, qld ]
+        description: This zone must have block storage.
+
+  volume_size:
+    type: number
+    label: Size (in Gb.)
+    description: Size of the volume to be created, in GB.
+    default: 1
+    constraints:
+      - range: { min: 1, max: 1024 }
+        description: This must be between 1 and 1024 Gb.
+
+  volume_description:
+    type: string
+    description: Description of the volume
+    default: A volume created by Heat
+
+resources:
+
+  # http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Cinder::Volume
+  cinder_volume:
+    deletion_policy: Delete  # 'Retain' will keep it after the stack is gone, 'Snapshot' will make a copy.
+    type: OS::Cinder::Volume
+    properties:
+      size: { get_param:  volume_size }
+      description: {get_param: volume_description }
+      availability_zone: { get_param: availability_zone }
+
+outputs:
+
+  availability_zone:
+    description: The availability zone in which the volume is located.
+    value: { get_attr: [ cinder_volume, availability_zone ] }
+
+  display_description:
+    description: A description of the volume.
+    value: { get_attr: [ cinder_volume, display_description ] }
+
+  display_name:
+    description: The name of the volume.
+    value: { get_attr: [ cinder_volume, display_name ] }
+
+  status:
+    description: The current status of the volume.
+    value: { get_attr: [ cinder_volume, status ] }
+
+  volume_type:
+    description: The type of the volume mapping to a backend, if any.
+    value: { get_attr: [ cinder_volume, volume_type ] }
