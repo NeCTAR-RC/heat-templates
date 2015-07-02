@@ -1,3 +1,4 @@
+# http://docs.openstack.org/developer/heat/template_guide/hot_spec.html#heat-template-version
 heat_template_version: 2014-10-16
 # Warning! This template will not work for general NeCTAR users
 # You need to have been granted acces rights to Trove for this to work...
