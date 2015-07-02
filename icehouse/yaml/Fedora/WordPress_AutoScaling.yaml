@@ -1,6 +1,7 @@
 HeatTemplateFormatVersion: '2012-12-12'
 # This template will not work for general NeCTAR users until such time as the defect
 # outlined at https://bugs.launchpad.net/heat/+bug/1089261 is fixed (should be in the icehouse release)
+
 Description: 'NeCTAR Sample Template:
   WordPress is web software you can use to create a beautiful website or blog.
   This template installs an autoscaling WordPress deployment using a local MySQL database
@@ -8,27 +9,31 @@ Description: 'NeCTAR Sample Template:
   It is a customization for the NeCTAR environment of the template named AutoScalingCeilometer.yaml
   in the OpenStack heat template repository.
   It will not work for general NeCTAR users - you have to be an Administrator to run it.'
+
 Parameters:
+
   # First off, the parameters that affect the environment
   KeyName:
     Description: Name of an existing KeyPair to enable SSH access to the instances
     Type: String
-  AvailabilityZone:
-    Type: String
-    Description: The NeCTAR zone in which the VM is to run (must have block storage)
-    Default: havana
-    AllowedValues: [havana, icehouse]
+
   InstanceType:
     Description: The NeCTAR flavour the webserver is to run on
     Type: String
-    Default: m1.large
-    AllowedValues: [m1.small, m1.medium, m1.large, m1.xlarge, m1.xxlarge]
+    Default: m2.tiny
     ConstraintDescription: must be a valid NeCTAR flavour.
+
   AvailabilityZone:
     Description: The NeCTAR zone in which the VM is to run
     Default: melbourne
     Type: String
     AllowedValues: [melbourne, monash, qld, sa]
+
+  ImageId:
+     Description: A fedora image
+     Default: d3bae233-a0cd-4533-a710-d7aa9de0a4b7
+     Type: String
+
   # Then the installation specific parameters
   DBUsername:
     Default: admin
@@ -39,10 +44,12 @@ Parameters:
     MaxLength: '16'
     AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*'
     ConstraintDescription: 'must begin with a letter and contain only alphanumeric characters.'
+
   DBPassword: {Default: admin, NoEcho: 'true',
     Description: The WordPress database admin account password, Type: String,
     MinLength: '1', MaxLength: '41', AllowedPattern: '[a-zA-Z0-9]*',
     ConstraintDescription: must contain only alphanumeric characters.}
+
   DBRootPassword: {Default: admin, NoEcho: 'true',
     Description: Root password for MySQL, Type: String,
     MinLength: '1', MaxLength: '41', AllowedPattern: '[a-zA-Z0-9]*',
@@ -51,10 +58,12 @@ Parameters:
 Resources:
   # the following currently requires that person using the template be a NeCTAR administrator.
   CfnUser: {Type: 'AWS::IAM::User'}
+
   WebServerKeys:
     Type: AWS::IAM::AccessKey
     Properties:
       UserName: {Ref: CfnUser}
+
   WebServerGroup:
     Type: AWS::AutoScaling::AutoScalingGroup
     Properties:
@@ -66,6 +75,7 @@ Resources:
       - {Ref: ElasticLoadBalancer}
       Tags:
       - {Key: metering.server_group, Value: WebServerGroup}
+
   WebServerScaleUpPolicy:
     Type: AWS::AutoScaling::ScalingPolicy
     Properties:
@@ -73,6 +83,7 @@ Resources:
       AutoScalingGroupName: {Ref: WebServerGroup}
       Cooldown: '60'
       ScalingAdjustment: '1'
+
   WebServerScaleDownPolicy:
     Type: AWS::AutoScaling::ScalingPolicy
     Properties:
@@ -80,6 +91,7 @@ Resources:
       AutoScalingGroupName: {Ref: WebServerGroup}
       Cooldown: '60'
       ScalingAdjustment: '-1'
+
   CPUAlarmHigh:
     Type: OS::Ceilometer::Alarm
     Properties:
@@ -93,6 +105,7 @@ Resources:
       - {"Fn::GetAtt": [WebServerScaleUpPolicy, AlarmUrl]}
       matching_metadata: {'metadata.user_metadata.groupname': {Ref: 'WebServerGroup'}}
       comparison_operator: gt
+
   CPUAlarmLow:
     Type: OS::Ceilometer::Alarm
     Properties:
@@ -106,6 +119,7 @@ Resources:
       - {"Fn::GetAtt": [WebServerScaleDownPolicy, AlarmUrl]}
       matching_metadata: {'metadata.user_metadata.groupname': {Ref: 'WebServerGroup'}}
       comparison_operator: lt
+
   ElasticLoadBalancer:
     Type: AWS::ElasticLoadBalancing::LoadBalancer
     Properties:
@@ -115,6 +129,7 @@ Resources:
         Protocol: HTTP}
       HealthCheck: {Target: 'HTTP:80/', HealthyThreshold: '3',
         UnhealthyThreshold: '5', Interval: '30', Timeout: '5'}
+
   LaunchConfig:
     Type: AWS::AutoScaling::LaunchConfiguration
     Metadata:
@@ -158,7 +173,7 @@ Resources:
               httpd: {enabled: 'true', ensureRunning: 'true'}
     Properties:
       # a fedora image with heat-cfntools installed
-      ImageId: b7833395-2ab9-429c-bcf9-100d0e4754ed
+      ImageId: {Ref: ImageId}
       InstanceType: {Ref: InstanceType}
       KeyName: {Ref: KeyName}
       UserData:
@@ -179,6 +194,8 @@ Resources:
             sed -i "/Deny from all/d" /etc/httpd/conf.d/wordpress.conf
             sed --in-place --e s/database_name_here/wordpress/ --e s/username_here/DBUsername/ --e s/password_here/DBPassword/ /usr/share/wordpress/wp-config.php
             systemctl restart httpd.service
+
+
 Outputs:
   URL:
     Description: The URL of the website
