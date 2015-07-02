@@ -1,8 +1,10 @@
 # http://docs.openstack.org/developer/heat/template_guide/hot_spec.html#heat-template-version
 heat_template_version: 2014-10-16
 
+
 description: >
   NeCTAR Sample Template showing how to create a single Cinder volume.
+
 
 parameters:
   availability_zone:
@@ -28,6 +30,7 @@ parameters:
     description: Description of the volume
     default: A volume created by Heat
 
+
 resources:
 
   # http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Cinder::Volume
@@ -38,6 +41,7 @@ resources:
       size: { get_param:  volume_size }
       description: {get_param: volume_description }
       availability_zone: { get_param: availability_zone }
+
 
 outputs:
 
