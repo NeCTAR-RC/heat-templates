@@ -1,0 +1,1 @@
+The heat templates in this directory adhere to the Juno HOT format.
