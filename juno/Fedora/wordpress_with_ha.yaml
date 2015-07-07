@@ -1,0 +1,297 @@
+# http://docs.openstack.org/developer/heat/template_guide/hot_spec.html#heat-template-version
+heat_template_version: 2013-05-23
+
+description: >
+  This template creates a sigle instance running wordpress, and a monitor that will kill and start a new instance if
+  it finds that the running instance is not being responsive enough.
+  Note that it uses a deprecated resource type (HARestarter).
+
+
+parameters:
+
+ # First off, the parameters that affect the environment
+  key_name:
+    description: Name of an existing KeyPair to enable SSH access to the instances
+    type: string
+
+  instance_type:
+    description: The NeCTAR flavour the webserver is to run on
+    type: string
+    default: m2.xsmall
+    constraints:
+      - allowed_values: [m2.xsmall, m2.small]
+        description:
+          Must be a valid NeCTAR flavour with 10G drive, limited to the smaller ones available
+
+  image_id:
+     description: A NeCTAR fedora image
+     type: string
+     default: d3bae233-a0cd-4533-a710-d7aa9de0a4b7
+
+  # Then the installation specific parameters
+  db_name:
+    default: wordpress
+    description: The WordPress database name
+    type: string
+    constraints:
+      - length: { min: 6, max: 16}
+        description: The database name must be between 6 to 16 characters in length.
+      - allowed_pattern: '[a-zA-Z][a-zA-Z0-9]*'
+        description: Must begin with a letter and contain only alphanumeric characters.
+        
+  db_username:
+    description: The WordPress database admin account username
+    default: bestAdminEver
+    type: string
+    constraints:
+      - length: { min: 6, max: 16}
+        description: The user name must be between 6 to 16 characters in length.
+      - allowed_pattern: '[a-zA-Z][a-zA-Z0-9]*'
+        description: Must begin with a letter and contain only alphanumeric characters.
+
+  hup_poll_interval:
+    default: '1'
+    type: string
+    description: Interval for cfn-hup
+
+
+resources:
+
+  # http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::RandomString
+  database_password:
+    type: OS::Heat::RandomString
+
+  # http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::RandomString
+  database_root_password:
+    type: OS::Heat::RandomString
+
+  # http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::IAM::User
+  cfn_user:
+    type: AWS::IAM::User
+
+  # http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::IAM::AccessKey
+  web_server_access_key:
+    type: AWS::IAM::AccessKey
+    properties:
+      UserName: { get_resource:  cfn_user }
+
+  # Deprecated!
+  # http://docs.openstack.org/hot-reference/content/OS__Heat__HARestarter.html
+  web_server_restart_policy:
+    type: OS::Heat::HARestarter
+    properties:
+      InstanceId: { get_resource: wiki_database }
+
+  # http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::CloudWatch::Alarm
+  http_failure_alarm:
+    type: AWS::CloudWatch::Alarm
+    properties:
+      AlarmDescription: Restart the wiki_database if httpd fails > 3 times in 10 minutes
+      MetricName: ServiceFailure
+      Namespace: system/linux
+      Statistic: SampleCount
+      Period: '300'
+      EvaluationPeriods: '1'
+      Threshold: '2'
+      AlarmActions:
+      - { get_attr: [web_server_restart_policy, AlarmUrl] }
+      ComparisonOperator: GreaterThanThreshold
+
+  # http://docs.openstack.org/developer/heat/template_guide/cfn.html#
+  wiki_database:
+    type: AWS::EC2::Instance
+    metadata:
+      # See http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-init.html
+      AWS::CloudFormation::Init:
+        config:
+          files:
+            /etc/cfn/cfn-credentials:
+              content:
+                str_replace:
+                  template: |
+                    AWSAccessKeyId=WebAccessKey
+                    AWSSecretKey=WebSecretKey
+                  params:
+                    WebAccessKey: { get_resource: web_server_access_key }
+                    WebSecretKey: { get_attr: [ web_server_access_key, SecretAccessKey ] }
+              mode: '000400'
+              owner: root
+              group: root
+            /etc/cfn/cfn-hup.conf:
+              content:
+                str_replace:
+                  template: |
+                    [main]
+                    stack=StackName
+                    credential-file=/etc/cfn/cfn-credentials
+                    region=Not_Implented
+                    interval=Interval
+                params:
+                  StackName: { get_param: 'OS::stack_name' }
+                  Interval: { get_param: hup_poll_interval }
+              mode: '000400'
+              owner: root
+              group: root
+            /etc/cfn/notify-on-httpd-restarted:
+              content: |
+                #!/bin/sh
+                /opt/aws/bin/cfn-push-stats --service-failure
+              mode: '000700'
+              owner: root
+              group: root
+            /tmp/cfn-hup-crontab.txt:
+              content: |
+                MAIL=""
+                * * * * * /opt/aws/bin/cfn-hup -f
+              mode: '000600'
+              owner: root
+              group: root
+            /tmp/setup.mysql:
+              content:
+                str_replace:
+                  template: |
+                    CREATE DATABASE DBName;
+                    GRANT ALL PRIVILEGES ON DBName .* TO 'DBUsername'@'localhost' IDENTIFIED BY 'DBPassword';
+                    FLUSH PRIVILEGES;
+                    EXIT
+                  params:
+                    DBName: { get_param: db_name }
+                    DBPassword: {get_param: db_password}
+                    DBUsername: {get_param: db_username}
+              mode: '000644'
+              owner: root
+              group: root
+            /etc/cfn/hooks.conf:
+              content: |
+                [cfn-http-restarted]
+                triggers=service.restarted
+                path=Resources.wiki_database.Metadata
+                action=/etc/cfn/notify-on-httpd-restarted
+                runas=root
+              mode: '000400'
+              owner: root
+              group: root
+          packages:
+            yum:
+              cronie: []
+              mysql: []
+              mysql-server: []
+              httpd: []
+              wordpress: []
+          services:
+            systemd:
+              mysqld: {enabled: 'true', ensureRunning: 'true'}
+              httpd: {enabled: 'true', ensureRunning: 'true'}
+              crond: {enabled: 'true', ensureRunning: 'true'}
+    properties:
+      ImageId: { get_param: image_id }
+      InstanceType: { get_param:  instance_type }
+      KeyName: { get_param:  key_name }
+      UserData:
+        Fn::Base64:
+          Fn::Join:
+          - ''
+          - - '#!/bin/bash -v
+
+              '
+            - '# Helper function
+
+              '
+            - 'function error_exit
+
+              '
+            - '{
+
+              '
+            - '  /opt/aws/bin/cfn-signal -e 1 -r "$1" '''
+            -  { get_resource: wait_handle}
+            - '''
+
+              '
+            - '  exit 1
+
+              '
+            - '}
+
+              '
+            - '/opt/aws/bin/cfn-init -s '
+            - { get_param: 'OS::stack_name' }
+            - ' -r wiki_database '
+            - ' --access-key '
+            - { get_resource: web_server_access_key }
+            - ' --secret-key '
+            - { get_attr: [web_server_access_key, SecretAccessKey] }
+            - ' --region '
+            - Not_Implented
+            - ' || error_exit ''Failed to run cfn-init''
+
+              '
+            - '# Setup MySQL root password and create a user
+
+              '
+            - mysqladmin -u root password '
+            - { get_attr: [database_root_password, value ]}
+            - ''' || error_exit ''Failed to initialize root password''
+
+              '
+            - mysql -u root --password='
+            - { get_attr: [database_password, value] }
+            - ''' < /tmp/setup.mysql || error_exit ''Failed to create database.''
+
+              '
+            - 'sed -i "/Deny from All/d" /etc/httpd/conf.d/wordpress.conf
+
+              '
+            - 'sed -i "s/Require local/Require all granted/" /etc/httpd/conf.d/wordpress.conf
+
+              '
+            - sed --in-place --e s/database_name_here/
+            - { get_param: db_name }
+            - / --e s/username_here/
+            - { get_param: db_username }
+            - / --e s/password_here/
+            - { get_attr: [database_password, value ]}
+            - '/ /usr/share/wordpress/wp-config.php
+
+              '
+            - 'systemctl restart httpd.service
+
+              '
+            - '# install cfn-hup crontab
+
+              '
+            - 'crontab /tmp/cfn-hup-crontab.txt
+
+              '
+            - '# All is well so signal success
+
+              '
+            - /opt/aws/bin/cfn-signal -e 0 -r "Wiki server setup complete" '
+            - { get_resource: wait_handle }
+            - '''
+
+              '
+
+  # http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::CloudFormation::WaitConditionHandle
+  wait_handle:
+    type: 'AWS::CloudFormation::WaitConditionHandle'
+
+  # http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::CloudFormation::WaitCondition
+  wait_condition:
+    type: AWS::CloudFormation::WaitCondition
+    depends_on: wiki_database
+    properties:
+      Handle: { get_resource: wait_handle }
+      Count: '1'
+      Timeout: '600'
+
+
+outputs:
+
+  url:
+    description: The URL of the website
+    value:
+      str_replace:
+        template: http://IpAddress/wordpress
+        params:
+          IpAddress: { get_attr: [wiki_database, PublicIp] }
