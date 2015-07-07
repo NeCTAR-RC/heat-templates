@@ -161,10 +161,10 @@ resources:
               content:
                 str_replace:
                   template: |
-                    AWSAccessKeyId=WebServerKeys
+                    AWSAccessKeyId=WebAccessKey
                     AWSSecretKey=WebSecretKey
                   params:
-                    WebServerKeys: { get_resource: web_server_access_key }
+                    WebAccessKey: { get_resource: web_server_access_key }
                     WebSecretKey: { get_attr: [ web_server_access_key, SecretAccessKey ] }
               mode: '000400'
               owner: root
