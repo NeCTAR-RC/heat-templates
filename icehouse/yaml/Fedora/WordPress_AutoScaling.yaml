@@ -1,13 +1,13 @@
 HeatTemplateFormatVersion: '2012-12-12'
 # This template now works, but the load balancer seems broken :(
+# This template has suddenly falled over with ssl errors :(
 
 Description: 'NeCTAR Sample Template:
-  WordPress is web software you can use to create a beautiful website or blog.
   This template installs an autoscaling WordPress deployment using a local MySQL database
   to store the data.
   It is a customization for the NeCTAR environment of the template named AutoScalingCeilometer.yaml
   in the OpenStack heat template repository.
-  It will not work for general NeCTAR users - you have to be an Administrator to run it.'
+
 
 Parameters:
 
@@ -19,8 +19,8 @@ Parameters:
   InstanceType:
     Description: The NeCTAR flavour the webserver is to run on
     Type: String
-    Default: m2.tiny
-    ConstraintDescription: must be a valid NeCTAR flavour.
+    Default: m2.xsmall
+    ConstraintDescription: must be a valid NeCTAR flavour with a 10 Gig drive.
 
   ImageId:
      Description: A fedora image
@@ -30,7 +30,6 @@ Parameters:
   # Then the installation specific parameters
   DBUsername:
     Default: admin
-    NoEcho: 'true'
     Description: The WordPress database admin account username
     Type: String
     MinLength: '1'
