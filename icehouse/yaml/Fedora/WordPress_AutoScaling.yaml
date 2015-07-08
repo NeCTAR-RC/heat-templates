@@ -2,7 +2,9 @@ HeatTemplateFormatVersion: '2012-12-12'
 # This template now works, but the load balancer seems broken :(
 # This template has suddenly falled over with ssl errors :(
 
-Description: 'NeCTAR Sample Template:
+
+Description: >
+  NeCTAR Sample Template:
   This template installs an autoscaling WordPress deployment using a local MySQL database
   to store the data.
   It is a customization for the NeCTAR environment of the template named AutoScalingCeilometer.yaml
