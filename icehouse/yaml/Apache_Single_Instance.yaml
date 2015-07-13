@@ -1,0 +1,127 @@
+# Icehouse Release
+heat_template_version: 2013-05-23
+
+description: 'Install Apache on a single Ubuntu instance. '
+
+parameters:
+
+  key_name:
+    type: string
+    label: Key Name
+    description: Name of an existing KeyPair to enable SSH access to the instances. 
+    
+  image_id:
+    type: string
+    label: Image ID
+    description: Image to be used for compute instance
+    default: ubuntu-12.04
+    constraints:
+      - allowed_values: [ ubuntu-12.04, ubuntu-12.10, ubuntu-13.10 ]
+        description: Value must be one of ubuntu-12.04, ubuntu-12.10, ubuntu-13.10.
+    
+  instance_type:
+    type: string
+    label: Instance Type
+    description: Type of instance (flavor) to be used. 
+    default: m1.small
+    constraints:
+      - allowed_values: [ m1.small, m1.medium, m1.large, m1.xlarge ]
+        description: Value must be one of m1.small, m1.medium, m1.large or m1.xlarge.
+    
+  availability_zone:
+    type: string
+    label: Availability Zone
+    description: Physical location of the server. 
+    default: NCI
+    constraints:
+      - allowed_values: [ monash, melbourne, QRIScloud, NCI, intersect, pawsey, sa, tasmania ]
+        description: Value must be one of monash, melbourne, QRIScloud, NCI, intersect, pawsey, sa, tasmania.
+    
+  db_port:
+    type: number
+    label: Database port
+    description: Database port. 
+    default: 5432
+
+resources:
+
+# Doesn't work since NeCTAR is not running Neutron
+#    web_secgroup:
+#        type: OS::Neutron::SecurityGroup
+#        properties:
+#            rules:
+#                - protocol: tcp
+#                  remote_ip_prefix: 0.0.0.0/0
+#                  port_range_min: 80
+#                  port_range_max: 80
+#                - protocol: tcp
+#                  remote_ip_prefix: 0.0.0.0/0
+#                  port_range_min: 443
+#                  port_range_max: 443
+
+# Doesn't work since NeCTAR is not running Neutron
+#    instance_port:
+#        type: OS::Neutron::Port
+#        properties:
+#            network: public
+#            security_groups:
+#                - default
+#                - { get_resource: web_secgroup }
+#            fixed_ips:
+#               - subnet_id: public-subnet
+#
+    
+    # Use this when we do not have Neutron networking.
+    # http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::EC2::SecurityGroup
+    web_security_group:
+        type: AWS::EC2::SecurityGroup
+        properties:
+            GroupDescription: Web server access rules.
+            SecurityGroupIngress:
+                - {IpProtocol: icmp, FromPort: '-1', ToPort: '-1', CidrIp : 0.0.0.0/0}
+                - {IpProtocol: tcp, FromPort: '22', ToPort: '22', CidrIp: 0.0.0.0/0}
+                - {IpProtocol: tcp, FromPort: '80', ToPort: '80', CidrIp: 0.0.0.0/0}
+                - {IpProtocol: tcp, FromPort: '443', ToPort: '443', CidrIp: 0.0.0.0/0}
+    
+    apache_server:
+        type: OS::Nova::Server
+        properties:
+            admin_pass: 753!m
+            key_name: { get_param: key_name }
+            image: 
+                "Fn::Select":
+                    - { get_param: image_id }
+                    -     
+                        "ubuntu-12.04": "c395c528-fb43-4066-9536-cf5c5efe806d"
+                        "ubuntu-14.10": "fc48b5bb-e67d-4e39-b9ba-b6725c8b0c88"
+            flavor: { get_param: instance_type }
+            availability_zone: {get_param: availability_zone}
+            security_groups:
+                - { get_resource: web_security_group }
+            user_data_format: RAW
+            user_data:
+                str_replace:
+                  template: |
+                    #!/bin/bash
+                    echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+                    echo "Begin: run user_data bash script. "
+                    echo "Database port: DB_PORT"
+                    apt-get update
+                    apt-get -y upgrade
+                    apt-get -y install apache2
+                    echo "127.0.0.1  `hostname`" >> /etc/hosts
+                    /etc/init.d/apache2 restart
+                    echo "End: run user_data bash script. "
+                    echo "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
+                  params:
+                    DB_PORT: { get_param: db_port }
+      
+outputs:
+    instance_ip:
+        description: The IP address of the deployed instance
+        value: { get_attr: [apache_server, first_address] }
+    website_url:
+        description: URL for Apache server
+        value: 
+            list_join: ['', ['http://', get_attr: [apache_server, first_address]]]
+        
