@@ -14,7 +14,7 @@ parameters:
     type: string
     label: Image ID
     description: Image to be used for compute instance
-    default: ubuntu-12.04
+    default: ubuntu-14.10
     constraints:
       - allowed_values: [ ubuntu-12.04, ubuntu-14.04, ubuntu-14.10 ]
         description: Value must be one of ubuntu-12.04, ubuntu-14.04, ubuntu-14.10
@@ -86,7 +86,6 @@ resources:
     apache_server:
         type: OS::Nova::Server
         properties:
-            admin_pass: 753!m
             key_name: { get_param: key_name }
             image: 
                 "Fn::Select":
