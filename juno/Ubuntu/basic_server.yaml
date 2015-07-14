@@ -43,8 +43,10 @@ resources:
                         ubuntu-14.10: "fc48b5bb-e67d-4e39-b9ba-b6725c8b0c88"
             flavor: { get_param: instance_type }
             image_update_policy: REPLACE
+            user_data_format: RAW
+
     
 outputs:
     instance_ip:
-        description: The IP address of the deployed instance. Remember to ssh in as the ec2-user!
+        description: The IP address of the deployed instance.
         value: { get_attr: [basic_server, first_address] }
