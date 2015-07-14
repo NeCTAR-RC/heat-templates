@@ -16,8 +16,8 @@ parameters:
     description: Image to be used for compute instance
     default: ubuntu-12.04
     constraints:
-      - allowed_values: [ ubuntu-12.04, ubuntu-12.10, ubuntu-13.10 ]
-        description: Value must be one of ubuntu-12.04, ubuntu-12.10, ubuntu-13.10.
+      - allowed_values: [ ubuntu-12.04, ubuntu-14.04, ubuntu-14.10 ]
+        description: Value must be one of ubuntu-12.04, ubuntu-14.04, ubuntu-14.10
     
   instance_type:
     type: string
@@ -92,8 +92,9 @@ resources:
                 "Fn::Select":
                     - { get_param: image_id }
                     -     
-                        "ubuntu-12.04": "c395c528-fb43-4066-9536-cf5c5efe806d"
-                        "ubuntu-14.10": "fc48b5bb-e67d-4e39-b9ba-b6725c8b0c88"
+                        ubuntu-12.04: "c395c528-fb43-4066-9536-cf5c5efe806d"
+                        ubuntu-14.04: "eeedf697-5a41-4d91-a478-01bb21e32cbe"
+                        ubuntu-14.10: "fc48b5bb-e67d-4e39-b9ba-b6725c8b0c88"
             flavor: { get_param: instance_type }
             availability_zone: {get_param: availability_zone}
             security_groups:
