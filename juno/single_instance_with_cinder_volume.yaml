@@ -52,6 +52,7 @@ parameters:
 resources:
 
   nova_instance:
+    # http://docs.openstack.org/hot-reference/content/OS__Nova__Server.html
     type: OS::Nova::Server
     properties:
       availability_zone: { get_param: availability_zone }
@@ -61,12 +62,14 @@ resources:
       user_data_format: RAW   # if on ubuntu will turn user from ec2-user to ubuntu !
 
   cinder_volume:
+    # http://docs.openstack.org/hot-reference/content/OS__Cinder__Volume.html
     type: OS::Cinder::Volume
     properties:
       size: { get_param: volume_size }
       availability_zone: { get_param: availability_zone }
 
   volume_attachment:
+    # http://docs.openstack.org/hot-reference/content/OS__Cinder__VolumeAttachment.html
     type: OS::Cinder::VolumeAttachment
     properties:
       volume_id: { get_resource: cinder_volume }
