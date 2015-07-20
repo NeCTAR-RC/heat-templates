@@ -20,6 +20,7 @@ resources:
         Web-Index: "index.html"
         Web-Error: "error.html"
 
+
 outputs:
 
   index_url:
