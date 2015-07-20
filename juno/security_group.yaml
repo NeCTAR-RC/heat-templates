@@ -1,0 +1,36 @@
+# http://docs.openstack.org/developer/heat/template_guide/hot_spec.html#heat-template-version
+heat_template_version: 2014-10-16
+
+
+description: >
+  NeCTAR Sample Template showing how to create just a security group.
+  Of interest is that the created security group will still be usable in the project,
+  even if this stack is suspended.
+  And if in use by an image, you won't be able to successfully delete this security group until the image
+  is terminated...
+
+resources:
+  # Creating a security group is possible: but it does eat into the number of groups that you are limited to (10)
+  new_security_group:
+    # The following line, if uncommented, will leave the security group behind when the stack is deleted.
+    # DeletionPolicy: "Retain"
+    # http://docs.openstack.org/hot-reference/content/AWS__EC2__SecurityGroup.html
+    type: "AWS::EC2::SecurityGroup"
+    properties:
+      GroupDescription: "Enable HTTP access via port 80 plus SSH access"
+      SecurityGroupIngress:
+        -
+          IpProtocol: "icmp"
+          FromPort: "-1"
+          ToPort: "-1"
+          CidrIp: "0.0.0.0/0"
+        -
+          IpProtocol: "tcp"
+          FromPort: "80"
+          ToPort: "80"
+          CidrIp: "0.0.0.0/0"
+        -
+          IpProtocol: "tcp"
+          FromPort: "22"
+          ToPort: "22"
+          CidrIp: "0.0.0.0/0"
