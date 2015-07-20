@@ -1,0 +1,36 @@
+# http://docs.openstack.org/developer/heat/template_guide/hot_spec.html#heat-template-version
+heat_template_version: 2014-10-16
+
+description: >
+  A template to show Swift in action using the Amazon s3 resource type.
+  Note if you upload the file named index.html into the resultant container, making sure to preservie its
+  complete name, ('index.html'), the output url given by this template will return it.
+  However, if you forget to delete index.html from the container before you delete the stack,
+  the stack will not delete, reporting an error.
+  The take away is that you have to make sure that the container is empty before you delete the stack.
+
+resources:
+  s3_site:
+    # http://docs.openstack.org/hot-reference/content/AWS__S3__Bucket.html
+    type: AWS::S3::Bucket
+    deletion_policy: Delete
+    properties:
+      AccessControl: PublicRead
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: error.html
+
+
+outputs:
+
+  index_url:
+    description: "URL for index page hosted on S3 :"
+    value:
+      str_replace:
+        template: the_url/index.html
+        params:
+          the_url: { get_attr: [ s3_site, WebsiteURL ] }
+
+  domain_name:
+    description: "Domain of Swift host: "
+    value: { get_attr: [s3_site, DomainName] }
