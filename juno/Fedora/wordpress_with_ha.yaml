@@ -97,7 +97,7 @@ resources:
       - { get_attr: [web_server_restart_policy, AlarmUrl] }
       ComparisonOperator: GreaterThanThreshold
 
-  # http://docs.openstack.org/developer/heat/template_guide/cfn.html#
+  # http://docs.openstack.org/developer/heat/template_guide/cfn.html# AWS::EC2::Instance
   wiki_database:
     type: AWS::EC2::Instance
     metadata:
@@ -124,7 +124,7 @@ resources:
                     [main]
                     stack=StackName
                     credential-file=/etc/cfn/cfn-credentials
-                    region=Not_Implented
+                    region=ap-southeast-1
                     interval=Interval
                 params:
                   StackName: { get_param: 'OS::stack_name' }
@@ -222,7 +222,7 @@ resources:
             - ' --secret-key '
             - { get_attr: [web_server_access_key, SecretAccessKey] }
             - ' --region '
-            - Not_Implented
+            - ap-southeast-1
             - ' || error_exit ''Failed to run cfn-init''
 
               '
