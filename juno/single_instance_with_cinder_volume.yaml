@@ -29,7 +29,7 @@ parameters:
   image_id:
     type: string
     description: ID of the image to use for the instance to be created
-    default: 'fc48b5bb-e67d-4e39-b9ba-b6725c8b0c88'
+    default: fc48b5bb-e67d-4e39-b9ba-b6725c8b0c88
 
   availability_zone:
     type: string
