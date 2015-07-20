@@ -17,8 +17,8 @@ resources:
     properties:
       X-Container-Read: ".r:*"
       X-Container-Meta:
-        Web-Index: "index.html"
-        Web-Error: "error.html"
+        Web-Index: index.html
+        Web-Error: error.html
 
 
 outputs:
