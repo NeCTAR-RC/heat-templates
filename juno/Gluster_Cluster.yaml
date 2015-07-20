@@ -1,0 +1,269 @@
+# Juno Release
+heat_template_version: 2014-10-16
+
+description: "Template to create a small Gluster cluster using the transient storage of the VM's.
+              Although we ask for an availability zone it is resolutely ignored by the heat instance
+              group resource. So it makes the location of this cluster a little bit hit and miss. Which
+              means that it might not be as performant as desired. :("
+
+parameters:
+
+    key_name:
+        type: string
+        label: Key Name
+        description: "Name of an existing Nectar KeyPair (enables SSH access to the instances)"
+        default: "richard_on_nectar_v3"
+    
+    # We will limit the maximum number of instances to 10. Just because.
+    instance_count:
+        type: number
+        label: Instance Count
+        description: "The number of instances to create. "
+        default: 2
+        constraints:
+            - range: { min: 1, max: 10 }
+              description: "Value must be between 1 and 10. "
+    
+    instance_type:
+        type: string
+        label: Instance Type
+        description: Type of instance (flavor) to be used. 
+        # You'd really want something like m1.xlarge, to get the larger sized transient storage.
+        # but for development, this will do...
+        default: "m1.small"
+        constraints:
+            - allowed_values: [ m1.small, m1.medium, m1.large, m1.xlarge ]
+              description: Value must be one of m1.small, m1.medium, m1.large or m1.xlarge.
+    
+    availability_zone:
+        type: string
+        label: Availability Zone
+        description: Physical location of the server. 
+        default: NCI
+        constraints:
+            - allowed_values: [ monash, melbourne, QRIScloud, NCI, intersect, pawsey, sa, tasmania ]
+              description: Value must be one of monash, melbourne, QRIScloud, NCI, intersect, pawsey, sa, tasmania.
+    
+    image_id:
+        type: string
+        label: Virtual Machine Image
+        description: Base virtual machine image to be used to build compute instance.
+        default: ubuntu-12.04
+        constraints:
+            - allowed_values: [ ubuntu-12.04, ubuntu-14.04, ubuntu-14.10 ]
+              description: Value must be one of ubuntu-12.04, ubuntu-14.04, ubuntu-14.10.
+
+resources:
+
+    cluster_security_group:
+        type: "AWS::EC2::SecurityGroup"
+        properties:
+            GroupDescription: "Enable access between the machines in the Gluster cluster."
+            SecurityGroupIngress:
+            
+                -   # Testing
+                    IpProtocol: "icmp"
+                    FromPort: "-1"
+                    ToPort: "-1"
+                    CidrIp: "0.0.0.0/0"
+                    
+                -   # Admin access
+                    IpProtocol: "tcp"
+                    FromPort: "22"
+                    ToPort: "22"
+                    CidrIp: "0.0.0.0/0"
+                    
+                -   # Portmapper
+                    IpProtocol: "tcp"
+                    FromPort: "111"
+                    ToPort: "111"
+                    CidrIp: "0.0.0.0/0"
+                    
+                -   # Portmapper
+                    IpProtocol: "udp"
+                    FromPort: "111"
+                    ToPort: "111"
+                    CidrIp: "0.0.0.0/0"
+                    
+                -   # Gluster daemon and management
+                    IpProtocol: "tcp"
+                    FromPort: "24007"
+                    ToPort: "24008"
+                    CidrIp: "0.0.0.0/0"
+                    
+                -   # Gluster version < 3.4 = number of nodes (10), adjust as necessary.
+                    IpProtocol: "tcp"
+                    FromPort: "24009"
+                    ToPort: "24018"
+                    CidrIp: "0.0.0.0/0"
+                    
+                -   # Gluster version >= 3.4 = number of nodes (10), adjust as necessary
+                    IpProtocol: "tcp"
+                    FromPort: "49152"
+                    ToPort: "49161"
+                    CidrIp: "0.0.0.0/0"
+                    
+                -    # NFS
+                    IpProtocol: "tcp"
+                    FromPort: "38465"
+                    ToPort: "38467"
+                    CidrIp: "0.0.0.0/0"
+
+    server_group:
+        # http://docs.openstack.org/hot-reference/content/OS__Heat__ResourceGroup.html
+        type: "OS::Heat::ResourceGroup"
+        properties:
+            count: { get_param: instance_count }
+            resource_def:
+                type: OS::Nova::Server
+                properties:
+                    name: Gluster slave %index%
+                    key_name: { get_param: key_name }
+                    image: 
+                        "Fn::Select":
+                            - { get_param: image_id }
+                            -     
+                                "ubuntu-12.04": "c395c528-fb43-4066-9536-cf5c5efe806d"
+                                "ubuntu-14.04": "eeedf697-5a41-4d91-a478-01bb21e32cbe"
+                                "ubuntu-14.10": "fc48b5bb-e67d-4e39-b9ba-b6725c8b0c88"
+                    flavor: { get_param: instance_type }
+                    availability_zone: {get_param: availability_zone}
+                    security_groups: [ { get_resource: cluster_security_group } ]
+                    user_data_format: RAW
+                    user_data:
+                        str_replace:
+                            template: |
+                                #!/bin/bash
+                                echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+                                echo "Begin: run user_data bash script. "
+                                ############# Begin: common
+                                apt-get -y install PROPERTIES_PACKAGE
+                                add-apt-repository ppa:gluster/glusterfs-3.6
+                                apt-get update
+                                apt-get -y upgrade
+                                apt-get install -y glusterfs-server xfsprogs
+                                # get rid of annoying message
+                                echo "127.0.0.1     `hostname`" | tee -a /etc/hosts
+                                # unmount the automatically mounted storage, reformat it and then remount it.
+                                umount /mnt
+                                mkfs.xfs -f -i size=512 /dev/vdb
+                                mkdir -p MOUNT_DIRECTORY
+                                mount /dev/vdb MOUNT_DIRECTORY
+                                mkdir -p MOUNT_DIRECTORY/brick
+                                cp /etc/fstab /etc/fstab.bak
+                                sed -i 's/^\/dev\/vdb.*$//' /etc/fstab
+                                echo "/dev/vdb        MOUNT_DIRECTORY    xfs    defaults 0       0"  >> /etc/fstab
+                                echo "Mount directory: MOUNT_DIRECTORY"
+                                echo "End: run user_data bash script. "
+                                ############# End: common
+                                echo "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
+                            params:
+                                MOUNT_DIRECTORY: "/data/glusterfs/volume1"       
+                                PROPERTIES_PACKAGE: 
+                                    "Fn::Select":
+                                        - { get_param: image_id }
+                                        -     
+                                            "ubuntu-12.04": "python-software-properties"
+                                            "ubuntu-14.04": "software-properties-common"
+                                            "ubuntu-14.10": "software-properties-common"
+
+    master_server:
+        type: OS::Nova::Server
+        properties:
+            name: Gluster master
+            key_name: { get_param: key_name }
+            image: 
+                "Fn::Select":
+                    - { get_param: image_id }
+                    -     
+                        "ubuntu-12.04": "c395c528-fb43-4066-9536-cf5c5efe806d"
+                        "ubuntu-14.04": "eeedf697-5a41-4d91-a478-01bb21e32cbe"
+                        "ubuntu-14.10": "fc48b5bb-e67d-4e39-b9ba-b6725c8b0c88"
+            flavor: { get_param: instance_type }
+            availability_zone: {get_param: availability_zone}
+            security_groups: [ { get_resource: cluster_security_group } ]
+            user_data_format: RAW
+            user_data:
+                str_replace:
+                    template: |
+                        #!/bin/bash
+                        echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+                        echo "Begin: run user_data bash script. "
+                        ############# Begin: common
+                        apt-get -y install PROPERTIES_PACKAGE
+                        add-apt-repository ppa:gluster/glusterfs-3.6
+                        apt-get update
+                        apt-get -y upgrade
+                        apt-get install -y glusterfs-server xfsprogs
+                        # get rid of annoying message shown when running sudo command
+                        echo "127.0.0.1     `hostname`" | tee -a /etc/hosts
+                        # unmount the automatically mounted storage, reformat it and then remount it.
+                        umount /mnt
+                        mkfs.xfs -f -i size=512 /dev/vdb
+                        mkdir -p MOUNT_DIRECTORY
+                        mount /dev/vdb MOUNT_DIRECTORY
+                        mkdir -p MOUNT_DIRECTORY/brick
+                        cp /etc/fstab /etc/fstab.bak
+                        sed -i 's/^\/dev\/vdb.*$//' /etc/fstab
+                        echo "/dev/vdb        MOUNT_DIRECTORY    xfs    defaults 0       0"  >> /etc/fstab
+                        echo "Mount directory: MOUNT_DIRECTORY"
+                        ############# End: common
+                        # Create the slaves
+                        INSTANCES="INSTANCE_LIST"
+                        echo "Instance IP addresses: $INSTANCES"
+                        IFS=","
+                        MAX_PROBES=20
+                        PROBES=1
+                        for INSTANCE in $INSTANCES; do
+                            # assumption is that gluster peer probe will return error code if peer isn't set up yet.
+                            until gluster peer probe $INSTANCE; do 
+                                echo "Probe failed : $?"; 
+                                if ["$PROBES" -gt "$MAX_PROBES" ]; then
+                                    echo "Slave probe timeout. "
+                                    exit 1
+                                fi
+                                PROBES=$((PROBES+1))
+                                sleep 5; 
+                            done
+                            # now wait for a while as we only want to proceed once the peer is up to speed...
+                            sleep 20
+                        done
+                        COMMAND_TAIL=""
+                        COUNTER=0
+                        for INSTANCE in $INSTANCES; do
+                            COMMAND_TAIL+=" $INSTANCE:MOUNT_DIRECTORY/brick"
+                            COUNTER=$((COUNTER+1))
+                        done
+                        # Add this machine's IP address to the volume create command.
+                        IP=`ifconfig  | grep 'inet addr:'| grep -v '127.0.0.1' | cut -d: -f2 | awk '{ print $1}'`;
+                        COMMAND_TAIL+=" $IP:MOUNT_DIRECTORY/brick"
+                        COUNTER=$((COUNTER+1))
+                        echo "Gluster replication: $COUNTER"
+                        COMMAND="gluster volume create gvl-volume replica $COUNTER transport tcp $COMMAND_TAIL force"
+                        echo "Create using: $COMMAND"
+                        eval $COMMAND
+                        gluster volume start gvl-volume
+                        echo "End: run user_data bash script. "
+                        echo "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
+                    params:
+                        MOUNT_DIRECTORY: "/data/glusterfs/volume1"
+                        INSTANCE_LIST: {list_join: [',', { get_attr: [server_group, first_address] }]}
+                        PROPERTIES_PACKAGE: 
+                            "Fn::Select":
+                                - { get_param: image_id }
+                                -     
+                                    "ubuntu-12.04": "python-software-properties"
+                                    "ubuntu-14.04": "software-properties-common"
+                                    "ubuntu-14.10": "software-properties-common"
+
+outputs:
+    "Master attributes": 
+        value: { get_attr: [master_server, first_address] }
+        description: "The IP number for the Gluster master server, so the admin can manage the master..."
+    "Slave attributes": 
+        value: {list_join: [',', { get_attr: [server_group, first_address] }]}
+        description: "The IP numbers for the Gluster slave servers, so the admin can manage the slaves..."
+    "End user instructions":
+        description: "The command executed by the end user to mount the Gluster file system on some other machine..."
+        value: 
+            list_join: ['', ['sudo mkdir -p /mnt/glusterVol && sudo mount -t glusterfs ', get_attr: [master_server, first_address], ':gvl-volume /mnt/glusterVol']]
