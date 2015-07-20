@@ -1,0 +1,70 @@
+# http://docs.openstack.org/developer/heat/template_guide/hot_spec.html#heat-template-version
+heat_template_version: 2014-10-16
+
+
+description: >
+  NeCTAR Sample Template showing how to create a Nova instance,
+  and attach an existing a Cinder volume to the instance.
+
+
+parameters:
+
+  key_name:
+    type: string
+    description:
+      Name of an existing key pair to enable SSH access to the instance.
+
+  instance_type:
+    type: string
+    description: Type of the instance to be created.
+    default: m2.tiny
+    constraints:
+      - allowed_values: [m2.tiny, m2.xsmall, m2.small]
+        description:
+          Must be a valid NeCTAR flavour, limited to the smaller ones available
+
+  image_id:
+    type: string
+    description: ID of the image to use for the instance to be created (should work with all NeCTAR images)
+    default: fc48b5bb-e67d-4e39-b9ba-b6725c8b0c88
+
+  availability_zone:
+    type: string
+    description: The NeCTAR zone in which the VM is to run (must be in the same zone as the cinder storage)
+    default: melbourne-qh2
+    constraints:
+      - allowed_values: [melbourne-qh2, melbourne-np, monash, qld]
+        description:
+          The NeCTAR zones to launch the instance.
+
+  cinder_volume_id:
+    type: string
+    description: The ID of the pre-existing Cinder volume
+
+
+resources:
+
+  nova_instance:
+    # http://docs.openstack.org/hot-reference/content/OS__Nova__Server.html
+    type: OS::Nova::Server
+    properties:
+      availability_zone: { get_param: availability_zone }
+      image: { get_param: image_id}
+      flavor: { get_param: instance_type }
+      key_name: { get_param: key_name }
+      user_data_format: RAW   # if on ubuntu will turn user from ec2-user to ubuntu !
+
+  volume_attachment:
+    # http://docs.openstack.org/hot-reference/content/OS__Cinder__VolumeAttachment.html
+    type: OS::Cinder::VolumeAttachment
+    properties:
+      volume_id: { get_param: cinder_volume_id }
+      instance_uuid: { get_resource: nova_instance }
+      mountpoint: /dev/vdc
+
+
+outputs:
+
+  instance_ip:
+    description: Public IP address of the newly created Nova instance.
+    value: { get_attr: [nova_instance, first_address] }
