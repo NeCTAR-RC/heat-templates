@@ -4,7 +4,7 @@ heat_template_version: 2014-10-16
 description: >
   A template to show Swift in action.
   Note if you upload the file named index.html into the resultant container, making sure to preservie its
-  complete name, (\'index.html\'), the output url given by this template will return it.
+  complete name, ('index.html'), the output url given by this template will return it.
   However, if you forget to delete index.html from the container before you delete the stack,
   the stack will not delete, reporting an error.
   The take away is that you have to make sure that the container is empty before you delete the stack.
