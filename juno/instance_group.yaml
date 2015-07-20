@@ -1,0 +1,60 @@
+# http://docs.openstack.org/developer/heat/template_guide/hot_spec.html#heat-template-version
+heat_template_version: 2014-10-16
+
+
+description: >
+  A template that will create 1 -3 instances of a server, dependent on user choice.
+
+
+parameters:
+
+  key_name:
+    description: The name of an existing Nectar KeyPair (enables SSH access to the instances)
+    type: string
+
+  instance_type:
+    description: The NeCTAR flavor the webserver is to run on
+    type: string
+    default: m1.small
+    constraints:
+      - allowed_values: [ m1.small, m1.medium, m1.large, m1.xlarge ]
+        description: Value must be one of m1.small, m1.medium, m1.large or m1.xlarge.
+
+  image_id:
+    type: string
+    description: ID of the image to use for the instance to be created
+    default: fc48b5bb-e67d-4e39-b9ba-b6725c8b0c88
+
+  # We will limit the maximum number of instances to 2. Just because.
+  instance_count:
+    type: number
+    default: 2
+    constraints:
+      - range: { min: 1, max: 3 }
+        description: "The number of instances to create"
+
+
+resources:
+
+  server_config:
+    # http://docs.openstack.org/hot-reference/content/AWS__AutoScaling__LaunchConfiguration.html
+    type: "AWS::AutoScaling::LaunchConfiguration"
+    properties:
+      ImageId: { get_param: image_id }
+      InstanceType: { get_param: instance_type }
+      KeyName: { get_param: key_name }
+      UserData: >
+        #!/bin/bash -v
+
+  server_group:
+    # http://docs.openstack.org/hot-reference/content/OS__Heat__InstanceGroup.html
+    type: "OS::Heat::InstanceGroup"
+    properties:
+      LaunchConfigurationName: { get_resource: server_config}
+      Size: { get_param: instance_count }
+      AvailabilityZones: [ although, required, this, is, ignored ]
+      # We will add some metadata to each instance created.
+      Tags:
+        -
+          Key: "First"
+          Value: "Verity"
