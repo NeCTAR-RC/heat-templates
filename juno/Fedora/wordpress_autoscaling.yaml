@@ -24,9 +24,9 @@ parameters:
   instance_type:
     description: The NeCTAR flavour the webserver is to run on
     type: string
-    default: m2.xsmall
+    default: m1.small
     constraints:
-      - allowed_values: [m2.xsmall, m2.small]
+      - allowed_values: [m2.xsmall, m2.small, m1.small]
         description:
           Must be a valid NeCTAR flavour with 10G drive, limited to the smaller ones available
 
@@ -34,6 +34,16 @@ parameters:
      description: Must be a fedora image with cfn-tools installed on it
      default: d3bae233-a0cd-4533-a710-d7aa9de0a4b7
      type: string
+
+  db_name:
+    default: wordpress
+    description: The WordPress database name
+    type: string
+    constraints:
+      - length: { min: 6, max: 16}
+        description: The database name must be between 6 to 16 characters in length.
+      - allowed_pattern: '[a-zA-Z][a-zA-Z0-9]*'
+        description: Must begin with a letter and contain only alphanumeric characters.
 
   # Then the installation specific parameters
   db_username:
@@ -46,28 +56,16 @@ parameters:
       - allowed_pattern: '[a-zA-Z][a-zA-Z0-9]*'
         description: Must begin with a letter and contain only alphanumeric characters.
 
-  db_password:
-    description: The WordPress database admin account password
-    type: string
-    hidden: true
-    constraints:
-      - length: { min: 6, max: 41}
-        description: Passwords must be between 6 to 41 characters in length.
-      - allowed_pattern: '[a-zA-Z0-9]*'
-        description: Can only contain only alphanumeric characters.
-
-  db_root_password:
-    description: The root password for MySQL
-    type: string
-    hidden: true
-    constraints:
-      - length: { min: 6, max: 41}
-        description: Passwords must be between 6 to 41 characters in length.
-      - allowed_pattern: '[a-zA-Z0-9]*'
-        description: Can only contain only alphanumeric characters.
-
 
 resources:
+
+ # http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::RandomString
+  db_password:
+    type: OS::Heat::RandomString
+
+  # http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::RandomString
+  db_root_password:
+    type: OS::Heat::RandomString
 
   # http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::IAM::User
   cfn_user:
@@ -178,7 +176,7 @@ resources:
                     FLUSH PRIVILEGES;
                     EXIT
                   params:
-                    DBPassword: {get_param: db_password}
+                    DBPassword: {get_resource: db_password}
                     DBUsername: {get_param: db_username}
               mode: '000644'
               owner: root
@@ -201,21 +199,24 @@ resources:
         str_replace:
           template: |
             #!/bin/bash -v
-            echo "StackName LaunchConfig Region" > /root/args.txt
-            /opt/aws/bin/cfn-init -s StackName -r launch_config --region Region
+            echo "stack_name wordpress_site stack_region" > /root/args.txt
+            /opt/aws/bin/cfn-init -s stack_name -r wordpress_site --region stack_region
             # Setup MySQL root password and create a user
-            mysqladmin -u root password DBRootPassword
-            mysql -u root --password=DBRootPassword < /tmp/setup.mysql
+            mysqladmin -u root password db_root_password
+            mysql -u root --password=db_root_password < /tmp/setup.mysql
             sed -i "/Deny from All/d" /etc/httpd/conf.d/wordpress.conf
-            sed -i "/Deny from all/d" /etc/httpd/conf.d/wordpress.conf
-            sed --in-place --e s/database_name_here/wordpress/ --e s/username_here/DBUsername/ --e s/password_here/DBPassword/ /usr/share/wordpress/wp-config.php
+            sed -i "s/Require local/Require all granted/" /etc/httpd/conf.d/wordpress.conf
+            sed -i s/database_name_here/db_name/ /etc/wordpress/wp-config.php
+            sed -i s/username_here/db_user/ /etc/wordpress/wp-config.php
+            sed -i s/password_here/db_password/ /etc/wordpress/wp-config.php
             systemctl restart httpd.service
           params:
-            StackName:  { get_param: 'OS::stack_name' }
-            Region: ap-southeast-1
-            DBRootPassword: { get_param: db_root_password }
-            DBPassword: { get_param: db_password }
-            DBUsername: { get_param: db_username }
+            stack_name:  { get_param: 'OS::stack_name' }
+            stack_region: ap-southeast-1
+            db_root_password: { get_resource: db_root_password }
+            db_password: { get_resource: db_password }
+            db_user: { get_param: db_username }
+            db_name: { get_param: db_name }
 
 
 outputs:
@@ -224,6 +225,6 @@ outputs:
     description: The URL of the website
     value:
       str_replace:
-        template: http://IpAddress/wordpress
+        template: http://ip_address/wordpress
         params:
-          IpAddress: { get_attr: [elastic_load_blancer, DNSName]}
+          ip_address: { get_attr: [elastic_load_blancer, DNSName]}
