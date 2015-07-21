@@ -1,17 +1,12 @@
 # http://docs.openstack.org/developer/heat/template_guide/hot_spec.html#heat-template-version
 heat_template_version: 2014-10-16
-# This template now works, but the load balancer seems broken :(
-# Some useful reading
-#     https://www.digitalocean.com/community/tutorials/an-introduction-to-haproxy-and-load-balancing-concepts
-#     http://dasunhegoda.com/apache-load-balacing-haproxy/659/
-#     http://www.tecmint.com/install-haproxy-load-balancer-in-linux/
-#     http://www.severalnines.com/blog/scaling-wordpress-and-mysql-multiple-servers-performance
+
 
 description: >
   NeCTAR sample template. This template installs an autoscaling WordPress deployment using a local MySQL database
   to store the data.
-  It is a customization for the NeCTAR environment of the template named AutoScalingCeilometer.yaml
-  in the OpenStack heat template repository.
+  Each wordpress instance that is spun up is an independent instance of wordpress that shares nothing with the
+  other wordpress instances. So its simply a demonstrator of how to use the scaling features offered by heat.
 
 
 parameters:
@@ -112,30 +107,30 @@ resources:
   cpu_alarm_high:
     type: OS::Ceilometer::Alarm
     properties:
-      description: Scale-up if the average CPU > 50% for 1 minute
+      description: Scale-up if the average CPU > 50% for 11 minutes
       meter_name: cpu_util
       statistic: avg
-      period: '60'
+      period: '660'
       evaluation_periods: '1'
       threshold: '50'
       alarm_actions:
       - { get_attr: [web_server_scale_up_policy, AlarmUrl] }
-      matching_metadata: { 'metadata.user_metadata.groupname': { get_resource: 'web_server_group' } }
+      matching_metadata: { 'metadata.user_metadata.AutoScalingGroupName': { get_resource: 'web_server_group' } }
       comparison_operator: gt
 
   # http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Ceilometer::Alarm
   cpu_alarm_low:
     type: OS::Ceilometer::Alarm
     properties:
-      description: Scale-down if the average CPU < 15% for 1 minute
+      description: Scale-down if the average CPU < 15% for 11 minutes
       meter_name: cpu_util
       statistic: avg
-      period: '60'
+      period: '660'
       evaluation_periods: '1'
       threshold: '15'
       alarm_actions:
       - { get_attr: [web_server_scale_down_policy, AlarmUrl] }
-      matching_metadata: { 'metadata.user_metadata.groupname': { get_resource: 'web_server_group' } }
+      matching_metadata: { 'metadata.user_metadata.AutoScalingGroupName': { get_resource: 'web_server_group' } }
       comparison_operator: lt
 
   # http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::ElasticLoadBalancing::LoadBalancer
