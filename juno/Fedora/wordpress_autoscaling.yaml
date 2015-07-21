@@ -166,13 +166,14 @@ resources:
               content:
                 str_replace:
                   template: |
-                    CREATE DATABASE wordpress;
-                    GRANT ALL PRIVILEGES ON wordpress .* TO 'DBUsername'@'localhost' IDENTIFIED BY 'DBPassword';
+                    CREATE DATABASE db_name;
+                    GRANT ALL PRIVILEGES ON db_name .* TO 'db_username'@'localhost' IDENTIFIED BY 'db_password';
                     FLUSH PRIVILEGES;
                     EXIT
                   params:
-                    DBPassword: {get_resource: db_password}
-                    DBUsername: {get_param: db_username}
+                    db_password: {get_resource: db_password}
+                    db_username: {get_param: db_username}
+                    db_name: { get_param: db_name }
               mode: '000644'
               owner: root
               group: root
