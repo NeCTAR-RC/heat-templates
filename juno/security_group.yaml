@@ -17,7 +17,7 @@ resources:
     # http://docs.openstack.org/hot-reference/content/AWS__EC2__SecurityGroup.html
     type: "AWS::EC2::SecurityGroup"
     properties:
-      GroupDescription: "Enable HTTP access via port 80 plus SSH access"
+      GroupDescription: "Enable HTTP access via port 80 plus SSH and ICMP access"
       SecurityGroupIngress:
         -
           IpProtocol: "icmp"
