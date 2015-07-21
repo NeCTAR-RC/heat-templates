@@ -1,5 +1,5 @@
 # http://docs.openstack.org/developer/heat/template_guide/hot_spec.html#heat-template-version
-heat_template_version: 2013-05-23
+heat_template_version: 2014-10-16
 
 description: >
   This template creates a sigle instance running wordpress, and a monitor that will kill and start a new instance if
@@ -58,11 +58,11 @@ parameters:
 resources:
 
   # http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::RandomString
-  database_password:
+  db_password:
     type: OS::Heat::RandomString
 
   # http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::RandomString
-  database_root_password:
+  db_root_password:
     type: OS::Heat::RandomString
 
   # http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::IAM::User
@@ -73,32 +73,32 @@ resources:
   web_server_access_key:
     type: AWS::IAM::AccessKey
     properties:
-      UserName: { get_resource:  cfn_user }
+      UserName: { get_resource: cfn_user }
 
   # Deprecated!
   # http://docs.openstack.org/hot-reference/content/OS__Heat__HARestarter.html
   web_server_restart_policy:
     type: OS::Heat::HARestarter
     properties:
-      InstanceId: { get_resource: wiki_database }
+      InstanceId: { get_resource: wordpress_site }
 
   # http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::CloudWatch::Alarm
   http_failure_alarm:
     type: AWS::CloudWatch::Alarm
     properties:
-      AlarmDescription: Restart the wiki_database if httpd fails > 3 times in 10 minutes
+      AlarmDescription: Restart the wordpress_site if httpd fails > 3 times in 10 minutes
       MetricName: ServiceFailure
       Namespace: system/linux
       Statistic: SampleCount
-      Period: '300'
-      EvaluationPeriods: '1'
-      Threshold: '2'
+      Period: 300
+      EvaluationPeriods: 1
+      Threshold: 2
       AlarmActions:
       - { get_attr: [web_server_restart_policy, AlarmUrl] }
       ComparisonOperator: GreaterThanThreshold
 
   # http://docs.openstack.org/developer/heat/template_guide/cfn.html# AWS::EC2::Instance
-  wiki_database:
+  wordpress_site:
     type: AWS::EC2::Instance
     metadata:
       # See http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-init.html
@@ -156,7 +156,7 @@ resources:
                     EXIT
                   params:
                     DBName: { get_param: db_name }
-                    DBPassword: {get_param: db_password}
+                    DBPassword: {get_resource: db_password}
                     DBUsername: {get_param: db_username}
               mode: '000644'
               owner: root
@@ -165,7 +165,7 @@ resources:
               content: |
                 [cfn-http-restarted]
                 triggers=service.restarted
-                path=Resources.wiki_database.Metadata
+                path=Resources.wordpress_site.Metadata
                 action=/etc/cfn/notify-on-httpd-restarted
                 runas=root
               mode: '000400'
@@ -180,97 +180,47 @@ resources:
               wordpress: []
           services:
             systemd:
-              mysqld: {enabled: 'true', ensureRunning: 'true'}
-              httpd: {enabled: 'true', ensureRunning: 'true'}
-              crond: {enabled: 'true', ensureRunning: 'true'}
+              mysqld: {enabled: true, ensureRunning: true}
+              httpd: {enabled: true, ensureRunning: true}
+              crond: {enabled: true, ensureRunning: true}
     properties:
       ImageId: { get_param: image_id }
       InstanceType: { get_param:  instance_type }
       KeyName: { get_param:  key_name }
       UserData:
-        Fn::Base64:
-          Fn::Join:
-          - ''
-          - - '#!/bin/bash -v
-
-              '
-            - '# Helper function
-
-              '
-            - 'function error_exit
-
-              '
-            - '{
-
-              '
-            - '  /opt/aws/bin/cfn-signal -e 1 -r "$1" '''
-            -  { get_resource: wait_handle}
-            - '''
-
-              '
-            - '  exit 1
-
-              '
-            - '}
-
-              '
-            - '/opt/aws/bin/cfn-init -s '
-            - { get_param: 'OS::stack_name' }
-            - ' -r wiki_database '
-            - ' --access-key '
-            - { get_resource: web_server_access_key }
-            - ' --secret-key '
-            - { get_attr: [web_server_access_key, SecretAccessKey] }
-            - ' --region '
-            - ap-southeast-1
-            - ' || error_exit ''Failed to run cfn-init''
-
-              '
-            - '# Setup MySQL root password and create a user
-
-              '
-            - mysqladmin -u root password '
-            - { get_attr: [database_root_password, value ]}
-            - ''' || error_exit ''Failed to initialize root password''
-
-              '
-            - mysql -u root --password='
-            - { get_attr: [database_password, value] }
-            - ''' < /tmp/setup.mysql || error_exit ''Failed to create database.''
-
-              '
-            - 'sed -i "/Deny from All/d" /etc/httpd/conf.d/wordpress.conf
-
-              '
-            - 'sed -i "s/Require local/Require all granted/" /etc/httpd/conf.d/wordpress.conf
-
-              '
-            - sed --in-place --e s/database_name_here/
-            - { get_param: db_name }
-            - / --e s/username_here/
-            - { get_param: db_username }
-            - / --e s/password_here/
-            - { get_attr: [database_password, value ]}
-            - '/ /usr/share/wordpress/wp-config.php
-
-              '
-            - 'systemctl restart httpd.service
-
-              '
-            - '# install cfn-hup crontab
-
-              '
-            - 'crontab /tmp/cfn-hup-crontab.txt
-
-              '
-            - '# All is well so signal success
-
-              '
-            - /opt/aws/bin/cfn-signal -e 0 -r "Wiki server setup complete" '
-            - { get_resource: wait_handle }
-            - '''
-
-              '
+        str_replace:
+          template: |
+            #!/bin/bash -v
+            # Helper function
+            function error_exit
+            {
+              /opt/aws/bin/cfn-signal -e 1 -r "$1" 'wait_handle'
+              exit 1
+            }
+            echo "stack_name wordpress_site stack_region" > /root/args.txt
+            /opt/aws/bin/cfn-init -s stack_name -r wordpress_site --access-key access_key --secret-key secret_key --region stack_region || error_exit 'Failed to run cfn-init'
+            # Setup MySQL root password and create a user
+            mysqladmin -u root password db_root_password  || error_exit 'Failed to initialize root password'
+            mysql -u root --password=db_root_password < /tmp/setup.mysql  || error_exit 'Failed to create database.'
+            sed -i "/Deny from All/d" /etc/httpd/conf.d/wordpress.conf
+            sed -i "s/Require local/Require all granted/" /etc/httpd/conf.d/wordpress.conf
+            sed -i s/database_name_here/db_name/ /etc/wordpress/wp-config.php
+            sed -i s/username_here/db_user/ /etc/wordpress/wp-config.php
+            sed -i s/password_here/db_password/ /etc/wordpress/wp-config.php
+            systemctl restart httpd.service
+            # install cfn-hup crontab
+            crontab /tmp/cfn-hup-crontab.txt
+            /opt/aws/bin/cfn-signal -e 0 -r "Wiki server setup complete" 'wait_handle'
+          params:
+            stack_name:  { get_param: 'OS::stack_name' }
+            stack_region: ap-southeast-1
+            access_key: { get_resource: web_server_access_key }
+            secret_key: { get_attr: [web_server_access_key, SecretAccessKey] }
+            wait_handle: { get_resource: wait_handle }
+            db_root_password: { get_resource: db_root_password }
+            db_password: { get_resource: db_password }
+            db_user: { get_param: db_username }
+            db_name: { get_param: db_name }
 
   # http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::CloudFormation::WaitConditionHandle
   wait_handle:
@@ -279,11 +229,11 @@ resources:
   # http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::CloudFormation::WaitCondition
   wait_condition:
     type: AWS::CloudFormation::WaitCondition
-    depends_on: wiki_database
+    depends_on: wordpress_site
     properties:
       Handle: { get_resource: wait_handle }
-      Count: '1'
-      Timeout: '600'
+      Count: 1
+      Timeout: 600
 
 
 outputs:
@@ -292,6 +242,6 @@ outputs:
     description: The URL of the website
     value:
       str_replace:
-        template: http://IpAddress/wordpress
+        template: http://ip_address/wordpress
         params:
-          IpAddress: { get_attr: [wiki_database, PublicIp] }
+          ip_address: { get_attr: [wordpress_site, PublicIp] }
