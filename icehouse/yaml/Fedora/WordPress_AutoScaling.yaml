@@ -21,7 +21,7 @@ Parameters:
   InstanceType:
     Description: The NeCTAR flavour the webserver is to run on
     Type: String
-    Default: m2.xsmall
+    Default: m1.small
     ConstraintDescription: must be a valid NeCTAR flavour with a 10 Gig drive.
 
   ImageId:
@@ -39,17 +39,16 @@ Parameters:
     AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*'
     ConstraintDescription: 'must begin with a letter and contain only alphanumeric characters.'
 
-  DBPassword: {Default: admin, NoEcho: 'true',
-    Description: The WordPress database admin account password, Type: String,
-    MinLength: '1', MaxLength: '41', AllowedPattern: '[a-zA-Z0-9]*',
-    ConstraintDescription: must contain only alphanumeric characters.}
-
-  DBRootPassword: {Default: admin, NoEcho: 'true',
-    Description: Root password for MySQL, Type: String,
-    MinLength: '1', MaxLength: '41', AllowedPattern: '[a-zA-Z0-9]*',
-    ConstraintDescription: must contain only alphanumeric characters.}
 
 Resources:
+
+  # http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::RandomString
+  DBPassword:
+    Type: OS::Heat::RandomString
+
+  # http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::RandomString
+  DBRootPassword:
+    Type: OS::Heat::RandomString
 
   CfnUser: {Type: 'AWS::IAM::User'}
 
@@ -83,35 +82,35 @@ Resources:
     Properties:
       AdjustmentType: ChangeInCapacity
       AutoScalingGroupName: {Ref: WebServerGroup}
-      Cooldown: '60'
+      Cooldown: '660'
       ScalingAdjustment: '-1'
 
   CPUAlarmHigh:
     Type: OS::Ceilometer::Alarm
     Properties:
-      description: Scale-up if the average CPU > 50% for 1 minute
+      description: Scale-up if the average CPU > 50% for 11 minute
       meter_name: cpu_util
       statistic: avg
-      period: '60'
+      period: '660'
       evaluation_periods: '1'
       threshold: '50'
       alarm_actions:
       - {"Fn::GetAtt": [WebServerScaleUpPolicy, AlarmUrl]}
-      matching_metadata: {'metadata.user_metadata.groupname': {Ref: 'WebServerGroup'}}
+      matching_metadata: {'metadata.user_metadata.AutoScalingGroupName': {Ref: 'WebServerGroup'}}
       comparison_operator: gt
 
   CPUAlarmLow:
     Type: OS::Ceilometer::Alarm
     Properties:
-      description: Scale-down if the average CPU < 15% for 1 minute
+      description: Scale-down if the average CPU < 15% for 11 minute
       meter_name: cpu_util
       statistic: avg
-      period: '60'
+      period: '660'
       evaluation_periods: '1'
       threshold: '15'
       alarm_actions:
       - {"Fn::GetAtt": [WebServerScaleDownPolicy, AlarmUrl]}
-      matching_metadata: {'metadata.user_metadata.groupname': {Ref: 'WebServerGroup'}}
+      matching_metadata: {'metadata.user_metadata.AutoScalingGroupName': {Ref: 'WebServerGroup'}}
       comparison_operator: lt
 
   ElasticLoadBalancer:
@@ -180,12 +179,17 @@ Resources:
             DBUsername: {Ref: DBUsername}
           - |
             #!/bin/bash -v
+            echo "AWS::StackName LaunchConfig AWS::Region" > /root/args.txt
             /opt/aws/bin/cfn-init -s AWS::StackName -r LaunchConfig --region AWS::Region
             # Setup MySQL root password and create a user
             mysqladmin -u root password DBRootPassword
             mysql -u root --password=DBRootPassword < /tmp/setup.mysql
             sed -i "/Deny from All/d" /etc/httpd/conf.d/wordpress.conf
+            sed -i "s/Require local/Require all granted/" /etc/httpd/conf.d/wordpress.conf
             sed -i "/Deny from all/d" /etc/httpd/conf.d/wordpress.conf
+            sed -i s/database_name_here/wordpress/ /etc/wordpress/wp-config.php
+            sed -i s/username_here/DBUsername/ /etc/wordpress/wp-config.php
+            sed -i s/password_here/DBPassword/ /etc/wordpress/wp-config.php
             sed --in-place --e s/database_name_here/wordpress/ --e s/username_here/DBUsername/ --e s/password_here/DBPassword/ /usr/share/wordpress/wp-config.php
             systemctl restart httpd.service
 
