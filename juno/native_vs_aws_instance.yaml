@@ -41,7 +41,7 @@ resources:
 outputs:
 
   aws_instance_ip:
-    description: Public IP address of the newly created AWS style instance.
+    description: SSH command for the newly created AWS style instance (user name depends on instance type).
     value:
       str_replace:
         template: ssh ec2_user@host -i ~/.ssh/key.pem
@@ -50,7 +50,7 @@ outputs:
           key: { get_param: key_name }
 
   nova_instance_ip:
-    description: Public IP address of the newly created HOT style instance.
+    description: SSH command for the newly created HOT style instance (user name depends on instance type).
     value:
       str_replace:
         template: ssh ec2_user@host -i ~/.ssh/key.pem
