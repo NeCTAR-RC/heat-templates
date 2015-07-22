@@ -35,16 +35,16 @@ parameters:
 resources:
 
   web_security_group:
-      # Use this when we do not have Neutron networking.
-      # http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::EC2::SecurityGroup
-      type: AWS::EC2::SecurityGroup
-      properties:
-          GroupDescription: Web server access rules.
-          SecurityGroupIngress:
-              - { IpProtocol: icmp, FromPort: '-1', ToPort: '-1', CidrIp : 0.0.0.0/0 }
-              - { IpProtocol: tcp, FromPort: '22', ToPort: '22', CidrIp: 0.0.0.0/0 }
-              - { IpProtocol: tcp, FromPort: '80', ToPort: '80', CidrIp: 0.0.0.0/0 }
-              - { IpProtocol: tcp, FromPort: '443', ToPort: '443', CidrIp: 0.0.0.0/0 }
+    # Use this when we do not have Neutron networking.
+    # http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::EC2::SecurityGroup
+    type: AWS::EC2::SecurityGroup
+    properties:
+      GroupDescription: Web server access rules.
+      SecurityGroupIngress:
+        - { IpProtocol: icmp, FromPort: '-1', ToPort: '-1', CidrIp : 0.0.0.0/0 }
+        - { IpProtocol: tcp, FromPort: '22', ToPort: '22', CidrIp: 0.0.0.0/0 }
+        - { IpProtocol: tcp, FromPort: '80', ToPort: '80', CidrIp: 0.0.0.0/0 }
+        - { IpProtocol: tcp, FromPort: '443', ToPort: '443', CidrIp: 0.0.0.0/0 }
 
   apache_server:
     # http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::EC2::Instance
@@ -78,10 +78,21 @@ resources:
 
 
 outputs:
-    instance_ip:
-        description: The IP address of the deployed instance
-        value: { get_attr: [apache_server, PublicIp] }
-    website_url:
-        description: URL for Apache server
-        value:
-            list_join: ['', ['http://', get_attr: [apache_server, PublicIp]]]
+
+  instance_ip:
+    description: The IP address of the deployed instance
+    value: { get_attr: [apache_server, PublicIp] }
+
+  website_url:
+    description: URL for Apache server
+    value:
+      list_join: ['', ['http://', get_attr: [apache_server, PublicIp]]]
+
+  ssh_command:
+    description: SSH command for the newly created instance (assuming your key is in ~./ssh/).
+    value:
+      str_replace:
+        template: ssh ec2-user@host -i ~/.ssh/key.pem
+        params:
+          host: { get_attr: [apache_server, PublicIp] }
+          key: { get_param: key_name }
