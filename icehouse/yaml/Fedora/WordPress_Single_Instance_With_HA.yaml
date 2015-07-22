@@ -1,4 +1,5 @@
 HeatTemplateFormatVersion: '2012-12-12'
+# https://kimizhang.wordpress.com/2013/08/08/openstack-heat-try-out/#Heatfunctionintroductionanduserguide-4.DeployawordpressblogserverwithHAprotectionenabled
 
 Description: >
   AWS CloudFormation Sample Template WordPress_Multi_Instance
@@ -24,21 +25,11 @@ Parameters:
     ConstraintDescription: must begin with a letter and contain only
       alphanumeric characters.}
 
-  DBUsername: {Default: admin, NoEcho: 'true',
+  DBUsername: {Default: admin,
     Description: The WordPress database admin account username, Type: String,
     MinLength: '1', MaxLength: '16', AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*',
     ConstraintDescription: must begin with a letter and contain only
       alphanumeric characters.}
-
-  DBPassword: {Default: admin, NoEcho: 'true',
-    Description: The WordPress database admin account password, Type: String,
-    MinLength: '1', MaxLength: '41', AllowedPattern: '[a-zA-Z0-9]*',
-    ConstraintDescription: must contain only alphanumeric characters.}
-
-  DBRootPassword: {Default: admin, NoEcho: 'true',
-    Description: Root password for MySQL, Type: String,
-    MinLength: '1', MaxLength: '41', AllowedPattern: '[a-zA-Z0-9]*',
-    ConstraintDescription: must contain only alphanumeric characters.}
 
   ImageId:
     Type: String
@@ -58,6 +49,14 @@ Resources:
     Properties:
       UserName: {Ref: CfnUser}
 
+  # http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::RandomString
+  DBPassword:
+    Type: OS::Heat::RandomString
+
+  # http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::RandomString
+  DBRootPassword:
+    Type: OS::Heat::RandomString
+
   WebServerRestartPolicy:
     Type: OS::Heat::HARestarter
     Properties:
@@ -66,8 +65,7 @@ Resources:
   HttpFailureAlarm:
     Type: AWS::CloudWatch::Alarm
     Properties:
-      AlarmDescription: Restart the WikiDatabase if httpd fails >
-        3 times in 10 minutes
+      AlarmDescription: Restart the WikiDatabase if httpd fails >  3 times in 10 minutes
       MetricName: ServiceFailure
       Namespace: system/linux
       Statistic: SampleCount
@@ -137,7 +135,9 @@ Resources:
                 - - '#!/bin/sh
 
                     '
-                  - '/opt/aws/bin/cfn-push-stats --service-failure
+                  - '/opt/aws/bin/cfn-push-stats  --watch '
+                  - { Ref : "HttpFailureAlarm" }
+                  - ' --service-failure
 
                     '
               mode: '000700'
@@ -208,8 +208,8 @@ Resources:
           packages:
             yum:
               cronie: []
-              mysql: []
-              mysql-server: []
+              mariadb: []
+              mariadb-server: []
               httpd: []
               wordpress: []
           services:
@@ -327,4 +327,8 @@ Outputs:
         - Fn::GetAtt: [WikiDatabase, PublicIp]
         - /wordpress
     Description: URL for Wordpress wiki
+
+  AlarmUrl:
+    Value: Fn::GetAtt: [WebServerRestartPolicy, AlarmUrl]
+    Description: URL for Alarm (can only be called by the CfnUser)
 
