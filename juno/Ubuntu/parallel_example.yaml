@@ -24,7 +24,7 @@ parameters:
 
   image_id:
     description: The id of the Ubuntu image to use (This default NeCTAR image id may have been retired)
-    default: eeedf697-5a41-4d91-a478-01bb21e32cbe
+    default: fc48b5bb-e67d-4e39-b9ba-b6725c8b0c88
     type: string
 
 
