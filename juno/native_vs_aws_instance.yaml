@@ -44,7 +44,7 @@ outputs:
     description: SSH command for the newly created AWS style instance (user name depends on instance type).
     value:
       str_replace:
-        template: ssh ec2_user@host -i ~/.ssh/key.pem
+        template: ssh ec2-user@host -i ~/.ssh/key.pem
         params:
           host: { get_attr: [aws_instance, PublicIp] }
           key: { get_param: key_name }
@@ -53,7 +53,7 @@ outputs:
     description: SSH command for the newly created HOT style instance (user name depends on instance type).
     value:
       str_replace:
-        template: ssh ec2_user@host -i ~/.ssh/key.pem
+        template: ssh ec2-user@host -i ~/.ssh/key.pem
         params:
           host: { get_attr: [nova_instance, first_address] }
           key: { get_param: key_name }
