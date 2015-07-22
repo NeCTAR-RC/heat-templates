@@ -74,6 +74,8 @@ resources:
       # note the call to cfn-init which causes the AWS::CloudFomration::Init to be actioned
       UserData: |
         #!/bin/bash -v
+        apt-get update
+        apt-get -y upgrade
         /usr/local/bin/cfn-init
 
 
