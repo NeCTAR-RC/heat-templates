@@ -1,7 +1,7 @@
 # Juno Release
 heat_template_version: 2014-10-16
 
-description: 'Install a basic Ubuntu server. '
+description: Install a basic Ubuntu server.
 
 parameters:
 
