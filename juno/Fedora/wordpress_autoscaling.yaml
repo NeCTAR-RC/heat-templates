@@ -54,7 +54,7 @@ parameters:
 
 resources:
 
- # http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::RandomString
+  # http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::RandomString
   db_password:
     type: OS::Heat::RandomString
 
