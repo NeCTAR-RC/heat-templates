@@ -25,9 +25,9 @@ parameters:
   image_name:
     type: string
     description: Name of the image to use for the instance to be created.
-    default: 'Ubuntu 14.04'
+    default: 'Ubuntu 14.10'
     constraints:
-      - allowed_values: [ 'Ubuntu 14.04', 'Ubuntu 12.04' ]
+      - allowed_values: [ 'Ubuntu 14.04', 'Ubuntu 12.04', 'Ubuntu 14.10' ]
         description:
           Must be a valid NeCTAR image name, limited to the LTS Ubuntu releases
 
@@ -67,6 +67,7 @@ resources:
           -
             'Ubuntu 12.04': c395c528-fb43-4066-9536-cf5c5efe806d
             'Ubuntu 14.04': eeedf697-5a41-4d91-a478-01bb21e32cbe
+            'Ubuntu 14.10': fc48b5bb-e67d-4e39-b9ba-b6725c8b0c88
       InstanceType: { get_param: instance_type }
       KeyName: { get_param: key_name }
       SecurityGroups: [ get_resource: web_security_group ]
