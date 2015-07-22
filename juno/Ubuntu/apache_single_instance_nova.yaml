@@ -1,7 +1,9 @@
 # Juno Release
 heat_template_version: 2014-10-16
 
+
 description: 'Install Apache on a single Ubuntu instance using the  OS::Nova::Server resource type. '
+
 
 parameters:
 
@@ -42,6 +44,7 @@ parameters:
     label: Database port
     description: Database port. 
     default: 5432
+
 
 resources:
 
@@ -117,9 +120,11 @@ resources:
                     DB_PORT: { get_param: db_port }
       
 outputs:
+
     instance_ip:
         description: The IP address of the deployed instance
         value: { get_attr: [apache_server, first_address] }
+
     website_url:
         description: URL for Apache server
         value: 
