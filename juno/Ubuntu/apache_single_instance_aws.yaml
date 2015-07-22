@@ -76,7 +76,7 @@ resources:
         #!/bin/bash -v
         apt-get update
         apt-get -y upgrade
-        /usr/local/bin/cfn-init
+        /usr/bin/cfn-init
 
 
 outputs:
