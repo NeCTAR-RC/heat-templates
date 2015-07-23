@@ -1,0 +1,145 @@
+# http://docs.openstack.org/developer/heat/template_guide/hot_spec.html#heat-template-version
+heat_template_version: 2014-10-16
+
+
+description: >
+    A very artificial template: it creates three unrelated Ubuntu instances running Apache.
+    As they are unrelated in any way, apart from the security group, Heat will try to create them in parallel
+    once the security group has been created.
+
+
+parameters:
+
+  key_name:
+    description: Name of an existing KeyPair to enable SSH access to the instances
+    type: string
+
+  instance_type:
+    description: The NeCTAR flavour the webserver is to run on
+    type: string
+    default: m2.xsmall
+    constraints:
+      - allowed_values: [m2.xsmall, m2.small]
+        description:
+          Must be a valid NeCTAR flavour with 10G drive, limited to the smaller ones available
+
+  image_id:
+    description: The id of the Ubuntu image to use (This default NeCTAR image id may have been retired)
+    default: fc48b5bb-e67d-4e39-b9ba-b6725c8b0c88
+    type: string
+
+
+resources:
+
+  web_security_group:
+    # Use this when we do not have Neutron networking.
+    # http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::EC2::SecurityGroup
+    type: AWS::EC2::SecurityGroup
+    properties:
+      GroupDescription: Web server access rules.
+      SecurityGroupIngress:
+        - { IpProtocol: icmp, FromPort: '-1', ToPort: '-1', CidrIp : 0.0.0.0/0 }
+        - { IpProtocol: tcp, FromPort: '22', ToPort: '22', CidrIp: 0.0.0.0/0 }
+        - { IpProtocol: tcp, FromPort: '80', ToPort: '80', CidrIp: 0.0.0.0/0 }
+        - { IpProtocol: tcp, FromPort: '443', ToPort: '443', CidrIp: 0.0.0.0/0 }
+
+  first_apache_server:
+    type: AWS::EC2::Instance
+    metadata:
+      AWS::CloudFormation::Init:
+        config:
+          packages:
+            apt:
+              apache2: []
+          services:
+            systemd:
+              apache2: {enabled: 'true', ensureRunning: 'true'}
+    properties:
+      ImageId: { get_param: image_id }
+      InstanceType: { get_param: instance_type}
+      KeyName: { get_param: key_name}
+      SecurityGroups: [ get_resource: web_security_group ]
+      # the following is written to /var/lib/cloud/data/cfn-userdata
+      # note the call to cfn-init which causes the AWS::CloudFomration::Init to be actioned
+      UserData: |
+        #!/bin/bash -v
+        apt-get update
+        apt-get -y upgrade
+        /usr/bin/cfn-init
+
+  second_apache_server:
+    type: AWS::EC2::Instance
+    depends_on: [first_apache_server]
+    metadata:
+      AWS::CloudFormation::Init:
+        config:
+          packages:
+            apt:
+              apache2: []
+          services:
+            systemd:
+              apache2: {enabled: 'true', ensureRunning: 'true'}
+    properties:
+      ImageId: { get_param: image_id }
+      InstanceType: { get_param: instance_type}
+      KeyName: { get_param: key_name}
+      SecurityGroups: [ get_resource: web_security_group ]
+      # the following is written to /var/lib/cloud/data/cfn-userdata
+      # note the call to cfn-init which causes the AWS::CloudFomration::Init to be actioned
+      UserData: |
+        #!/bin/bash -v
+        apt-get update
+        apt-get -y upgrade
+        /usr/bin/cfn-init
+
+  third_apache_server:
+    type: AWS::EC2::Instance
+    depends_on: [second_apache_server]
+    metadata:
+      AWS::CloudFormation::Init:
+        config:
+          packages:
+            apt:
+              apache2: []
+          services:
+            systemd:
+              apache2: {enabled: 'true', ensureRunning: 'true'}
+    properties:
+      ImageId: { get_param: image_id }
+      InstanceType: { get_param: instance_type}
+      KeyName: { get_param: key_name}
+      SecurityGroups: [ get_resource: web_security_group ]
+      # the following is written to /var/lib/cloud/data/cfn-userdata
+      # note the call to cfn-init which causes the AWS::CloudFomration::Init to be actioned
+      UserData: |
+        #!/bin/bash -v
+        apt-get update
+        apt-get -y upgrade
+        /usr/bin/cfn-init
+
+
+outputs:
+
+  first_url:
+    description: The URL of the first website
+    value:
+      str_replace:
+        template: http://ip_address
+        params:
+          ip_address: { get_attr: [first_apache_server, PublicIp] }
+
+  second_url:
+    description: The URL of the second website
+    value:
+      str_replace:
+        template: http://ip_address
+        params:
+          ip_address: { get_attr: [second_apache_server, PublicIp] }
+
+  third_url:
+    description: The URL of the third website
+    value:
+      str_replace:
+        template: http://ip_address
+        params:
+          ip_address: { get_attr: [third_apache_server, PublicIp] }
