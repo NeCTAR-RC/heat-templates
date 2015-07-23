@@ -82,7 +82,7 @@ resources:
             apt-get -y install python-swiftclient || error_exit 'Failed to install swiftclient.'
             apt-get -y install python-troveclient || error_exit 'Failed to install troveclient.'
             apt-get -y install python-designateclient || error_exit 'Failed to install designateclient.'
-            /opt/aws/bin/cfn-signal -e 0 -r "Wiki server setup complete" 'WaitHandle'
+            /opt/aws/bin/cfn-signal -e 0 -r "Command line tools server setup complete" 'WaitHandle'
           params:
             AuthUrl: { get_param: auth_url }
             TenantId: { get_param: tenant_id }
