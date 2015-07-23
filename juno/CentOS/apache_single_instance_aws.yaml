@@ -57,7 +57,7 @@ resources:
             yum:
               httpd: []
           services:
-            systemd:
+            sysvinit :
               httpd: {enabled: 'true', ensureRunning: 'true'}
     properties:
       ImageId:
