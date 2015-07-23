@@ -19,7 +19,7 @@ parameters:
     default: Fedora_21
     constraints:
       - allowed_values: [Fedora_20, Fedora_21 ]
-        description: Value must be one of CentOS_6, CentOS_7
+        description: Value must be one of Fedora_20 or Fedora_21
 
   instance_type:
     type: string
