@@ -4,7 +4,8 @@ heat_template_version: 2014-10-16
 
 description: >
     A very artificial template: it creates three unrelated Ubuntu instances running Apache.
-    As they are unrelated in any way, Heat will try to create them in paralled.
+    However, the depends_upon attribute has been added, so instead of trying to build them in parallel,
+    Heat will build them sequentially.
 
 
 parameters:
