@@ -88,7 +88,8 @@ resources:
       Count: 1
       # we'll give it 10 minutes
       Timeout: 600
-      
+
+
 outputs:
 
     instance_ip:
