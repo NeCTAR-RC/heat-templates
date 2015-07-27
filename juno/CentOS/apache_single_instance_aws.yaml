@@ -2,7 +2,7 @@
 heat_template_version: 2014-10-16
 
 
-description: 'Install Apache on a single CentOS instance using the  OS::Nova::Server resource type. '
+description: Install Apache on a single CentOS instance using the AWS::EC2::Instance resource type.
 
 
 parameters:
