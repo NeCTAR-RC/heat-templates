@@ -25,9 +25,9 @@ parameters:
   image_name:
     type: string
     description: Name of the image to use for the instance to be created.
-    default: 'Ubuntu 14.10'
+    default: 'Ubuntu 14.04'
     constraints:
-      - allowed_values: [ 'Ubuntu 14.04', 'Ubuntu 12.04', 'Ubuntu 14.10' ]
+      - allowed_values: [ 'Ubuntu 14.04', 'Ubuntu 15.04' ]
         description:
           Must be a valid NeCTAR image name, limited to the LTS Ubuntu releases
 
@@ -65,19 +65,35 @@ resources:
         Fn::Select:
           - { get_param: image_name }
           -
-            'Ubuntu 12.04': c395c528-fb43-4066-9536-cf5c5efe806d
-            'Ubuntu 14.04': eeedf697-5a41-4d91-a478-01bb21e32cbe
-            'Ubuntu 14.10': fc48b5bb-e67d-4e39-b9ba-b6725c8b0c88
+            'Ubuntu 14.04': 2a882d9c-3185-414c-9683-a4646b5c785e
+            'Ubuntu 15.04': fc48b5bb-e67d-4e39-b9ba-b6725c8b0c88
       InstanceType: { get_param: instance_type }
       KeyName: { get_param: key_name }
-      SecurityGroups: [ get_resource: web_security_group ]
+      SecurityGroups: [ {get_resource: web_security_group} ]
       # the following is written to /var/lib/cloud/data/cfn-userdata
       # note the call to cfn-init which causes the AWS::CloudFomration::Init to be actioned
-      UserData: |
-        #!/bin/bash -v
-        apt-get update
-        apt-get -y upgrade
-        /usr/bin/cfn-init
+      UserData:
+        str_replace:
+          template: |
+            #!/bin/bash -v
+            /usr/bin/cfn-init
+            /opt/aws/bin/cfn-signal -e 0 -r "Command line tools server setup complete" 'WaitHandle'
+          params:
+            WaitHandle: { get_resource: wait_handle }
+
+  # http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::CloudFormation::WaitConditionHandle
+  wait_handle:
+    type: 'AWS::CloudFormation::WaitConditionHandle'
+
+  # http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::CloudFormation::WaitCondition
+  wait_condition:
+    type: AWS::CloudFormation::WaitCondition
+    depends_on: apache_server
+    properties:
+      Handle: { get_resource: wait_handle }
+      Count: 1
+      # we'll give it 10 minutes
+      Timeout: 600
 
 
 outputs:
