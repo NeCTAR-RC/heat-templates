@@ -59,7 +59,7 @@ resources:
               apache2: []
           services:
             systemd:
-              apache2: {enabled: 'true', ensureRunning: 'true'}
+              apache2: { enabled: 'true', ensureRunning: 'true' }
     properties:
       ImageId:
         Fn::Select:
@@ -69,7 +69,7 @@ resources:
             'Ubuntu 15.04': fc48b5bb-e67d-4e39-b9ba-b6725c8b0c88
       InstanceType: { get_param: instance_type }
       KeyName: { get_param: key_name }
-      SecurityGroups: [ {get_resource: web_security_group} ]
+      SecurityGroups: [ { get_resource: web_security_group } ]
       # the following is written to /var/lib/cloud/data/cfn-userdata
       # note the call to cfn-init which causes the AWS::CloudFomration::Init to be actioned
       UserData:
