@@ -110,7 +110,7 @@ resources:
       description: Scale-up if the average CPU > 50% for 11 minutes
       meter_name: cpu_util
       statistic: avg
-      period: '660'
+      period: '60'
       evaluation_periods: '1'
       threshold: '50'
       alarm_actions:
@@ -125,7 +125,7 @@ resources:
       description: Scale-down if the average CPU < 15% for 11 minutes
       meter_name: cpu_util
       statistic: avg
-      period: '660'
+      period: '60'
       evaluation_periods: '1'
       threshold: '15'
       alarm_actions:
