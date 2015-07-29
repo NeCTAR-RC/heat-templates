@@ -40,13 +40,12 @@ resources:
       count: 1
       resource_def:
         type: basic_instance.yaml
+          # the get_file working here would be nice...
           # get_file: "https://raw.githubusercontent.com/NeCTAR-RC/heat-templates/master/juno/basic_instance.yaml"
         properties:
           key_name: { get_param: key_name }
           image_id: { get_param: image_id }
           instance_type: { get_param: instance_type }
-          #slave_ips: {list_join: [',', { get_attr: [slave_group, instance_networks] }]}
-          #slave_ips: "0.0.0.0"
 
 
 outputs:
@@ -70,4 +69,8 @@ outputs:
 
   instance_networks:
     description: 'A dict of assigned network addresses of the form: {“public”: [ip1, ip2...], “private”: [ip3, ip4]}'
-    value: { get_attr: [resource_group, resource.0.instance_networks] }
+    value: { get_attr: [ resource_group, resource.0.instance_networks] }
+
+  joined_networks:
+    description: How to drill down (assuming that tasmania is the availibility zone in which the instance is running)
+    value:  { list_join: [ ',', { get_attr: [ resource_group, resource.0.instance_networks, tas ] } ] }
