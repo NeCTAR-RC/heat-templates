@@ -45,5 +45,5 @@ outputs:
         value: { get_attr: [basic_server, first_address] }
 
     instance_networks:
-        description: The IP addresses of the deployed instance.
+        description: 'A dict of assigned network addresses of the form: {“public”: [ip1, ip2...], “private”: [ip3, ip4]}'
         value: { get_attr: [basic_server, networks] }
