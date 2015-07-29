@@ -66,8 +66,8 @@ outputs:
 
   instance_ip:
     description: The IP address of the deployed instance
-    value: { get_attr: [ resource_group, resource.0.first_address ] }
+    value: { get_attr: [ resource_group, resource.0.instance_ip ] }
 
   instance_networks:
     description: 'A dict of assigned network addresses of the form: {“public”: [ip1, ip2...], “private”: [ip3, ip4]}'
-    value: { get_attr: [resource_group, resource.0.networks] }
+    value: { get_attr: [resource_group, resource.0.instance_networks] }
