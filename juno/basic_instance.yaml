@@ -43,3 +43,7 @@ outputs:
     instance_ip:
         description: The IP address of the deployed instance
         value: { get_attr: [basic_server, first_address] }
+
+    instance_networks:
+        description: The IP addresses of the deployed instance.
+        value: { get_attr: [basic_server, networks] }
