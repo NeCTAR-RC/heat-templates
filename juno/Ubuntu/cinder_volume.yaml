@@ -1,0 +1,147 @@
+# Juno Release
+
+# This template supports the use case of an application launched in the
+# NeCTAR Research Cloud that needs a distributed file system that can be mounted
+# as a POSIX mount in a *nix file stem.
+
+# This configuration does not setup SSL, so client mounts
+# outside a tenancy do not use encrypted communications.
+# Remote clients are not able to mount the Gluster volume.
+# "Connection refused" issues related to NeCTAR firewall rules maybe??
+
+# This template sets up a single Gluster master node that uses Cinder block storage.
+# This template is not intended to be used standalone, its included by the glusterfs template
+# called glusterfs_on_cinder_volumes.yaml
+
+# http://docs.openstack.org/developer/heat/template_guide/hot_spec.html#heat-template-version
+heat_template_version: 2014-10-16
+
+
+description: |
+  This template simply creates an Ubuntu instance and mounts a Cinder volume onto it.
+
+
+parameters:
+
+    key_name:
+        type: string
+        label: Key Name
+        description:
+            Name of an existing key pair registered with OpenStack to enable SSH access to the instance.
+
+    image_id:
+        type: string
+        label: Virtual Machine Image
+        description: Base virtual machine image to be used to build compute instance.
+        default: ubuntu-14.04
+        constraints:
+            - allowed_values: [ ubuntu-14.04, ubuntu-15.04 ]
+              description: Value must be one of ubuntu-14.04, ubuntu-15.04.
+
+    instance_type:
+        type: string
+        description: The NeCTAR flavour the webserver is to run on
+        default: m2.xsmall
+        constraints:
+            - allowed_values: [m2.xsmall, m2.small]
+              description:
+                 Must be a valid NeCTAR flavour, limited to the smaller ones available
+
+    availability_zone:
+        type: string
+        label: Availability Zone
+        description: The NeCTAR zone in which the VM is to run (must have block storage).
+        default: melbourne-np
+        constraints:
+            - allowed_values: [ melbourne-qh2, melbourne-np, monash, qld ]
+              description: Value must be one of melbourne-qh2, melbourne-np, monash, qld.
+
+    volume_size:
+        type: number
+        label: Volume Size / GB
+        description: Size of the persistent volume to be created in Gigabytes.
+        default: 1
+        constraints:
+            - range: { min: 1, max: 1024 }
+              description: must be between 1 and 1024 Gb.
+
+
+resources:
+
+    web_security_group:
+        # Use this when we do not have Neutron networking.
+        # http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::EC2::SecurityGroup
+        type: AWS::EC2::SecurityGroup
+        properties:
+            GroupDescription: Web server access rules.
+            SecurityGroupIngress:
+                - { IpProtocol: icmp, FromPort: '-1', ToPort: '-1', CidrIp : 0.0.0.0/0 }
+                - { IpProtocol: tcp, FromPort: '22', ToPort: '22', CidrIp: 0.0.0.0/0 }
+                - { IpProtocol: tcp, FromPort: '80', ToPort: '80', CidrIp: 0.0.0.0/0 }
+                - { IpProtocol: tcp, FromPort: '443', ToPort: '443', CidrIp: 0.0.0.0/0 }
+
+    ubuntu_server:
+        type: OS::Nova::Server
+        properties:
+            name: Ubuntu Server
+            key_name: { get_param: key_name }
+            image:
+                "Fn::Select":
+                    - { get_param: image_id }
+                    -
+                        "ubuntu-14.04": "2a882d9c-3185-414c-9683-a4646b5c785e"
+                        "ubuntu-15.04": "fc48b5bb-e67d-4e39-b9ba-b6725c8b0c88"
+            flavor: { get_param: instance_type }
+            availability_zone: {get_param: availability_zone}
+            security_groups: [ { get_resource: web_security_group } ]
+            user_data_format: RAW
+            user_data:
+                str_replace:
+                    template: |
+                        #!/bin/bash
+                        echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+                        echo "Begin: run user_data bash script. "
+                        apt-get update
+                        apt-get -y upgrade
+                        # get rid of annoying message shown when running sudo command
+                        echo "127.0.0.1     `hostname`" | tee -a /etc/hosts
+                    params:
+                        #LOCAL_DEVICE: /dev/vdc
+#                       # Recommended but does not work as GUID needs to be truncated to 20 characters.
+                        LOCAL_DEVICE: {list_join: ['', ['/dev/disk/by-id/virtio-', get_resource: master_volume ]]}
+
+    # http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Cinder::Volume
+    master_volume:
+        type: OS::Cinder::Volume
+        properties:
+            name: Server Cinder storage
+            description: "Local persistent storage volume for server. "
+            size: { get_param: volume_size }
+            availability_zone: {get_param: availability_zone}
+
+    # http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Cinder::VolumeAttachment
+    master_volume_attachment:
+        type: OS::Cinder::VolumeAttachment
+        properties:
+            volume_id: { get_resource: master_volume }
+            instance_uuid: { get_resource: ubuntu_server }
+            mountpoint:
+                #/dev/vdc
+                # Recommended, but does not work as ID needs to be truncated to 20 characters.
+                list_join: [ '', ['/dev/disk/by-id/virtio-', get_resource: master_volume ] ]
+
+
+outputs:
+
+    instance_ip:
+        description: The IP address of the deployed instance
+        value: { get_attr: [ubuntu_server, first_address] }
+
+#    ssh_command:
+#        description: SSH command for the newly created instance (assuming your key is in ~./ssh/).
+#        value:
+#        str_replace:
+#            template: ssh ec2-user@host -i ~/.ssh/key.pem
+#            params:
+#                host: { get_attr: [apache_server, PublicIp] }
+#                key: { get_param: key_name }
