@@ -1,0 +1,247 @@
+# http://docs.openstack.org/developer/heat/template_guide/hot_spec.html#heat-template-version
+heat_template_version: 2014-10-16
+
+
+description: |
+  This template installs two instances: one running a WordPress deployment and the other using a local
+  MariaDb database to store the data. The MariaDb database instance used block storage.
+
+
+parameters:
+
+   # First off, the parameters that affect the environment
+  key_name:
+    type: string
+    label: Key Name
+    description: Name of an existing KeyPair to enable SSH access to the instances.
+
+  image_name:
+    type: string
+    label: Image ID
+    description: Image to be used for compute instance
+    default: Fedora_21
+    constraints:
+      - allowed_values: [Fedora_20, Fedora_21 ]
+        description: Value must be one of Fedora_20 or Fedora_21
+
+  instance_type:
+    type: string
+    description: The NeCTAR flavour the webserver is to run on
+    default: m2.xsmall
+    constraints:
+      - allowed_values: [m2.xsmall, m2.small]
+        description:
+          Must be a valid NeCTAR flavour, limited to the smaller ones available
+
+  volume_size:
+    type: number
+    label: Volume Size / GB
+    description: Size of the persistent volume to be created in Gigabytes.
+    default: 1
+    constraints:
+      - range: { min: 1, max: 1024 }
+        description: must be between 1 and 1024 Gb.
+
+  availability_zone:
+    type: string
+    label: Availability Zone
+    description: The NeCTAR zone in which the VM is to run (must have block storage).
+    default: melbourne-np
+    constraints:
+      - allowed_values: [ melbourne-qh2, melbourne-np, monash, qld ]
+        description: Value must be one of melbourne-qh2, melbourne-np, monash, qld.
+
+  # Then the installation specific parameters
+  db_name:
+    default: wordpress
+    description: The WordPress database name
+    type: string
+    constraints:
+      - length: { min: 6, max: 16}
+        description: The database name must be between 6 to 16 characters in length.
+      - allowed_pattern: '[a-zA-Z][a-zA-Z0-9]*'
+        description: Must begin with a letter and contain only alphanumeric characters.
+
+  # Then the installation specific parameters
+  db_username:
+    description: The WordPress database admin account username
+    default: bestAdminEver
+    type: string
+    constraints:
+      - length: { min: 6, max: 16}
+        description: The user name must be between 6 to 16 characters in length.
+      - allowed_pattern: '[a-zA-Z][a-zA-Z0-9]*'
+        description: Must begin with a letter and contain only alphanumeric characters.
+
+
+resources:
+
+  # http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::RandomString
+  db_password:
+    type: OS::Heat::RandomString
+
+  # http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::RandomString
+  db_root_password:
+    type: OS::Heat::RandomString
+
+  # Creating a security group is possible: but it does eat into the number of groups that you are limited to (10)
+  # When you delete the stack, the security group is deleted as well. Unless an image outside of the stack
+  # is making use of it - in which case, the stack won't delete properly.
+  database_security_group:
+    type: AWS::EC2::SecurityGroup
+    properties:
+      GroupDescription: Web server access rules.
+      SecurityGroupIngress:
+        - { IpProtocol: icmp, FromPort: '-1', ToPort: '-1', CidrIp : 0.0.0.0/0 }
+        - { IpProtocol: tcp, FromPort: '22', ToPort: '22', CidrIp: 0.0.0.0/0 }
+        - { IpProtocol: tcp, FromPort: '3306', ToPort: '3306', CidrIp: 0.0.0.0/0 }
+
+  wordpress_security_group:
+    type: AWS::EC2::SecurityGroup
+    properties:
+      GroupDescription: Web server access rules.
+      SecurityGroupIngress:
+        - { IpProtocol: icmp, FromPort: '-1', ToPort: '-1', CidrIp : 0.0.0.0/0 }
+        - { IpProtocol: tcp, FromPort: '22', ToPort: '22', CidrIp: 0.0.0.0/0 }
+        - { IpProtocol: tcp, FromPort: '80', ToPort: '80', CidrIp: 0.0.0.0/0 }
+        - { IpProtocol: tcp, FromPort: '443', ToPort: '443', CidrIp: 0.0.0.0/0 }
+
+  database_server:
+    type: AWS::EC2::Instance
+    metadata:
+      AWS::CloudFormation::Init:
+        config:
+          files:
+            /tmp/setup.mysql:
+              content:
+                str_replace:
+                  template: |
+                    CREATE DATABASE db_name;
+                    GRANT ALL PRIVILEGES ON db_name .* TO 'db_username'@'localhost' IDENTIFIED BY 'db_password';
+                    FLUSH PRIVILEGES;
+                    EXIT
+                  params:
+                    db_password: {get_resource: db_password}
+                    db_username: {get_param: db_username}
+                    db_name: { get_param: db_name }
+              mode: '000644'
+              owner: root
+              group: root
+          packages:
+            yum:
+              mariadb: []
+              mariadb-server: []
+          services:
+            systemd:
+              mariadb:
+                enabled: "true"
+                ensureRunning: "true"
+    properties:
+      ImageId:
+        Fn::Select:
+          - { get_param: image_name }
+          -
+            Fedora_20: d3bae233-a0cd-4533-a710-d7aa9de0a4b7
+            Fedora_21: db354243-aba2-4831-81c7-a155b9089291
+      InstanceType: { get_param:  instance_type }
+      KeyName: { get_param:  key_name }
+      AvailabilityZone: { get_param: availability_zone }
+      SecurityGroups: [ { get_resource: database_security_group } ]
+      UserData:
+       str_replace:
+          template: |
+            #!/bin/bash -v
+            /usr/bin/cfn-init
+            # Wait for the volume to appear
+            while [ ! -e /dev/vdc ]; do echo Waiting for volume to attach; sleep 1; done
+            parted -s /dev/vdc mklabel msdos
+            parted -s /dev/vdc mkpart primary ext3 1 1000
+            # Format the EBS volume and mount it
+            systemctl stop mysqld.service
+            sleep 1
+            mv /var/lib/mysql /var/lib/mysql.data
+            /sbin/mkfs -t ext3 /dev/vdc1
+            mkdir /var/lib/mysql
+            mount /dev/vdc1 /var/lib/mysql
+            chown mysql.mysql /var/lib/mysql
+            mv -n /var/lib/mysql.data/* /var/lib/mysql
+            systemctl start mysqld.service
+            sleep 1
+            # Setup MySQL root password and create a user
+            mysqladmin -u root password db_root_password
+            mysql -u root --password=db_root_password < /tmp/setup.mysql
+          params:
+            db_root_password: { get_resource: db_root_password }
+
+  data_volume:
+    type: "AWS::EC2::Volume"
+    properties:
+      Size: { get_param: volume_size }
+      AvailabilityZone: { get_attr: [database_server, AvailabilityZone] }
+      Tags:
+        -
+          Key: "Usage"
+          Value: "Wiki Data Volume"
+
+  worpress_server:
+    type: AWS::EC2::Instance
+    # The following forces the creation of this resource to wait until the WikiDatabas is completed.
+    depends_on: database_server
+    metadata:
+      AWS::CloudFormation::Init:
+        config:
+          packages:
+            yum:
+              httpd: []
+              wordpress: []
+          services:
+            systemd:
+              httpd:
+                enabled: "true"
+                ensureRunning: "true"
+    properties:
+      ImageId:
+        Fn::Select:
+          - { get_param: image_name }
+          -
+            Fedora_20: d3bae233-a0cd-4533-a710-d7aa9de0a4b7
+            Fedora_21: db354243-aba2-4831-81c7-a155b9089291
+      InstanceType: { get_param:  instance_type }
+      KeyName: { get_param:  key_name }
+      AvailabilityZone: { get_param: availability_zone }
+      SecurityGroups: [ { get_resource: wordpress_security_group } ]
+      UserData:
+        str_replace:
+          template: |
+            #!/bin/bash -v
+            /usr/bin/cfn-init
+            sed -i "/Deny from All/d" /etc/httpd/conf.d/wordpress.conf
+            sed -i "s/Require local/Require all granted/" /etc/httpd/conf.d/wordpress.conf
+            sed -i s/database_name_here/db_name/ /etc/wordpress/wp-config.php
+            sed -i s/username_here/db_user/ /etc/wordpress/wp-config.php
+            sed -i s/password_here/db_password/ /etc/wordpress/wp-config.php
+            sed -i s/localhost/db_host/ /etc/wordpress/wp-config.php
+            systemctl restart httpd.service
+          params:
+            db_password: { get_resource: db_password }
+            db_user: { get_param: db_username }
+            db_name: { get_param: db_name }
+            db_host: { get_attr: [database_server, PublicIp] }
+
+  mount_point:
+    type: AWS::EC2::VolumeAttachment
+    properties:
+      InstanceId: { get_resource: worpress_server }
+      VolumeId: { get_resource: data_volume }
+      Device: /dev/vdc
+
+
+outputs:
+
+  url:
+    description: The URL of the website
+    value:
+      str_replace:
+        template: http://ip_address/wordpress
+        params:
+          ip_address: { get_attr: [worpress_server, PublicIp] }
