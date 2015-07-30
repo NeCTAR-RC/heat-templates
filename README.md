@@ -17,7 +17,7 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 [OS::Ceilometer::GnocchiAggregationByMetricsAlarm](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Ceilometer::GnocchiAggregationByMetricsAlarm)		is not yet supported on the NeCTAR cloud.<br />
 [OS::Ceilometer::GnocchiAggregationByResourcesAlarm](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Ceilometer::GnocchiAggregationByResourcesAlarm)		is not yet supported on the NeCTAR cloud.<br />
 [OS::Ceilometer::GnocchiResourcesAlarm](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Ceilometer::GnocchiResourcesAlarm)		is not yet supported on the NeCTAR cloud.<br />
-[OS::Cinder::EncryptedVolumeType](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Cinder::EncryptedVolumeType)<br />
+[OS::Cinder::EncryptedVolumeType](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Cinder::EncryptedVolumeType)		is not yet supported on the NeCTAR cloud.<br />
 [OS::Cinder::Volume](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Cinder::Volume)<br />
 
 * [cinder_volume.yaml](/juno/cinder_volume.yaml)
@@ -33,9 +33,9 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 * [cinder_volume.yaml](/juno/Ubuntu/cinder_volume.yaml)
 * [Single_Gluster_Server_And_Cinder_Volume.yaml](/yaml/Ubuntu/Single_Gluster_Server_And_Cinder_Volume.yaml)
 
-[OS::Cinder::VolumeType](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Cinder::VolumeType)<br />
-[OS::Designate::Domain](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Designate::Domain)<br />
-[OS::Designate::Record](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Designate::Record)<br />
+[OS::Cinder::VolumeType](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Cinder::VolumeType)		is not yet supported on the NeCTAR cloud.<br />
+[OS::Designate::Domain](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Designate::Domain)		is not yet supported on the NeCTAR cloud.<br />
+[OS::Designate::Record](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Designate::Record)		is not yet supported on the NeCTAR cloud.<br />
 [OS::Glance::Image](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Glance::Image)<br />
 [OS::Heat::AccessPolicy](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::AccessPolicy)<br />
 [OS::Heat::AutoScalingGroup](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::AutoScalingGroup)<br />
@@ -133,8 +133,8 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 [OS::Neutron::Subnet](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Neutron::Subnet)		is not yet supported on the NeCTAR cloud.<br />
 [OS::Neutron::VPNService](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Neutron::VPNService)		is not yet supported on the NeCTAR cloud.<br />
 [OS::Nova::Flavor](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Nova::Flavor)<br />
-[OS::Nova::FloatingIP](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Nova::FloatingIP)<br />
-[OS::Nova::FloatingIPAssociation](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Nova::FloatingIPAssociation)<br />
+[OS::Nova::FloatingIP](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Nova::FloatingIP)		is not yet supported on the NeCTAR cloud.<br />
+[OS::Nova::FloatingIPAssociation](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Nova::FloatingIPAssociation)		is not yet supported on the NeCTAR cloud.<br />
 [OS::Nova::KeyPair](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Nova::KeyPair)<br />
 [OS::Nova::Server](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Nova::Server)<br />
 
@@ -207,8 +207,8 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 * [apache_single_instance_aws.yaml](/juno/Ubuntu/apache_single_instance_aws.yaml)
 * [openstack_command_line_tools.yaml](/juno/Ubuntu/openstack_command_line_tools.yaml)
 
-[AWS::EC2::EIP](http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::EC2::EIP)<br />
-[AWS::EC2::EIPAssociation](http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::EC2::EIPAssociation)<br />
+[AWS::EC2::EIP](http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::EC2::EIP)		is not yet supported on the NeCTAR cloud.<br />
+[AWS::EC2::EIPAssociation](http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::EC2::EIPAssociation)		is not yet supported on the NeCTAR cloud.<br />
 [AWS::EC2::Instance](http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::EC2::Instance)<br />
 
 * [WordPress_Single_Instance_With_HA.yaml](/icehouse/yaml/Fedora/WordPress_Single_Instance_With_HA.yaml)
@@ -226,9 +226,9 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 * [serial_example.yaml](/juno/Ubuntu/serial_example.yaml)
 * [WordPress_2_Instances_And_EBS.yaml](/yaml/Fedora/WordPress_2_Instances_And_EBS.yaml)
 
-[AWS::EC2::InternetGateway](http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::EC2::InternetGateway)<br />
-[AWS::EC2::NetworkInterface](http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::EC2::NetworkInterface)<br />
-[AWS::EC2::RouteTable](http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::EC2::RouteTable)<br />
+[AWS::EC2::InternetGateway](http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::EC2::InternetGateway)		is not yet supported on the NeCTAR cloud.<br />
+[AWS::EC2::NetworkInterface](http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::EC2::NetworkInterface)		is not yet supported on the NeCTAR cloud.<br />
+[AWS::EC2::RouteTable](http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::EC2::RouteTable)		is not yet supported on the NeCTAR cloud.<br />
 [AWS::EC2::SecurityGroup](http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::EC2::SecurityGroup)<br />
 
 * [apache_single_instance_aws.yaml](/juno/CentOS/apache_single_instance_aws.yaml)
@@ -251,10 +251,10 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 * [pocReDBox.yaml](/yaml/RedBox/pocReDBox.yaml)
 * [Single_Gluster_Server_And_Cinder_Volume.yaml](/yaml/Ubuntu/Single_Gluster_Server_And_Cinder_Volume.yaml)
 
-[AWS::EC2::Subnet](http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::EC2::Subnet)<br />
-[AWS::EC2::SubnetRouteTableAssociation](http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::EC2::SubnetRouteTableAssociation)<br />
-[AWS::EC2::VPC](http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::EC2::VPC)<br />
-[AWS::EC2::VPCGatewayAttachment](http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::EC2::VPCGatewayAttachment)<br />
+[AWS::EC2::Subnet](http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::EC2::Subnet)		is not yet supported on the NeCTAR cloud.<br />
+[AWS::EC2::SubnetRouteTableAssociation](http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::EC2::SubnetRouteTableAssociation)		is not yet supported on the NeCTAR cloud.<br />
+[AWS::EC2::VPC](http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::EC2::VPC)		is not yet supported on the NeCTAR cloud.<br />
+[AWS::EC2::VPCGatewayAttachment](http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::EC2::VPCGatewayAttachment)		is not yet supported on the NeCTAR cloud.<br />
 [AWS::EC2::Volume](http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::EC2::Volume)<br />
 
 * [WordPress_2_Instances_And_EBS.yaml](/yaml/Fedora/WordPress_2_Instances_And_EBS.yaml)
