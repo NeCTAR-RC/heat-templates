@@ -39,6 +39,8 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 <span style="color:red">✘</span>&nbsp;[OS::Designate::Record](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Designate::Record)		is not yet supported on the NeCTAR cloud.<br />
 <span style="color:green">✔</span>&nbsp;[OS::Glance::Image](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Glance::Image)<br />
 
+* [glance_image.yaml](/juno/glance_image.yaml)
+
 <span style="color:green">✔</span>&nbsp;[OS::Heat::AccessPolicy](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::AccessPolicy)<br />
 
 <span style="color:green">✔</span>&nbsp;[OS::Heat::AutoScalingGroup](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::AutoScalingGroup)<br />
@@ -93,7 +95,11 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 
 <span style="color:green">✔</span>&nbsp;[OS::Heat::SwiftSignal](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::SwiftSignal)<br />
 
+* [apache_single_instance_aws_swift_signal.yaml](/juno/Fedora/apache_single_instance_aws_swift_signal.yaml)
+
 <span style="color:green">✔</span>&nbsp;[OS::Heat::SwiftSignalHandle](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::SwiftSignalHandle)<br />
+
+* [apache_single_instance_aws_swift_signal.yaml](/juno/Fedora/apache_single_instance_aws_swift_signal.yaml)
 
 <span style="color:green">✔</span>&nbsp;[OS::Heat::UpdateWaitConditionHandle](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::UpdateWaitConditionHandle)<br />
 
@@ -147,8 +153,7 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 
 <span style="color:red">✘</span>&nbsp;[OS::Neutron::Subnet](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Neutron::Subnet)		is not yet supported on the NeCTAR cloud.<br />
 <span style="color:red">✘</span>&nbsp;[OS::Neutron::VPNService](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Neutron::VPNService)		is not yet supported on the NeCTAR cloud.<br />
-<span style="color:green">✔</span>&nbsp;[OS::Nova::Flavor](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Nova::Flavor)<br />
-
+<span style="color:red">✘</span>&nbsp;[OS::Nova::Flavor](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Nova::Flavor)		is not yet supported on the NeCTAR cloud.<br />
 <span style="color:red">✘</span>&nbsp;[OS::Nova::FloatingIP](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Nova::FloatingIP)		is not yet supported on the NeCTAR cloud.<br />
 <span style="color:red">✘</span>&nbsp;[OS::Nova::FloatingIPAssociation](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Nova::FloatingIPAssociation)		is not yet supported on the NeCTAR cloud.<br />
 <span style="color:green">✔</span>&nbsp;[OS::Nova::KeyPair](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Nova::KeyPair)<br />
@@ -234,6 +239,7 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 * [apache_single_instance_aws.yaml](/juno/CentOS/apache_single_instance_aws.yaml)
 * [apache_single_instance_aws.yaml](/juno/Debian/apache_single_instance_aws.yaml)
 * [apache_single_instance_aws.yaml](/juno/Fedora/apache_single_instance_aws.yaml)
+* [apache_single_instance_aws_swift_signal.yaml](/juno/Fedora/apache_single_instance_aws_swift_signal.yaml)
 * [wordpress_single_instance.yaml](/juno/Fedora/wordpress_single_instance.yaml)
 * [wordpress_two_instance.yaml](/juno/Fedora/wordpress_two_instance.yaml)
 * [wordpress_with_ha.yaml](/juno/Fedora/wordpress_with_ha.yaml)
@@ -253,6 +259,7 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 * [apache_single_instance_aws.yaml](/juno/CentOS/apache_single_instance_aws.yaml)
 * [apache_single_instance_aws.yaml](/juno/Debian/apache_single_instance_aws.yaml)
 * [apache_single_instance_aws.yaml](/juno/Fedora/apache_single_instance_aws.yaml)
+* [apache_single_instance_aws_swift_signal.yaml](/juno/Fedora/apache_single_instance_aws_swift_signal.yaml)
 * [apache_single_instance_nova.yaml](/juno/Fedora/apache_single_instance_nova.yaml)
 * [wordpress_single_instance.yaml](/juno/Fedora/wordpress_single_instance.yaml)
 * [wordpress_two_instance.yaml](/juno/Fedora/wordpress_two_instance.yaml)
@@ -317,6 +324,7 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 * [cinder_volume.yaml](/juno/cinder_volume.yaml)
 * [apache_single_instance_aws.yaml](/juno/Debian/apache_single_instance_aws.yaml)
 * [apache_single_instance_aws.yaml](/juno/Fedora/apache_single_instance_aws.yaml)
+* [apache_single_instance_aws_swift_signal.yaml](/juno/Fedora/apache_single_instance_aws_swift_signal.yaml)
 * [apache_single_instance_nova.yaml](/juno/Fedora/apache_single_instance_nova.yaml)
 * [wordpress_autoscaling.yaml](/juno/Fedora/wordpress_autoscaling.yaml)
 * [wordpress_single_instance.yaml](/juno/Fedora/wordpress_single_instance.yaml)
@@ -353,6 +361,7 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 * [cinder_volume.yaml](/juno/cinder_volume.yaml)
 * [apache_single_instance_aws.yaml](/juno/Debian/apache_single_instance_aws.yaml)
 * [apache_single_instance_aws.yaml](/juno/Fedora/apache_single_instance_aws.yaml)
+* [apache_single_instance_aws_swift_signal.yaml](/juno/Fedora/apache_single_instance_aws_swift_signal.yaml)
 * [apache_single_instance_nova.yaml](/juno/Fedora/apache_single_instance_nova.yaml)
 * [wordpress_autoscaling.yaml](/juno/Fedora/wordpress_autoscaling.yaml)
 * [wordpress_single_instance.yaml](/juno/Fedora/wordpress_single_instance.yaml)
@@ -382,6 +391,7 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 * [apache_single_instance_aws.yaml](/juno/CentOS/apache_single_instance_aws.yaml)
 * [apache_single_instance_aws.yaml](/juno/Debian/apache_single_instance_aws.yaml)
 * [apache_single_instance_aws.yaml](/juno/Fedora/apache_single_instance_aws.yaml)
+* [apache_single_instance_aws_swift_signal.yaml](/juno/Fedora/apache_single_instance_aws_swift_signal.yaml)
 * [apache_single_instance_nova.yaml](/juno/Fedora/apache_single_instance_nova.yaml)
 * [wordpress_autoscaling.yaml](/juno/Fedora/wordpress_autoscaling.yaml)
 * [wordpress_single_instance.yaml](/juno/Fedora/wordpress_single_instance.yaml)
@@ -406,6 +416,7 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 * [apache_single_instance_aws.yaml](/juno/CentOS/apache_single_instance_aws.yaml)
 * [apache_single_instance_aws.yaml](/juno/Debian/apache_single_instance_aws.yaml)
 * [apache_single_instance_aws.yaml](/juno/Fedora/apache_single_instance_aws.yaml)
+* [apache_single_instance_aws_swift_signal.yaml](/juno/Fedora/apache_single_instance_aws_swift_signal.yaml)
 * [apache_single_instance_nova.yaml](/juno/Fedora/apache_single_instance_nova.yaml)
 * [apache_single_instance_aws.yaml](/juno/OpenSuSe/apache_single_instance_aws.yaml)
 * [apache_single_instance_nova.yaml](/juno/OpenSuSe/apache_single_instance_nova.yaml)
@@ -422,6 +433,7 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 * [apache_single_instance_aws.yaml](/juno/CentOS/apache_single_instance_aws.yaml)
 * [apache_single_instance_aws.yaml](/juno/Debian/apache_single_instance_aws.yaml)
 * [apache_single_instance_aws.yaml](/juno/Fedora/apache_single_instance_aws.yaml)
+* [apache_single_instance_aws_swift_signal.yaml](/juno/Fedora/apache_single_instance_aws_swift_signal.yaml)
 * [wordpress_autoscaling.yaml](/juno/Fedora/wordpress_autoscaling.yaml)
 * [wordpress_single_instance.yaml](/juno/Fedora/wordpress_single_instance.yaml)
 * [wordpress_two_instance.yaml](/juno/Fedora/wordpress_two_instance.yaml)
@@ -445,6 +457,7 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 * [apache_single_instance_aws.yaml](/juno/CentOS/apache_single_instance_aws.yaml)
 * [apache_single_instance_aws.yaml](/juno/Debian/apache_single_instance_aws.yaml)
 * [apache_single_instance_aws.yaml](/juno/Fedora/apache_single_instance_aws.yaml)
+* [apache_single_instance_aws_swift_signal.yaml](/juno/Fedora/apache_single_instance_aws_swift_signal.yaml)
 * [apache_single_instance_nova.yaml](/juno/Fedora/apache_single_instance_nova.yaml)
 * [wordpress_two_instance.yaml](/juno/Fedora/wordpress_two_instance.yaml)
 * [apache_single_instance_aws.yaml](/juno/Ubuntu/apache_single_instance_aws.yaml)
