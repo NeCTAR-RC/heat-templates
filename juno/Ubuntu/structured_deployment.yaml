@@ -4,6 +4,9 @@ heat_template_version: 2014-10-16
 
 # This template does not yet work: not all of the software required is installed on NeCTAR images.
 
+# A customization of one of the OpenStack sample templates
+# at https://github.com/openstack/heat-templates/ for the NeCTAR environment
+
 
 description: >
   This template demonstrates how to use OS::Heat::StructuredDeployment
