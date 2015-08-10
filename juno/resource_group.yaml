@@ -1,6 +1,7 @@
 # http://docs.openstack.org/developer/heat/template_guide/hot_spec.html#heat-template-version
 heat_template_version: 2014-10-16
 
+# For more see http://hardysteven.blogspot.com.au/2014/09/using-heat-resourcegroup-resources.html
 
 description: |
   A template to demonstrate resource groups. The resource group launches the basic instance template, passing the
