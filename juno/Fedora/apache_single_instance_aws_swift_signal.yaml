@@ -1,0 +1,121 @@
+# http://docs.openstack.org/developer/heat/template_guide/hot_spec.html#heat-template-version
+heat_template_version: 2014-10-16
+
+
+description: >
+  Install Apache on a single CentOS instance using the AWS::EC2::Instance resource type and signal completion
+  by means of the OS::Heat::SwiftSignalHandle resource type. Note: it does leave containers and objects in Swift!
+
+
+parameters:
+
+  key_name:
+    type: string
+    label: Key Name
+    description: Name of an existing KeyPair to enable SSH access to the instances. 
+    
+  image_name:
+    type: string
+    label: Image ID
+    description: Image to be used for compute instance
+    default: Fedora_21
+    constraints:
+      - allowed_values: [Fedora_20, Fedora_21 ]
+        description: Value must be one of Fedora_20 or Fedora_21
+
+  instance_type:
+    type: string
+    description: The NeCTAR flavour the webserver is to run on
+    default: m2.xsmall
+    constraints:
+      - allowed_values: [m2.xsmall, m2.small]
+        description:
+          Must be a valid NeCTAR flavour, limited to the smaller ones available
+
+
+resources:
+
+  # Use this when we do not have Neutron networking.
+  # http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::EC2::SecurityGroup
+  web_security_group:
+    type: AWS::EC2::SecurityGroup
+    properties:
+      GroupDescription: Web server access rules.
+      SecurityGroupIngress:
+        - {IpProtocol: icmp, FromPort: '-1', ToPort: '-1', CidrIp : 0.0.0.0/0}
+        - {IpProtocol: tcp, FromPort: '22', ToPort: '22', CidrIp: 0.0.0.0/0}
+        - {IpProtocol: tcp, FromPort: '80', ToPort: '80', CidrIp: 0.0.0.0/0}
+        - {IpProtocol: tcp, FromPort: '443', ToPort: '443', CidrIp: 0.0.0.0/0}
+    
+  apache_server:
+    # http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::EC2::Instance
+    type: AWS::EC2::Instance
+    # A deletion policy of Retain will leave this instance behind when this template is torn down.
+    # deletion_policy: Retain
+    metadata:
+      AWS::CloudFormation::Init:
+        config:
+          packages:
+            yum:
+              httpd: []
+          services:
+            systemd:
+              httpd: {enabled: 'true', ensureRunning: 'true'}
+    properties:
+      ImageId:
+        Fn::Select:
+          - { get_param: image_name }
+          -
+            Fedora_20: d3bae233-a0cd-4533-a710-d7aa9de0a4b7
+            Fedora_21: db354243-aba2-4831-81c7-a155b9089291
+      InstanceType: { get_param: instance_type }
+      KeyName: { get_param: key_name }
+      SecurityGroups: [ get_resource: web_security_group ]
+      # the following is written to /var/lib/cloud/data/cfn-userdata
+      # note the call to cfn-init which causes the AWS::CloudFomration::Init to be actioned
+      UserData:
+        str_replace:
+          template: |
+            #!/bin/bash -v
+            # helper function
+            function error_exit
+            {
+              wc_notify --data-binary '{"status": "FAILURE"}'
+              exit 1
+            }
+            /usr/bin/cfn-init || error_exit
+            #fedora 21 needs the following:
+            firewall-cmd --zone=public --add-port=80/tcp --permanent || error_exit
+            firewall-cmd --reload || error_exit
+            # now signal the install is finished
+            # Since we made it to the end of the script we assume success.
+            wc_notify --data-binary '{"status": "SUCCESS"}'
+          params:
+            # Sets the wc_notify placeholder to the value of the attribute 'curl_cli' of the resource wait_handle.
+            # This attribute provides the curl CLI command prefix, which is then used to signalling the wait condition
+            # completion.
+            wc_notify: { get_attr: ['wait_handle', 'curl_cli'] }
+
+  # http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::SwiftSignalHandle
+  wait_handle:
+    type: "OS::Heat::SwiftSignalHandle"
+
+  # http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::SwiftSignal
+  wait_condition:
+    type: "OS::Heat::SwiftSignal"
+    depends_on: apache_server
+    properties:
+      handle: { get_resource: wait_handle }
+      timeout: 1800
+      
+outputs:
+
+    instance_ip:
+        description: The IP address of the deployed instance
+        value: { get_attr: [apache_server, PublicIp] }
+
+    website_url:
+        description: URL for Apache server
+        value: 
+            list_join: ['', ['http://', get_attr: [apache_server, PublicIp]]]
+        
