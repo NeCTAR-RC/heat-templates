@@ -48,6 +48,7 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 <span style="color:green">✔</span>&nbsp;[OS::Heat::CloudConfig](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::CloudConfig)<br />
 
 * [cloud_init.yaml](/juno/cloud_init.yaml)
+* [structured_deployment.yaml](/juno/Ubuntu/structured_deployment.yaml)
 
 <span style="color:green">✔</span>&nbsp;[OS::Heat::InstanceGroup](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::InstanceGroup)<br />
 
@@ -56,6 +57,7 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 <span style="color:green">✔</span>&nbsp;[OS::Heat::MultipartMime](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::MultipartMime)<br />
 
 * [cloud_init.yaml](/juno/cloud_init.yaml)
+* [structured_deployment.yaml](/juno/Ubuntu/structured_deployment.yaml)
 
 <span style="color:red">✘</span>&nbsp;[OS::Heat::None](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::None)		is not yet supported on the NeCTAR cloud.<br />
 <span style="color:green">✔</span>&nbsp;[OS::Heat::RandomString](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::RandomString)<br />
@@ -88,16 +90,18 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 * [apache_single_instance_nova.yaml](/juno/Fedora/apache_single_instance_nova.yaml)
 * [apache_single_instance_nova.yaml](/juno/OpenSuSe/apache_single_instance_nova.yaml)
 
-<span style="color:green">✔</span>&nbsp;[OS::Heat::SoftwareDeploymentGroup](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::SoftwareDeploymentGroup)<br />
-
+<span style="color:red">✘</span>&nbsp;[OS::Heat::SoftwareDeploymentGroup](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::SoftwareDeploymentGroup)		is not yet supported on the NeCTAR cloud.<br />
 <span style="color:green">✔</span>&nbsp;[OS::Heat::Stack](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::Stack)<br />
 
 <span style="color:green">✔</span>&nbsp;[OS::Heat::StructuredConfig](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::StructuredConfig)<br />
 
+* [structured_deployment.yaml](/juno/Ubuntu/structured_deployment.yaml)
+
 <span style="color:green">✔</span>&nbsp;[OS::Heat::StructuredDeployment](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::StructuredDeployment)<br />
 
-<span style="color:green">✔</span>&nbsp;[OS::Heat::StructuredDeploymentGroup](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::StructuredDeploymentGroup)<br />
+* [structured_deployment.yaml](/juno/Ubuntu/structured_deployment.yaml)
 
+<span style="color:red">✘</span>&nbsp;[OS::Heat::StructuredDeploymentGroup](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::StructuredDeploymentGroup)		is not yet supported on the NeCTAR cloud.<br />
 <span style="color:green">✔</span>&nbsp;[OS::Heat::SwiftSignal](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::SwiftSignal)<br />
 
 * [apache_single_instance_aws_swift_signal.yaml](/juno/Fedora/apache_single_instance_aws_swift_signal.yaml)
@@ -176,6 +180,7 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 * [basic_server.yaml](/juno/Ubuntu/basic_server.yaml)
 * [cinder_volume.yaml](/juno/Ubuntu/cinder_volume.yaml)
 * [Gluster_Cluster.yaml](/juno/Ubuntu/Gluster_Cluster.yaml)
+* [structured_deployment.yaml](/juno/Ubuntu/structured_deployment.yaml)
 * [Use_Deployment_Key.yaml](/yaml/CentOS/Use_Deployment_Key.yaml)
 * [Single_Gluster_Server_And_Cinder_Volume.yaml](/yaml/Ubuntu/Single_Gluster_Server_And_Cinder_Volume.yaml)
 
@@ -280,6 +285,7 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 * [Gluster_Cluster.yaml](/juno/Ubuntu/Gluster_Cluster.yaml)
 * [parallel_example.yaml](/juno/Ubuntu/parallel_example.yaml)
 * [serial_example.yaml](/juno/Ubuntu/serial_example.yaml)
+* [structured_deployment.yaml](/juno/Ubuntu/structured_deployment.yaml)
 * [Use_Deployment_Key.yaml](/yaml/CentOS/Use_Deployment_Key.yaml)
 * [Single_Gluster_Server_And_Cinder_Volume.yaml](/yaml/Ubuntu/Single_Gluster_Server_And_Cinder_Volume.yaml)
 
@@ -357,6 +363,7 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 * [openstack_command_line_tools.yaml](/juno/Ubuntu/openstack_command_line_tools.yaml)
 * [parallel_example.yaml](/juno/Ubuntu/parallel_example.yaml)
 * [serial_example.yaml](/juno/Ubuntu/serial_example.yaml)
+* [structured_deployment.yaml](/juno/Ubuntu/structured_deployment.yaml)
 
 <span style="color:green">✔</span>&nbsp;[get_file](http://docs.openstack.org/developer/heat/template_guide/cfn.html#get_file)<br />
 
@@ -393,6 +400,7 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 * [openstack_command_line_tools.yaml](/juno/Ubuntu/openstack_command_line_tools.yaml)
 * [parallel_example.yaml](/juno/Ubuntu/parallel_example.yaml)
 * [serial_example.yaml](/juno/Ubuntu/serial_example.yaml)
+* [structured_deployment.yaml](/juno/Ubuntu/structured_deployment.yaml)
 
 <span style="color:green">✔</span>&nbsp;[get_resource](http://docs.openstack.org/developer/heat/template_guide/cfn.html#get_resource)<br />
 
@@ -420,6 +428,7 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 * [openstack_command_line_tools.yaml](/juno/Ubuntu/openstack_command_line_tools.yaml)
 * [parallel_example.yaml](/juno/Ubuntu/parallel_example.yaml)
 * [serial_example.yaml](/juno/Ubuntu/serial_example.yaml)
+* [structured_deployment.yaml](/juno/Ubuntu/structured_deployment.yaml)
 
 <span style="color:green">✔</span>&nbsp;[list_join](http://docs.openstack.org/developer/heat/template_guide/cfn.html#list_join)<br />
 
@@ -477,3 +486,4 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 * [ceilometer_demo.yaml](/juno/Ubuntu/ceilometer_demo.yaml)
 * [cinder_volume.yaml](/juno/Ubuntu/cinder_volume.yaml)
 * [Gluster_Cluster.yaml](/juno/Ubuntu/Gluster_Cluster.yaml)
+* [structured_deployment.yaml](/juno/Ubuntu/structured_deployment.yaml)
