@@ -47,11 +47,15 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 
 <span style="color:green">✔</span>&nbsp;[OS::Heat::CloudConfig](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::CloudConfig)<br />
 
+* [cloud_init.yaml](/juno/cloud_init.yaml)
+
 <span style="color:green">✔</span>&nbsp;[OS::Heat::InstanceGroup](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::InstanceGroup)<br />
 
 * [instance_group.yaml](/juno/instance_group.yaml)
 
 <span style="color:green">✔</span>&nbsp;[OS::Heat::MultipartMime](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::MultipartMime)<br />
+
+* [cloud_init.yaml](/juno/cloud_init.yaml)
 
 <span style="color:red">✘</span>&nbsp;[OS::Heat::None](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::None)		is not yet supported on the NeCTAR cloud.<br />
 <span style="color:green">✔</span>&nbsp;[OS::Heat::RandomString](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::RandomString)<br />
@@ -75,6 +79,7 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 
 <span style="color:green">✔</span>&nbsp;[OS::Heat::SoftwareConfig](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::SoftwareConfig)<br />
 
+* [cloud_init.yaml](/juno/cloud_init.yaml)
 * [apache_single_instance_nova.yaml](/juno/Fedora/apache_single_instance_nova.yaml)
 * [apache_single_instance_nova.yaml](/juno/OpenSuSe/apache_single_instance_nova.yaml)
 
@@ -161,6 +166,7 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 <span style="color:green">✔</span>&nbsp;[OS::Nova::Server](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Nova::Server)<br />
 
 * [basic_instance.yaml](/juno/basic_instance.yaml)
+* [cloud_init.yaml](/juno/cloud_init.yaml)
 * [apache_single_instance_nova.yaml](/juno/Fedora/apache_single_instance_nova.yaml)
 * [native_vs_aws_instance.yaml](/juno/native_vs_aws_instance.yaml)
 * [apache_single_instance_nova.yaml](/juno/OpenSuSe/apache_single_instance_nova.yaml)
@@ -257,6 +263,7 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 <span style="color:green">✔</span>&nbsp;[AWS::EC2::SecurityGroup](http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::EC2::SecurityGroup)<br />
 
 * [apache_single_instance_aws.yaml](/juno/CentOS/apache_single_instance_aws.yaml)
+* [cloud_init.yaml](/juno/cloud_init.yaml)
 * [apache_single_instance_aws.yaml](/juno/Debian/apache_single_instance_aws.yaml)
 * [apache_single_instance_aws.yaml](/juno/Fedora/apache_single_instance_aws.yaml)
 * [apache_single_instance_aws_swift_signal.yaml](/juno/Fedora/apache_single_instance_aws_swift_signal.yaml)
@@ -322,6 +329,7 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 * [basic_instance.yaml](/juno/basic_instance.yaml)
 * [apache_single_instance_aws.yaml](/juno/CentOS/apache_single_instance_aws.yaml)
 * [cinder_volume.yaml](/juno/cinder_volume.yaml)
+* [cloud_init.yaml](/juno/cloud_init.yaml)
 * [apache_single_instance_aws.yaml](/juno/Debian/apache_single_instance_aws.yaml)
 * [apache_single_instance_aws.yaml](/juno/Fedora/apache_single_instance_aws.yaml)
 * [apache_single_instance_aws_swift_signal.yaml](/juno/Fedora/apache_single_instance_aws_swift_signal.yaml)
@@ -359,6 +367,7 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 * [basic_instance.yaml](/juno/basic_instance.yaml)
 * [apache_single_instance_aws.yaml](/juno/CentOS/apache_single_instance_aws.yaml)
 * [cinder_volume.yaml](/juno/cinder_volume.yaml)
+* [cloud_init.yaml](/juno/cloud_init.yaml)
 * [apache_single_instance_aws.yaml](/juno/Debian/apache_single_instance_aws.yaml)
 * [apache_single_instance_aws.yaml](/juno/Fedora/apache_single_instance_aws.yaml)
 * [apache_single_instance_aws_swift_signal.yaml](/juno/Fedora/apache_single_instance_aws_swift_signal.yaml)
@@ -389,6 +398,7 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 
 * [access_key.yaml](/juno/access_key.yaml)
 * [apache_single_instance_aws.yaml](/juno/CentOS/apache_single_instance_aws.yaml)
+* [cloud_init.yaml](/juno/cloud_init.yaml)
 * [apache_single_instance_aws.yaml](/juno/Debian/apache_single_instance_aws.yaml)
 * [apache_single_instance_aws.yaml](/juno/Fedora/apache_single_instance_aws.yaml)
 * [apache_single_instance_aws_swift_signal.yaml](/juno/Fedora/apache_single_instance_aws_swift_signal.yaml)
@@ -431,6 +441,7 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 <span style="color:green">✔</span>&nbsp;[str_replace](http://docs.openstack.org/developer/heat/template_guide/cfn.html#str_replace)<br />
 
 * [apache_single_instance_aws.yaml](/juno/CentOS/apache_single_instance_aws.yaml)
+* [cloud_init.yaml](/juno/cloud_init.yaml)
 * [apache_single_instance_aws.yaml](/juno/Debian/apache_single_instance_aws.yaml)
 * [apache_single_instance_aws.yaml](/juno/Fedora/apache_single_instance_aws.yaml)
 * [apache_single_instance_aws_swift_signal.yaml](/juno/Fedora/apache_single_instance_aws_swift_signal.yaml)
