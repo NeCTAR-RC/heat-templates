@@ -1,0 +1,135 @@
+# http://docs.openstack.org/developer/heat/template_guide/hot_spec.html#heat-template-version
+heat_template_version: 2014-10-16
+
+# A customization of example-cloud-init.yaml for the OpenStack sample templates
+# at https://github.com/openstack/heat-templates/ for the NeCTAR environment
+
+description: >
+  This template demonstrates the different ways configuration resources
+  can be used to specify boot-time cloud-init configuration.
+
+
+parameters:
+
+  key_name:
+    type: string
+    label: Key Name
+    description: Name of an existing KeyPair to enable SSH access to the instances.
+
+  instance_type:
+    type: string
+    description: The NeCTAR flavour the webserver is to run on
+    default: m2.xsmall
+    constraints:
+      - allowed_values: [m2.xsmall, m2.small]
+        description:
+          Must be a valid NeCTAR flavour, limited to the smaller ones available
+
+  image_id:
+    type: string
+    description: ID of the image to use for the instance to be created (should work with all NeCTAR images)
+    default: 2a882d9c-3185-414c-9683-a4646b5c785e
+
+
+resources:
+
+  web_security_group:
+    # Use this when we do not have Neutron networking.
+    # http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::EC2::SecurityGroup
+    type: AWS::EC2::SecurityGroup
+    properties:
+      GroupDescription: Web server access rules.
+      SecurityGroupIngress:
+        - { IpProtocol: icmp, FromPort: '-1', ToPort: '-1', CidrIp : 0.0.0.0/0 }
+        - { IpProtocol: tcp, FromPort: '22', ToPort: '22', CidrIp: 0.0.0.0/0 }
+
+  one_init:
+    # http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::CloudConfig
+    type: OS::Heat::CloudConfig
+    properties:
+      cloud_config:
+        write_files:
+        - path: /tmp/one
+          content: "The one is bar"
+
+  two_init:
+    # this resource is a simple shell script. No inputs or outputs are
+    # specified since this is not supported by cloud-init but values
+    # could be inserted into the script using str_replace.
+    # http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::SoftwareConfig
+    type: OS::Heat::SoftwareConfig
+    properties:
+      group: ungrouped
+      config: |
+        #!/bin/sh
+        echo "The two is bar" > /tmp/two
+
+  three_init:
+    #http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::SoftwareConfig
+    type: OS::Heat::SoftwareConfig
+    properties:
+      group: ungrouped
+      config: |
+        #!/bin/sh
+        echo "The three is bar" > /tmp/three
+
+  four_init:
+    type: OS::Heat::SoftwareConfig
+    #http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::SoftwareConfig
+    properties:
+      group: ungrouped
+      config: |
+        #!/bin/sh
+        echo "The four is bar" > /tmp/four
+
+  three_four_init:
+    # http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::MultipartMime
+    type: OS::Heat::MultipartMime
+    properties:
+      parts:
+      - config: {get_resource: three_init}
+      - config: {get_resource: four_init}
+
+  five_init:
+    # this resource demonstrates multiple cloud-config resources with a merge_how strategy
+    # http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::CloudConfig
+    type: OS::Heat::CloudConfig
+    properties:
+      cloud_config:
+        merge_how: 'dict(recurse_array,no_replace)+list(append)'
+        write_files:
+        - path: /tmp/five
+          content: "The five is bar"
+
+  server_init:
+    # http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::MultipartMime
+    type: OS::Heat::MultipartMime
+    properties:
+      parts:
+      - config: {get_resource: one_init}
+      - config: {get_resource: two_init}
+        # referencing another OS::Heat::MultipartMime resource will result
+        # in each part of that resource being appended to this one.
+      - config: {get_resource: three_four_init}
+        type: multipart
+      - config: {get_resource: five_init}
+
+  server:
+    # http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Nova::Server
+    type: OS::Nova::Server
+    properties:
+      image: {get_param: image_id}
+      flavor: {get_param: instance_type}
+      key_name: {get_param: key_name}
+      security_groups:
+      - {get_resource: web_security_group}
+      user_data_format: RAW
+      user_data:
+        get_resource: server_init
+
+
+outputs:
+
+    instance_ip:
+        description: The IP address of the deployed instance
+        value: { get_attr: [server, first_address] }
