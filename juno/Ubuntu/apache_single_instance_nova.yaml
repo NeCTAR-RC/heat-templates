@@ -47,32 +47,6 @@ parameters:
 
 
 resources:
-
-# Doesn't work since NeCTAR is not running Neutron
-#    web_secgroup:
-#        type: OS::Neutron::SecurityGroup
-#        properties:
-#            rules:
-#                - protocol: tcp
-#                  remote_ip_prefix: 0.0.0.0/0
-#                  port_range_min: 80
-#                  port_range_max: 80
-#                - protocol: tcp
-#                  remote_ip_prefix: 0.0.0.0/0
-#                  port_range_min: 443
-#                  port_range_max: 443
-
-# Doesn't work since NeCTAR is not running Neutron
-#    instance_port:
-#        type: OS::Neutron::Port
-#        properties:
-#            network: public
-#            security_groups:
-#                - default
-#                - { get_resource: web_secgroup }
-#            fixed_ips:
-#               - subnet_id: public-subnet
-#
     
     # Use this when we do not have Neutron networking.
     # http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::EC2::SecurityGroup
