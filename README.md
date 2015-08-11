@@ -83,6 +83,7 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 
 <span style="color:red">✘</span>&nbsp;[OS::Heat::SoftwareDeploymentGroup](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::SoftwareDeploymentGroup)		is not yet supported on the NeCTAR cloud.<br />
 <span style="color:red">✘</span>&nbsp;[OS::Heat::Stack](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::Stack)		is not yet supported on the NeCTAR cloud.<br />
+* [aws_stack.yaml](/juno/aws_stack.yaml)
 * [multi_stack.yaml](/juno/multi_stack.yaml)
 
 <span style="color:green">✔</span>&nbsp;[OS::Heat::StructuredConfig](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::StructuredConfig)<br />
@@ -198,6 +199,8 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 * [wordpress_autoscaling.yaml](/juno/Fedora/wordpress_autoscaling.yaml)
 
 <span style="color:green">✔</span>&nbsp;[AWS::CloudFormation::Stack](http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::CloudFormation::Stack)<br />
+* [aws_stack.yaml](/juno/aws_stack.yaml)
+
 <span style="color:green">✔</span>&nbsp;[AWS::CloudFormation::WaitCondition](http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::CloudFormation::WaitCondition)<br />
 * [WordPress_Single_Instance_With_HA.yaml](/icehouse/yaml/Fedora/WordPress_Single_Instance_With_HA.yaml)
 * [apache_single_instance_aws.yaml](/juno/CentOS/apache_single_instance_aws.yaml)
@@ -340,6 +343,7 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 * [resource_group.yaml](/juno/resource_group.yaml)
 
 <span style="color:green">✔</span>&nbsp;[get_param](http://docs.openstack.org/developer/heat/template_guide/hot_spec.html#get_param)<br />
+* [aws_stack.yaml](/juno/aws_stack.yaml)
 * [basic_instance.yaml](/juno/basic_instance.yaml)
 * [apache_single_instance_aws.yaml](/juno/CentOS/apache_single_instance_aws.yaml)
 * [cinder_volume.yaml](/juno/cinder_volume.yaml)
