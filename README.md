@@ -3,7 +3,7 @@ Heat Templates
 
 This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) templates for use on the NeCTAR cloud.
 
-## Resources
+### Resources
 
 <span style="color:red">✘</span>&nbsp;[OS::Barbican::Order](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Barbican::Order)		is not yet supported on the NeCTAR cloud.<br />
 <span style="color:red">✘</span>&nbsp;[OS::Barbican::Secret](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Barbican::Secret)		is not yet supported on the NeCTAR cloud.<br />
@@ -91,7 +91,8 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 * [apache_single_instance_nova.yaml](/juno/OpenSuSe/apache_single_instance_nova.yaml)
 
 <span style="color:red">✘</span>&nbsp;[OS::Heat::SoftwareDeploymentGroup](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::SoftwareDeploymentGroup)		is not yet supported on the NeCTAR cloud.<br />
-<span style="color:green">✔</span>&nbsp;[OS::Heat::Stack](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::Stack)<br />
+<span style="color:red">✘</span>&nbsp;[OS::Heat::Stack](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::Stack)		is not yet supported on the NeCTAR cloud.<br />
+* [multi_stack.yaml](/juno/multi_stack.yaml)
 
 <span style="color:green">✔</span>&nbsp;[OS::Heat::StructuredConfig](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::StructuredConfig)<br />
 
@@ -329,7 +330,7 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 
 ## Functions
 
-<span style="color:green">✔</span>&nbsp;[get_attr](http://docs.openstack.org/developer/heat/template_guide/cfn.html#get_attr)<br />
+<span style="color:green">✔</span>&nbsp;[get_attr](http://docs.openstack.org/developer/heat/template_guide/hot_spec.html#get_attr)<br />
 
 * [access_key.yaml](/juno/access_key.yaml)
 * [basic_instance.yaml](/juno/basic_instance.yaml)
@@ -344,6 +345,7 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 * [wordpress_single_instance.yaml](/juno/Fedora/wordpress_single_instance.yaml)
 * [wordpress_two_instance.yaml](/juno/Fedora/wordpress_two_instance.yaml)
 * [wordpress_with_ha.yaml](/juno/Fedora/wordpress_with_ha.yaml)
+* [multi_stack.yaml](/juno/multi_stack.yaml)
 * [native_vs_aws_instance.yaml](/juno/native_vs_aws_instance.yaml)
 * [apache_single_instance_aws.yaml](/juno/OpenSuSe/apache_single_instance_aws.yaml)
 * [apache_single_instance_nova.yaml](/juno/OpenSuSe/apache_single_instance_nova.yaml)
@@ -365,11 +367,12 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 * [serial_example.yaml](/juno/Ubuntu/serial_example.yaml)
 * [structured_deployment.yaml](/juno/Ubuntu/structured_deployment.yaml)
 
-<span style="color:green">✔</span>&nbsp;[get_file](http://docs.openstack.org/developer/heat/template_guide/cfn.html#get_file)<br />
+<span style="color:green">✔</span>&nbsp;[get_file](http://docs.openstack.org/developer/heat/template_guide/hot_spec.html#get_file)<br />
 
+* [multi_stack.yaml](/juno/multi_stack.yaml)
 * [resource_group.yaml](/juno/resource_group.yaml)
 
-<span style="color:green">✔</span>&nbsp;[get_param](http://docs.openstack.org/developer/heat/template_guide/cfn.html#get_param)<br />
+<span style="color:green">✔</span>&nbsp;[get_param](http://docs.openstack.org/developer/heat/template_guide/hot_spec.html#get_param)<br />
 
 * [basic_instance.yaml](/juno/basic_instance.yaml)
 * [apache_single_instance_aws.yaml](/juno/CentOS/apache_single_instance_aws.yaml)
@@ -384,6 +387,7 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 * [wordpress_two_instance.yaml](/juno/Fedora/wordpress_two_instance.yaml)
 * [wordpress_with_ha.yaml](/juno/Fedora/wordpress_with_ha.yaml)
 * [instance_group.yaml](/juno/instance_group.yaml)
+* [multi_stack.yaml](/juno/multi_stack.yaml)
 * [native_vs_aws_instance.yaml](/juno/native_vs_aws_instance.yaml)
 * [apache_single_instance_aws.yaml](/juno/OpenSuSe/apache_single_instance_aws.yaml)
 * [apache_single_instance_nova.yaml](/juno/OpenSuSe/apache_single_instance_nova.yaml)
@@ -402,7 +406,7 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 * [serial_example.yaml](/juno/Ubuntu/serial_example.yaml)
 * [structured_deployment.yaml](/juno/Ubuntu/structured_deployment.yaml)
 
-<span style="color:green">✔</span>&nbsp;[get_resource](http://docs.openstack.org/developer/heat/template_guide/cfn.html#get_resource)<br />
+<span style="color:green">✔</span>&nbsp;[get_resource](http://docs.openstack.org/developer/heat/template_guide/hot_spec.html#get_resource)<br />
 
 * [access_key.yaml](/juno/access_key.yaml)
 * [apache_single_instance_aws.yaml](/juno/CentOS/apache_single_instance_aws.yaml)
@@ -430,7 +434,7 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 * [serial_example.yaml](/juno/Ubuntu/serial_example.yaml)
 * [structured_deployment.yaml](/juno/Ubuntu/structured_deployment.yaml)
 
-<span style="color:green">✔</span>&nbsp;[list_join](http://docs.openstack.org/developer/heat/template_guide/cfn.html#list_join)<br />
+<span style="color:green">✔</span>&nbsp;[list_join](http://docs.openstack.org/developer/heat/template_guide/hot_spec.html#list_join)<br />
 
 * [apache_single_instance_aws.yaml](/juno/CentOS/apache_single_instance_aws.yaml)
 * [apache_single_instance_aws.yaml](/juno/Debian/apache_single_instance_aws.yaml)
@@ -445,9 +449,9 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 * [cinder_volume.yaml](/juno/Ubuntu/cinder_volume.yaml)
 * [Gluster_Cluster.yaml](/juno/Ubuntu/Gluster_Cluster.yaml)
 
-<span style="color:green">✔</span>&nbsp;[resource_facade](http://docs.openstack.org/developer/heat/template_guide/cfn.html#resource_facade)<br />
+<span style="color:green">✔</span>&nbsp;[resource_facade](http://docs.openstack.org/developer/heat/template_guide/hot_spec.html#resource_facade)<br />
 
-<span style="color:green">✔</span>&nbsp;[str_replace](http://docs.openstack.org/developer/heat/template_guide/cfn.html#str_replace)<br />
+<span style="color:green">✔</span>&nbsp;[str_replace](http://docs.openstack.org/developer/heat/template_guide/hot_spec.html#str_replace)<br />
 
 * [apache_single_instance_aws.yaml](/juno/CentOS/apache_single_instance_aws.yaml)
 * [cloud_init.yaml](/juno/cloud_init.yaml)
@@ -472,7 +476,7 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 * [parallel_example.yaml](/juno/Ubuntu/parallel_example.yaml)
 * [serial_example.yaml](/juno/Ubuntu/serial_example.yaml)
 
-<span style="color:green">✔</span>&nbsp;[Fn::Select](http://docs.openstack.org/developer/heat/template_guide/cfn.html#Fn::Select)<br />
+<span style="color:green">✔</span>&nbsp;[Fn::Select](http://docs.openstack.org/developer/heat/template_guide/hot_spec.html#Fn::Select)<br />
 
 * [apache_single_instance_aws.yaml](/juno/CentOS/apache_single_instance_aws.yaml)
 * [apache_single_instance_aws.yaml](/juno/Debian/apache_single_instance_aws.yaml)
