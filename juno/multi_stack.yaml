@@ -45,7 +45,7 @@ resources:
       timeout: 60
       parameters:
         key_name: { get_param: key_name }
-        image: { get_param: image }
+        image_id: { get_param: image_id }
         instance_type: { get_param: instance_type }
 
   stack_two:
@@ -56,7 +56,7 @@ resources:
       timeout: 60
       parameters:
         key_name: { get_param: key_name }
-        image: { get_param: image }
+        image_id: { get_param: image_id }
         instance_type: { get_param: instance_type }
 
 
