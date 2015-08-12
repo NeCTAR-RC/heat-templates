@@ -90,7 +90,7 @@ resources:
                     - { get_param: image_id }
                     -
                         "ubuntu-14.04": "2a882d9c-3185-414c-9683-a4646b5c785e"
-                        "ubuntu-15.04": "fc48b5bb-e67d-4e39-b9ba-b6725c8b0c88"
+                        "ubuntu-15.04": "c395c528-fb43-4066-9536-cf5c5efe806d"
             flavor: { get_param: instance_type }
             availability_zone: {get_param: availability_zone}
             security_groups: [ { get_resource: web_security_group } ]
@@ -137,11 +137,11 @@ outputs:
         description: The IP address of the deployed instance
         value: { get_attr: [ubuntu_server, first_address] }
 
-#    ssh_command:
-#        description: SSH command for the newly created instance (assuming your key is in ~./ssh/).
-#        value:
-#        str_replace:
-#            template: ssh ec2-user@host -i ~/.ssh/key.pem
-#            params:
-#                host: { get_attr: [apache_server, PublicIp] }
-#                key: { get_param: key_name }
+    ssh_command:
+        description: SSH command for the newly created instance (assuming your key is in ~./ssh/).
+        value:
+        str_replace:
+            template: ssh ubuntu@host -i ~/.ssh/key.pem
+            params:
+                host: { get_attr: [ubuntu_server, first_address] }
+                key: { get_param: key_name }
