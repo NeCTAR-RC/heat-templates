@@ -34,7 +34,7 @@ parameters:
 resources:
 
   stack_one:
-    # http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::Stack
+    # http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::CloudFormation::Stack
     type: AWS::CloudFormation::Stack
     properties:
       TemplateURL: https://raw.githubusercontent.com/NeCTAR-RC/heat-templates/master/juno/basic_instance.yaml
@@ -45,7 +45,7 @@ resources:
         instance_type: { get_param: instance_type }
 
   stack_two:
-    # http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::Stack
+    # http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::CloudFormation::Stack
     type: AWS::CloudFormation::Stack
     properties:
       TemplateURL: https://raw.githubusercontent.com/NeCTAR-RC/heat-templates/master/juno/basic_instance.yaml
