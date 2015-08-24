@@ -1,0 +1,11 @@
+# See more here: http://docs.openstack.org/developer/heat/template_guide/environment.html
+parameters:
+
+  # you should replace this with your own key.
+  key_name: necter_dev
+
+resource_registry:
+
+  # We will reuse the files from the Nested template example.
+  Lib::MSG::MySQL: https://raw.githubusercontent.com/NeCTAR-RC/heat-templates/master/juno/Ubuntu/NestedTemplates/lib/mysql.yaml
+  Lib::MSG::Wordpress: https://raw.githubusercontent.com/NeCTAR-RC/heat-templates/master/juno/Ubuntu/NestedTemplates/lib/wordpress.yaml
