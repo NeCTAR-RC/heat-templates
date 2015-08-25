@@ -1,0 +1,11 @@
+# Installs software-config agent on boot for ubuntu with pip install
+
+parameters:
+
+  image_name: Ubuntu 14.04
+  # you should replace this with your own key.
+  key_name: nectar_dev
+  ntp_server: au.pool.ntp.org
+
+resource_registry:
+  "Heat::InstallConfigAgent": templates/install_config_agent_ubuntu_pip.yaml
