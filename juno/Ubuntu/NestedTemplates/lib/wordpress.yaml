@@ -2,8 +2,9 @@
 heat_template_version: 2014-10-16
 
 
-description: Template that installs a wordpress server.
-
+description: >
+  Template that installs a wordpress server.
+  Note it is also used by the environment sample project
 
 parameters:
 

@@ -4,6 +4,7 @@ heat_template_version: 2014-10-16
 
 description: >
   This template simply builds a mysql server out of an Ubuntu image.
+  Note it is also used by the environment sample project
 
 
 parameters:
