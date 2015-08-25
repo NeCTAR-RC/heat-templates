@@ -2,7 +2,7 @@
 parameters:
 
   # you should replace this with your own key.
-  key_name: necter_dev
+  key_name: nectar_dev
 
 resource_registry:
 

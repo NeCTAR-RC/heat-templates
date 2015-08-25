@@ -2,8 +2,12 @@
 heat_template_version: 2014-10-16
 
 # A template to demonstrate enviroments in action.
+# The nice thing about environments is that you can save so much typing on the command line:
+#     heat stack-create wordpress -f master.yaml -e environment.yaml
+# Also, very handy: you can a production environment, a test environment etc - and its just a small change to launch
+# each
 # Based on the article:
-#       https://developer.rackspace.com/blog/openstack-orchestration-in-depth-part-3-multi-instance-deployments/
+#     https://developer.rackspace.com/blog/openstack-orchestration-in-depth-part-3-multi-instance-deployments/
 
 
 description: >
