@@ -10,7 +10,7 @@ The required software:
 * It allows you to run hooks during the distinct phases of a heat templates lifecycle, such as CREATE, UPDATE, 
   SUSPEND and RESUME
 
-This software layer has some basic scripts built on top of it that do the following:
+This software layer has some basic example scripts built on top of it that do the following:
 
 * A hook to install ansible and run your ansible scripts, allowing you to set your ansible inputs via your heat template
 * A similar hook for puppet
@@ -20,7 +20,7 @@ This software layer has some basic scripts built on top of it that do the follow
 * A similar hook to allow your old cfn-init scripts to be used
 * A more complex hook that allows you to use kubernetes to both install and update your containers. 
   This one only runs on rhel, rhel7, centos7 & fedora
-* A script that provides the support required to have multiple configurations (
+* A script that provides the support required to have multiple configurations
 
 In order to work properly, the above scripts require the following packages to be installed: 
 
