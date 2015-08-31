@@ -1,7 +1,7 @@
 # Software Configs
 
-The current NeCTAR images do not have all of the software required by either the SoftwareDeployment or SoftwareConfig
-resource types installed.
+The current NeCTAR images do not have all of the software required by either the SoftwareDeployment or 
+StructuredDeployment resource types installed.
 
 The required software:
 
