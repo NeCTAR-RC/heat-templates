@@ -1,11 +1,11 @@
 # Software Configs
 
-The current NeCTAR images do not have all of the software required by either the SoftwareDeployment or 
+The current NeCTAR images do not have all of the software required by either the OS::Nova::Server, SoftwareDeployment or 
 StructuredDeployment resource types installed.
 
 The required software:
 
-* It returns the output from stdout, stderr, and the return code from your on instance deployments back to heat 
+* Returns the output from stdout, stderr, and the return code from your on instance deployments back to heat 
   (which allows you to see what happened without having to ssh into the instance and do a post mortem)
 * It allows you to run hooks during the distinct phases of a heat templates lifecycle, such as CREATE, UPDATE, 
   SUSPEND and RESUME
@@ -33,6 +33,11 @@ You can see that these form a kind of a pipeline with os-collect-config being th
 Of these os-collect-config can be considered a service: it can loop forever, polling the metadata servers for 
 changes to apply. The others will then get invoked if changes are found. When finished the results are written 
 back to heat by means of the web API.
+
+In working, the OS::Nova::Server resource provides the required metadata, the SoftwareDeployment or 
+StructuredDeployment then handle the call back into heat when the process is finished.
+
+For more on this see: http://hardysteven.blogspot.com.au/2015/05/heat-softwareconfig-resources.html
 
 It is not necessary to have these pre-installed on the image. This directory demonstrates that it possible for you
 to bootstrap the required software onto the instance yourself, using environments.
