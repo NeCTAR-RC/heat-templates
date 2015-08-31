@@ -6,7 +6,7 @@ heat_template_version: 2014-10-16
 description: |
   A template to demonstrate resource groups. The resource group launches the basic instance template, passing the
   parameters entered through to it. It then returns the attributes and shows them as outputs.
-  To run in, you need to launch it from the command line. Change directory to the directory this template is in,
+  To run it, you need to launch it from the command line. Change directory to the directory this template is in,
   then use a command along the lines of:
   heat stack-create -f resource_group.yaml -P key_name=your_key resource_group_demo
 
