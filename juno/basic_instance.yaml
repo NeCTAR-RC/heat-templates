@@ -10,6 +10,10 @@ parameters:
   key_name:
     type: string
     description: Name of an existing KeyPair to enable SSH access to the instances
+    # can use the provided custom constraint to check that the keypair does exist
+    constraints:
+      - custom_constraint: nova.keypair
+        description: Must be an existing keypair
 
   instance_type:
     type: string
