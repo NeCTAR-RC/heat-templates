@@ -1,0 +1,57 @@
+# http://docs.openstack.org/developer/heat/template_guide/hot_spec.html#heat-template-version
+heat_template_version: 2014-10-16
+
+
+description: >
+  NeCTAR Sample Template - designed to show the use of OS::Nova::KeyPair to generate a key that can then
+  be used to ssh into an instance. Because the dashboard output turns the private key into one long string, you
+  have to do a bit of editing to get it back to a form you can use.
+
+
+parameters:
+
+  instance_type:
+    type: string
+    description: The NeCTAR flavour the webserver is to run on
+    default: m2.xsmall
+    constraints:
+      - allowed_values: [m2.xsmall, m2.small]
+        description:
+          Must be a valid NeCTAR flavour, limited to the smaller ones available
+
+  image_id:
+    type: string
+    description: ID of the image to use for the instance to be created
+    default: fc48b5bb-e67d-4e39-b9ba-b6725c8b0c88
+
+
+resources:
+
+  # This key pair will be bound to the stack lifecycle.
+  generated_key_pair:
+    # http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Nova::KeyPair
+    type: OS::Nova::KeyPair
+    properties:
+      name: generated key pair
+      save_private_key: True
+
+  instance:
+    # http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Nova::Server
+    type: OS::Nova::Server
+    properties:
+      key_name: { get_resource: generated_key_pair }
+      image: { get_param: image_id }
+      flavor: { get_param: instance_type }
+      image_update_policy: REBUILD_PRESERVE_EPHEMERAL
+      user_data_format: RAW
+
+
+outputs:
+
+  private_key:
+    description: The private key to access instance (you need to format to get work properly)
+    value: { get_attr: [generated_key_pair, private_key] }
+
+  instance_ip:
+    description: The IP address of instance one
+    value: { get_attr: [instance, first_address] }
