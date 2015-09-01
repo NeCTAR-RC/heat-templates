@@ -5,7 +5,8 @@ heat_template_version: 2014-10-16
 description: >
   NeCTAR Sample Template - A very simple one that just fires up an instance using the OS::Nova::KeyPair
   resource type configured to use an existing public key that you have on your machine. You will have to
-  paste the contents of the key into the
+  paste the contents of the key into the public_key_value parameter. Then ssh into the instance
+  using the private half of the keypair...
 
 
 parameters:
