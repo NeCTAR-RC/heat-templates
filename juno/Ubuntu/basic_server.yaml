@@ -1,7 +1,10 @@
 # Juno Release
 heat_template_version: 2014-10-16
 
-description: Install a basic Ubuntu server.
+
+description: >
+  Simply installs a basic Ubuntu server. But one that is set to replace the instance if the stack is udpated.
+
 
 parameters:
 
@@ -9,8 +12,11 @@ parameters:
     type: string
     label: Key Name
     description: Name of an existing KeyPair to enable SSH access to the instances. 
-    
-  image_id:
+    constraints:
+      - custom_constraint: nova.keypair
+        description: Must be an existing keypair
+
+  image_name:
     type: string
     label: Image ID
     description: Image to be used for compute instance
