@@ -68,6 +68,8 @@ resources:
   # http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::IAM::User
   cfn_user:
     type: AWS::IAM::User
+    properties:
+      Policies: [ { get_resource: access_policy }]
 
   # http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::IAM::AccessKey
   web_server_access_key:
@@ -199,7 +201,7 @@ resources:
             }
             echo "stack_name wordpress_site stack_region" > /root/args.txt
             /opt/aws/bin/cfn-init -s stack_name -r wordpress_site --access-key access_key --secret-key secret_key --region stack_region || error_exit 'Failed to run cfn-init'
-            # Setup MySQL root password and create a user
+            # Setup database root password and create a user
             mysqladmin -u root password db_root_password  || error_exit 'Failed to initialize root password'
             mysql -u root --password=db_root_password < /tmp/setup.mysql  || error_exit 'Failed to create database.'
             sed -i "/Deny from All/d" /etc/httpd/conf.d/wordpress.conf
@@ -222,6 +224,12 @@ resources:
             db_user: { get_param: db_username }
             db_name: { get_param: db_name }
 
+  access_policy:
+    # http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::AccessPolicy
+    type: OS::Heat::AccessPolicy
+    properties:
+      AllowedResources: [ "wordpress_site" ]
+
   # http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::CloudFormation::WaitConditionHandle
   wait_handle:
     type: 'AWS::CloudFormation::WaitConditionHandle'
@@ -233,7 +241,8 @@ resources:
     properties:
       Handle: { get_resource: wait_handle }
       Count: 1
-      Timeout: 600
+      # Give it 11 minutes: there's a lot going on...
+      Timeout: 700
 
 
 outputs:
