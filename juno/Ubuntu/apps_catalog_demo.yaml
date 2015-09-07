@@ -1,0 +1,95 @@
+# Juno Release
+heat_template_version: 2014-10-16
+
+
+description: Install a basic Ubuntu server with the OpenStack AppsCatalog on it.
+
+parameters:
+
+  key_name:
+    type: string
+    label: Key Name
+    description: Name of an existing KeyPair to enable SSH access to the instances.
+
+  image_id:
+    type: string
+    label: Image ID
+    description: Image to be used for compute instance
+    default: 2a882d9c-3185-414c-9683-a4646b5c785e
+    constraints:
+        - allowed_values: [ 2a882d9c-3185-414c-9683-a4646b5c785e, c395c528-fb43-4066-9536-cf5c5efe806d ]
+          description: Limted to Ubuntu 14.04 or Ubuntu 12.04 .
+
+  instance_type:
+    type: string
+    label: Instance Type
+    description: Type of instance (flavor) to be used.
+    default: m2.small
+    constraints:
+        - allowed_values: [m2.small, m1.small, m1.medium, m1.large, m1.xlarge ]
+          description: Value must be one of m1.small, m1.medium, m1.large or m1.xlarge.
+
+
+resources:
+
+  # Use this when we do not have Neutron networking.
+  # http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::EC2::SecurityGroup
+  web_security_group:
+    type: AWS::EC2::SecurityGroup
+    properties:
+      GroupDescription: Web server access rules.
+      SecurityGroupIngress:
+        - {IpProtocol: icmp, FromPort: '-1', ToPort: '-1', CidrIp : 0.0.0.0/0}
+        - {IpProtocol: tcp, FromPort: '22', ToPort: '22', CidrIp: 0.0.0.0/0}
+        - {IpProtocol: tcp, FromPort: '80', ToPort: '80', CidrIp: 0.0.0.0/0}
+        - {IpProtocol: tcp, FromPort: '443', ToPort: '443', CidrIp: 0.0.0.0/0}
+
+  catalog_server:
+    # http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Nova::Server
+    type: OS::Nova::Server
+    properties:
+      key_name: { get_param: key_name }
+      image: { get_param: image_id }
+      flavor: { get_param: instance_type }
+      security_groups:
+        - { get_resource: web_security_group }
+      user_data_format: RAW
+      user_data:
+        str_replace:
+          template: |
+            #!/bin/bash -v
+            apt-get update
+            apt-get upgrade -y
+            apt-get install apache2 -y
+            apt-get install python-pip -y
+            apt-get install git -y
+            git clone https://github.com/stackforge/apps-catalog.git
+            cd apps-catalog/
+            python setup.py install
+            # And then a quick and dirty way to get it be served by apache.
+            cd /var/www/html/
+            rm -r *
+            cp -avr /usr/local/lib/python2.7/dist-packages/openstack_catalog/web/* .
+            cfn-signal -e 0 -r "Command line tools server setup complete" 'WaitHandle'
+          params:
+            WaitHandle: { get_resource: wait_handle }
+
+  # http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::CloudFormation::WaitConditionHandle
+  wait_handle:
+    type: 'AWS::CloudFormation::WaitConditionHandle'
+
+  # http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::CloudFormation::WaitCondition
+  wait_condition:
+    type: AWS::CloudFormation::WaitCondition
+    depends_on: catalog_server
+    properties:
+      Handle: { get_resource: wait_handle }
+      Count: 1
+      # we'll give it 12 minutes
+      Timeout: 720
+
+
+outputs:
+  instance_ip:
+    description: The IP address of the deployed instance.
+    value: { get_attr: [catalog_server, first_address] }
