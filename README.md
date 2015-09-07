@@ -5,6 +5,8 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 
 ## Resources
 
+## Resources
+
 <span style="color:red">✘</span>&nbsp;[OS::Barbican::Order](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Barbican::Order)		is not yet supported on the NeCTAR cloud.<br />
 <span style="color:red">✘</span>&nbsp;[OS::Barbican::Secret](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Barbican::Secret)		is not yet supported on the NeCTAR cloud.<br />
 <span style="color:green">✔</span>&nbsp;[OS::Ceilometer::Alarm](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Ceilometer::Alarm)<br />
@@ -49,6 +51,8 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 
 <span style="color:green">✔</span>&nbsp;[OS::Heat::MultipartMime](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::MultipartMime)<br />
 * [cloud_init.yaml](/juno/cloud_init.yaml)
+* [structured_deployment.yaml](/juno/Ubuntu/SoftwareConfig/structured_deployment.yaml)
+* [install_config_agent_ubuntu_pip.yaml](/juno/Ubuntu/SoftwareConfig/templates/install_config_agent_ubuntu_pip.yaml)
 * [structured_deployment.yaml](/juno/Ubuntu/structured_deployment.yaml)
 
 <span style="color:red">✘</span>&nbsp;[OS::Heat::None](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::None)		is not yet supported on the NeCTAR cloud.<br />
@@ -60,6 +64,7 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 * [wordpress_two_instance.yaml](/juno/Fedora/wordpress_two_instance.yaml)
 * [wordpress_with_ha.yaml](/juno/Fedora/wordpress_with_ha.yaml)
 * [random_string.yaml](/juno/random_string.yaml)
+* [mysql.yaml](/juno/Ubuntu/NestedTemplates/lib/mysql.yaml)
 
 <span style="color:green">✔</span>&nbsp;[OS::Heat::ResourceGroup](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::ResourceGroup)<br />
 * [resource_group.yaml](/juno/resource_group.yaml)
@@ -73,23 +78,28 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 
 <span style="color:green">✔</span>&nbsp;[OS::Heat::SoftwareConfig](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::SoftwareConfig)<br />
 * [cloud_init.yaml](/juno/cloud_init.yaml)
+* [example-deploy-sequence.yaml](/juno/example-deploy-sequence.yaml)
 * [apache_single_instance_nova.yaml](/juno/Fedora/apache_single_instance_nova.yaml)
 * [apache_single_instance_nova.yaml](/juno/OpenSuSe/apache_single_instance_nova.yaml)
+* [structured_deployment.yaml](/juno/Ubuntu/SoftwareConfig/structured_deployment.yaml)
+* [install_config_agent_ubuntu_pip.yaml](/juno/Ubuntu/SoftwareConfig/templates/install_config_agent_ubuntu_pip.yaml)
 
 <span style="color:green">✔</span>&nbsp;[OS::Heat::SoftwareDeployment](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::SoftwareDeployment)<br />
+* [example-deploy-sequence.yaml](/juno/example-deploy-sequence.yaml)
 * [apache_single_instance_nova.yaml](/juno/Fedora/apache_single_instance_nova.yaml)
 * [apache_single_instance_nova.yaml](/juno/OpenSuSe/apache_single_instance_nova.yaml)
 * [software_component.yaml](/juno/software_component.yaml)
 
 <span style="color:red">✘</span>&nbsp;[OS::Heat::SoftwareDeploymentGroup](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::SoftwareDeploymentGroup)		is not yet supported on the NeCTAR cloud.<br />
 <span style="color:red">✘</span>&nbsp;[OS::Heat::Stack](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::Stack)		is not yet supported on the NeCTAR cloud.<br />
-* [aws_stack.yaml](/juno/aws_stack.yaml)
 * [multi_stack.yaml](/juno/multi_stack.yaml)
 
 <span style="color:green">✔</span>&nbsp;[OS::Heat::StructuredConfig](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::StructuredConfig)<br />
+* [structured_deployment.yaml](/juno/Ubuntu/SoftwareConfig/structured_deployment.yaml)
 * [structured_deployment.yaml](/juno/Ubuntu/structured_deployment.yaml)
 
 <span style="color:green">✔</span>&nbsp;[OS::Heat::StructuredDeployment](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::StructuredDeployment)<br />
+* [structured_deployment.yaml](/juno/Ubuntu/SoftwareConfig/structured_deployment.yaml)
 * [structured_deployment.yaml](/juno/Ubuntu/structured_deployment.yaml)
 
 <span style="color:red">✘</span>&nbsp;[OS::Heat::StructuredDeploymentGroup](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::StructuredDeploymentGroup)		is not yet supported on the NeCTAR cloud.<br />
@@ -103,10 +113,18 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 <span style="color:green">✔</span>&nbsp;[OS::Heat::WaitCondition](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::WaitCondition)<br />
 * [apache_single_instance_nova.yaml](/juno/Fedora/apache_single_instance_nova.yaml)
 * [apache_single_instance_nova.yaml](/juno/OpenSuSe/apache_single_instance_nova.yaml)
+* [ceilometer_demo.yaml](/juno/Ubuntu/ceilometer_demo.yaml)
+* [mysql.yaml](/juno/Ubuntu/NestedTemplates/lib/mysql.yaml)
+* [wordpress.yaml](/juno/Ubuntu/NestedTemplates/lib/wordpress.yaml)
+* [structured_deployment.yaml](/juno/Ubuntu/SoftwareConfig/structured_deployment.yaml)
 
 <span style="color:green">✔</span>&nbsp;[OS::Heat::WaitConditionHandle](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::WaitConditionHandle)<br />
 * [apache_single_instance_nova.yaml](/juno/Fedora/apache_single_instance_nova.yaml)
 * [apache_single_instance_nova.yaml](/juno/OpenSuSe/apache_single_instance_nova.yaml)
+* [ceilometer_demo.yaml](/juno/Ubuntu/ceilometer_demo.yaml)
+* [mysql.yaml](/juno/Ubuntu/NestedTemplates/lib/mysql.yaml)
+* [wordpress.yaml](/juno/Ubuntu/NestedTemplates/lib/wordpress.yaml)
+* [structured_deployment.yaml](/juno/Ubuntu/SoftwareConfig/structured_deployment.yaml)
 
 <span style="color:red">✘</span>&nbsp;[OS::Keystone::Endpoint](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Keystone::Endpoint)		is not yet supported on the NeCTAR cloud.<br />
 <span style="color:red">✘</span>&nbsp;[OS::Keystone::Group](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Keystone::Group)		is not yet supported on the NeCTAR cloud.<br />
@@ -148,23 +166,30 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 <span style="color:red">✘</span>&nbsp;[OS::Nova::FloatingIP](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Nova::FloatingIP)		is not yet supported on the NeCTAR cloud.<br />
 <span style="color:red">✘</span>&nbsp;[OS::Nova::FloatingIPAssociation](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Nova::FloatingIPAssociation)		is not yet supported on the NeCTAR cloud.<br />
 <span style="color:green">✔</span>&nbsp;[OS::Nova::KeyPair](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Nova::KeyPair)<br />
-* [nova_keypair.yaml](/juno/nova_keypair.yaml)
+* [nova_keypair_existing.yaml](/juno/nova_keypair_existing.yaml)
+* [nova_keypair_new.yaml](/juno/nova_keypair_new.yaml)
 
 <span style="color:green">✔</span>&nbsp;[OS::Nova::Server](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Nova::Server)<br />
 * [basic_instance.yaml](/juno/basic_instance.yaml)
 * [cloud_init.yaml](/juno/cloud_init.yaml)
+* [example-deploy-sequence.yaml](/juno/example-deploy-sequence.yaml)
 * [apache_single_instance_nova.yaml](/juno/Fedora/apache_single_instance_nova.yaml)
 * [native_vs_aws_instance.yaml](/juno/native_vs_aws_instance.yaml)
-* [nova_keypair.yaml](/juno/nova_keypair.yaml)
+* [nova_keypair_existing.yaml](/juno/nova_keypair_existing.yaml)
+* [nova_keypair_new.yaml](/juno/nova_keypair_new.yaml)
 * [apache_single_instance_nova.yaml](/juno/OpenSuSe/apache_single_instance_nova.yaml)
 * [server_group.yaml](/juno/server_group.yaml)
 * [single_instance_with_cinder_volume.yaml](/juno/single_instance_with_cinder_volume.yaml)
 * [single_instance_with_existing_cinder_volume.yaml](/juno/single_instance_with_existing_cinder_volume.yaml)
 * [software_component.yaml](/juno/software_component.yaml)
 * [apache_single_instance_nova.yaml](/juno/Ubuntu/apache_single_instance_nova.yaml)
+* [apps_catalog_demo.yaml](/juno/Ubuntu/apps_catalog_demo.yaml)
 * [basic_server.yaml](/juno/Ubuntu/basic_server.yaml)
 * [cinder_volume.yaml](/juno/Ubuntu/cinder_volume.yaml)
 * [Gluster_Cluster.yaml](/juno/Ubuntu/Gluster_Cluster.yaml)
+* [mysql.yaml](/juno/Ubuntu/NestedTemplates/lib/mysql.yaml)
+* [wordpress.yaml](/juno/Ubuntu/NestedTemplates/lib/wordpress.yaml)
+* [structured_deployment.yaml](/juno/Ubuntu/SoftwareConfig/structured_deployment.yaml)
 * [structured_deployment.yaml](/juno/Ubuntu/structured_deployment.yaml)
 * [Use_Deployment_Key.yaml](/yaml/CentOS/Use_Deployment_Key.yaml)
 * [Single_Gluster_Server_And_Cinder_Volume.yaml](/yaml/Ubuntu/Single_Gluster_Server_And_Cinder_Volume.yaml)
@@ -209,6 +234,7 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 * [wordpress_with_ha.yaml](/juno/Fedora/wordpress_with_ha.yaml)
 * [apache_single_instance_aws.yaml](/juno/OpenSuSe/apache_single_instance_aws.yaml)
 * [apache_single_instance_aws.yaml](/juno/Ubuntu/apache_single_instance_aws.yaml)
+* [apps_catalog_demo.yaml](/juno/Ubuntu/apps_catalog_demo.yaml)
 * [openstack_command_line_tools.yaml](/juno/Ubuntu/openstack_command_line_tools.yaml)
 
 <span style="color:green">✔</span>&nbsp;[AWS::CloudFormation::WaitConditionHandle](http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::CloudFormation::WaitConditionHandle)<br />
@@ -219,6 +245,7 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 * [wordpress_with_ha.yaml](/juno/Fedora/wordpress_with_ha.yaml)
 * [apache_single_instance_aws.yaml](/juno/OpenSuSe/apache_single_instance_aws.yaml)
 * [apache_single_instance_aws.yaml](/juno/Ubuntu/apache_single_instance_aws.yaml)
+* [apps_catalog_demo.yaml](/juno/Ubuntu/apps_catalog_demo.yaml)
 * [openstack_command_line_tools.yaml](/juno/Ubuntu/openstack_command_line_tools.yaml)
 
 <span style="color:red">✘</span>&nbsp;[AWS::EC2::EIP](http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::EC2::EIP)		is not yet supported on the NeCTAR cloud.<br />
@@ -257,11 +284,15 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 * [security_group.yaml](/juno/security_group.yaml)
 * [apache_single_instance_aws.yaml](/juno/Ubuntu/apache_single_instance_aws.yaml)
 * [apache_single_instance_nova.yaml](/juno/Ubuntu/apache_single_instance_nova.yaml)
+* [apps_catalog_demo.yaml](/juno/Ubuntu/apps_catalog_demo.yaml)
 * [ceilometer_demo.yaml](/juno/Ubuntu/ceilometer_demo.yaml)
 * [cinder_volume.yaml](/juno/Ubuntu/cinder_volume.yaml)
 * [Gluster_Cluster.yaml](/juno/Ubuntu/Gluster_Cluster.yaml)
+* [mysql.yaml](/juno/Ubuntu/NestedTemplates/lib/mysql.yaml)
+* [wordpress.yaml](/juno/Ubuntu/NestedTemplates/lib/wordpress.yaml)
 * [parallel_example.yaml](/juno/Ubuntu/parallel_example.yaml)
 * [serial_example.yaml](/juno/Ubuntu/serial_example.yaml)
+* [structured_deployment.yaml](/juno/Ubuntu/SoftwareConfig/structured_deployment.yaml)
 * [structured_deployment.yaml](/juno/Ubuntu/structured_deployment.yaml)
 * [Use_Deployment_Key.yaml](/yaml/CentOS/Use_Deployment_Key.yaml)
 * [Single_Gluster_Server_And_Cinder_Volume.yaml](/yaml/Ubuntu/Single_Gluster_Server_And_Cinder_Volume.yaml)
@@ -307,6 +338,7 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 * [cinder_volume.yaml](/juno/cinder_volume.yaml)
 * [cloud_init.yaml](/juno/cloud_init.yaml)
 * [apache_single_instance_aws.yaml](/juno/Debian/apache_single_instance_aws.yaml)
+* [example-deploy-sequence.yaml](/juno/example-deploy-sequence.yaml)
 * [apache_single_instance_aws.yaml](/juno/Fedora/apache_single_instance_aws.yaml)
 * [apache_single_instance_aws_swift_signal.yaml](/juno/Fedora/apache_single_instance_aws_swift_signal.yaml)
 * [apache_single_instance_nova.yaml](/juno/Fedora/apache_single_instance_nova.yaml)
@@ -316,12 +348,14 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 * [wordpress_with_ha.yaml](/juno/Fedora/wordpress_with_ha.yaml)
 * [multi_stack.yaml](/juno/multi_stack.yaml)
 * [native_vs_aws_instance.yaml](/juno/native_vs_aws_instance.yaml)
-* [nova_keypair.yaml](/juno/nova_keypair.yaml)
+* [nova_keypair_existing.yaml](/juno/nova_keypair_existing.yaml)
+* [nova_keypair_new.yaml](/juno/nova_keypair_new.yaml)
 * [apache_single_instance_aws.yaml](/juno/OpenSuSe/apache_single_instance_aws.yaml)
 * [apache_single_instance_nova.yaml](/juno/OpenSuSe/apache_single_instance_nova.yaml)
 * [random_string.yaml](/juno/random_string.yaml)
 * [resource_group.yaml](/juno/resource_group.yaml)
 * [s3.yaml](/juno/s3.yaml)
+* [server_group.yaml](/juno/server_group.yaml)
 * [single_instance_with_cinder_volume.yaml](/juno/single_instance_with_cinder_volume.yaml)
 * [single_instance_with_existing_cinder_volume.yaml](/juno/single_instance_with_existing_cinder_volume.yaml)
 * [software_component.yaml](/juno/software_component.yaml)
@@ -329,18 +363,25 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 * [trove_database.yaml](/juno/trove_database.yaml)
 * [apache_single_instance_aws.yaml](/juno/Ubuntu/apache_single_instance_aws.yaml)
 * [apache_single_instance_nova.yaml](/juno/Ubuntu/apache_single_instance_nova.yaml)
+* [apps_catalog_demo.yaml](/juno/Ubuntu/apps_catalog_demo.yaml)
 * [basic_server.yaml](/juno/Ubuntu/basic_server.yaml)
 * [ceilometer_demo.yaml](/juno/Ubuntu/ceilometer_demo.yaml)
 * [cinder_volume.yaml](/juno/Ubuntu/cinder_volume.yaml)
+* [master.yaml](/juno/Ubuntu/Environments/master.yaml)
 * [Gluster_Cluster.yaml](/juno/Ubuntu/Gluster_Cluster.yaml)
+* [mysql.yaml](/juno/Ubuntu/NestedTemplates/lib/mysql.yaml)
+* [wordpress.yaml](/juno/Ubuntu/NestedTemplates/lib/wordpress.yaml)
+* [master.yaml](/juno/Ubuntu/NestedTemplates/master.yaml)
 * [openstack_command_line_tools.yaml](/juno/Ubuntu/openstack_command_line_tools.yaml)
 * [parallel_example.yaml](/juno/Ubuntu/parallel_example.yaml)
 * [serial_example.yaml](/juno/Ubuntu/serial_example.yaml)
+* [structured_deployment.yaml](/juno/Ubuntu/SoftwareConfig/structured_deployment.yaml)
 * [structured_deployment.yaml](/juno/Ubuntu/structured_deployment.yaml)
 
 <span style="color:green">✔</span>&nbsp;[get_file](http://docs.openstack.org/developer/heat/template_guide/hot_spec.html#get_file)<br />
 * [multi_stack.yaml](/juno/multi_stack.yaml)
 * [resource_group.yaml](/juno/resource_group.yaml)
+* [install_config_agent_ubuntu_pip.yaml](/juno/Ubuntu/SoftwareConfig/templates/install_config_agent_ubuntu_pip.yaml)
 
 <span style="color:green">✔</span>&nbsp;[get_param](http://docs.openstack.org/developer/heat/template_guide/hot_spec.html#get_param)<br />
 * [aws_stack.yaml](/juno/aws_stack.yaml)
@@ -349,6 +390,7 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 * [cinder_volume.yaml](/juno/cinder_volume.yaml)
 * [cloud_init.yaml](/juno/cloud_init.yaml)
 * [apache_single_instance_aws.yaml](/juno/Debian/apache_single_instance_aws.yaml)
+* [example-deploy-sequence.yaml](/juno/example-deploy-sequence.yaml)
 * [apache_single_instance_aws.yaml](/juno/Fedora/apache_single_instance_aws.yaml)
 * [apache_single_instance_aws_swift_signal.yaml](/juno/Fedora/apache_single_instance_aws_swift_signal.yaml)
 * [apache_single_instance_nova.yaml](/juno/Fedora/apache_single_instance_nova.yaml)
@@ -359,7 +401,8 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 * [instance_group.yaml](/juno/instance_group.yaml)
 * [multi_stack.yaml](/juno/multi_stack.yaml)
 * [native_vs_aws_instance.yaml](/juno/native_vs_aws_instance.yaml)
-* [nova_keypair.yaml](/juno/nova_keypair.yaml)
+* [nova_keypair_existing.yaml](/juno/nova_keypair_existing.yaml)
+* [nova_keypair_new.yaml](/juno/nova_keypair_new.yaml)
 * [apache_single_instance_aws.yaml](/juno/OpenSuSe/apache_single_instance_aws.yaml)
 * [apache_single_instance_nova.yaml](/juno/OpenSuSe/apache_single_instance_nova.yaml)
 * [resource_group.yaml](/juno/resource_group.yaml)
@@ -370,13 +413,19 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 * [trove_database.yaml](/juno/trove_database.yaml)
 * [apache_single_instance_aws.yaml](/juno/Ubuntu/apache_single_instance_aws.yaml)
 * [apache_single_instance_nova.yaml](/juno/Ubuntu/apache_single_instance_nova.yaml)
+* [apps_catalog_demo.yaml](/juno/Ubuntu/apps_catalog_demo.yaml)
 * [basic_server.yaml](/juno/Ubuntu/basic_server.yaml)
 * [ceilometer_demo.yaml](/juno/Ubuntu/ceilometer_demo.yaml)
 * [cinder_volume.yaml](/juno/Ubuntu/cinder_volume.yaml)
+* [master.yaml](/juno/Ubuntu/Environments/master.yaml)
 * [Gluster_Cluster.yaml](/juno/Ubuntu/Gluster_Cluster.yaml)
+* [mysql.yaml](/juno/Ubuntu/NestedTemplates/lib/mysql.yaml)
+* [wordpress.yaml](/juno/Ubuntu/NestedTemplates/lib/wordpress.yaml)
+* [master.yaml](/juno/Ubuntu/NestedTemplates/master.yaml)
 * [openstack_command_line_tools.yaml](/juno/Ubuntu/openstack_command_line_tools.yaml)
 * [parallel_example.yaml](/juno/Ubuntu/parallel_example.yaml)
 * [serial_example.yaml](/juno/Ubuntu/serial_example.yaml)
+* [structured_deployment.yaml](/juno/Ubuntu/SoftwareConfig/structured_deployment.yaml)
 * [structured_deployment.yaml](/juno/Ubuntu/structured_deployment.yaml)
 
 <span style="color:green">✔</span>&nbsp;[get_resource](http://docs.openstack.org/developer/heat/template_guide/hot_spec.html#get_resource)<br />
@@ -384,6 +433,7 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 * [apache_single_instance_aws.yaml](/juno/CentOS/apache_single_instance_aws.yaml)
 * [cloud_init.yaml](/juno/cloud_init.yaml)
 * [apache_single_instance_aws.yaml](/juno/Debian/apache_single_instance_aws.yaml)
+* [example-deploy-sequence.yaml](/juno/example-deploy-sequence.yaml)
 * [apache_single_instance_aws.yaml](/juno/Fedora/apache_single_instance_aws.yaml)
 * [apache_single_instance_aws_swift_signal.yaml](/juno/Fedora/apache_single_instance_aws_swift_signal.yaml)
 * [apache_single_instance_nova.yaml](/juno/Fedora/apache_single_instance_nova.yaml)
@@ -392,7 +442,8 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 * [wordpress_two_instance.yaml](/juno/Fedora/wordpress_two_instance.yaml)
 * [wordpress_with_ha.yaml](/juno/Fedora/wordpress_with_ha.yaml)
 * [instance_group.yaml](/juno/instance_group.yaml)
-* [nova_keypair.yaml](/juno/nova_keypair.yaml)
+* [nova_keypair_existing.yaml](/juno/nova_keypair_existing.yaml)
+* [nova_keypair_new.yaml](/juno/nova_keypair_new.yaml)
 * [apache_single_instance_aws.yaml](/juno/OpenSuSe/apache_single_instance_aws.yaml)
 * [apache_single_instance_nova.yaml](/juno/OpenSuSe/apache_single_instance_nova.yaml)
 * [server_group.yaml](/juno/server_group.yaml)
@@ -401,12 +452,17 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 * [software_component.yaml](/juno/software_component.yaml)
 * [apache_single_instance_aws.yaml](/juno/Ubuntu/apache_single_instance_aws.yaml)
 * [apache_single_instance_nova.yaml](/juno/Ubuntu/apache_single_instance_nova.yaml)
+* [apps_catalog_demo.yaml](/juno/Ubuntu/apps_catalog_demo.yaml)
 * [ceilometer_demo.yaml](/juno/Ubuntu/ceilometer_demo.yaml)
 * [cinder_volume.yaml](/juno/Ubuntu/cinder_volume.yaml)
 * [Gluster_Cluster.yaml](/juno/Ubuntu/Gluster_Cluster.yaml)
+* [mysql.yaml](/juno/Ubuntu/NestedTemplates/lib/mysql.yaml)
+* [wordpress.yaml](/juno/Ubuntu/NestedTemplates/lib/wordpress.yaml)
 * [openstack_command_line_tools.yaml](/juno/Ubuntu/openstack_command_line_tools.yaml)
 * [parallel_example.yaml](/juno/Ubuntu/parallel_example.yaml)
 * [serial_example.yaml](/juno/Ubuntu/serial_example.yaml)
+* [structured_deployment.yaml](/juno/Ubuntu/SoftwareConfig/structured_deployment.yaml)
+* [install_config_agent_ubuntu_pip.yaml](/juno/Ubuntu/SoftwareConfig/templates/install_config_agent_ubuntu_pip.yaml)
 * [structured_deployment.yaml](/juno/Ubuntu/structured_deployment.yaml)
 
 <span style="color:green">✔</span>&nbsp;[list_join](http://docs.openstack.org/developer/heat/template_guide/hot_spec.html#list_join)<br />
@@ -441,12 +497,17 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 * [swift.yaml](/juno/swift.yaml)
 * [apache_single_instance_aws.yaml](/juno/Ubuntu/apache_single_instance_aws.yaml)
 * [apache_single_instance_nova.yaml](/juno/Ubuntu/apache_single_instance_nova.yaml)
+* [apps_catalog_demo.yaml](/juno/Ubuntu/apps_catalog_demo.yaml)
 * [ceilometer_demo.yaml](/juno/Ubuntu/ceilometer_demo.yaml)
 * [cinder_volume.yaml](/juno/Ubuntu/cinder_volume.yaml)
 * [Gluster_Cluster.yaml](/juno/Ubuntu/Gluster_Cluster.yaml)
+* [mysql.yaml](/juno/Ubuntu/NestedTemplates/lib/mysql.yaml)
+* [wordpress.yaml](/juno/Ubuntu/NestedTemplates/lib/wordpress.yaml)
 * [openstack_command_line_tools.yaml](/juno/Ubuntu/openstack_command_line_tools.yaml)
 * [parallel_example.yaml](/juno/Ubuntu/parallel_example.yaml)
 * [serial_example.yaml](/juno/Ubuntu/serial_example.yaml)
+* [structured_deployment.yaml](/juno/Ubuntu/SoftwareConfig/structured_deployment.yaml)
+* [install_config_agent_ubuntu_pip.yaml](/juno/Ubuntu/SoftwareConfig/templates/install_config_agent_ubuntu_pip.yaml)
 
 <span style="color:green">✔</span>&nbsp;[Fn::Select](http://docs.openstack.org/developer/heat/template_guide/hot_spec.html#Fn::Select)<br />
 * [apache_single_instance_aws.yaml](/juno/CentOS/apache_single_instance_aws.yaml)
@@ -460,5 +521,42 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 * [basic_server.yaml](/juno/Ubuntu/basic_server.yaml)
 * [ceilometer_demo.yaml](/juno/Ubuntu/ceilometer_demo.yaml)
 * [cinder_volume.yaml](/juno/Ubuntu/cinder_volume.yaml)
+* [master.yaml](/juno/Ubuntu/Environments/master.yaml)
 * [Gluster_Cluster.yaml](/juno/Ubuntu/Gluster_Cluster.yaml)
+* [master.yaml](/juno/Ubuntu/NestedTemplates/master.yaml)
+* [structured_deployment.yaml](/juno/Ubuntu/SoftwareConfig/structured_deployment.yaml)
 * [structured_deployment.yaml](/juno/Ubuntu/structured_deployment.yaml)
+
+## Pseudo-Parameters
+
+<span style="color:green">✔</span>&nbsp;OS::stack_name<br />
+* [wordpress_autoscaling.yaml](/juno/Fedora/wordpress_autoscaling.yaml)
+* [wordpress_single_instance.yaml](/juno/Fedora/wordpress_single_instance.yaml)
+* [wordpress_with_ha.yaml](/juno/Fedora/wordpress_with_ha.yaml)
+
+<span style="color:green">✔</span>&nbsp;OS::stack_id<br />
+<span style="color:green">✔</span>&nbsp;OS::project_id<br />
+
+## Custom-constraints
+
+<span style="color:green">✔</span>&nbsp;nova.flavor<br />
+* [aws_stack.yaml](/juno/aws_stack.yaml)
+* [multi_stack.yaml](/juno/multi_stack.yaml)
+* [nova_keypair_existing.yaml](/juno/nova_keypair_existing.yaml)
+
+<span style="color:red">✘</span>&nbsp;neutron.network		is not yet supported on the NeCTAR cloud.<br />
+<span style="color:red">✘</span>&nbsp;neutron.port		is not yet supported on the NeCTAR cloud.<br />
+<span style="color:red">✘</span>&nbsp;neutron.router		is not yet supported on the NeCTAR cloud.<br />
+<span style="color:red">✘</span>&nbsp;neutron.subnet		is not yet supported on the NeCTAR cloud.<br />
+<span style="color:green">✔</span>&nbsp;glance.image<br />
+* [aws_stack.yaml](/juno/aws_stack.yaml)
+* [multi_stack.yaml](/juno/multi_stack.yaml)
+
+<span style="color:green">✔</span>&nbsp;iso_8601<br />
+<span style="color:green">✔</span>&nbsp;nova.keypair<br />
+* [aws_stack.yaml](/juno/aws_stack.yaml)
+* [basic_instance.yaml](/juno/basic_instance.yaml)
+* [multi_stack.yaml](/juno/multi_stack.yaml)
+* [server_group.yaml](/juno/server_group.yaml)
+* [software_component.yaml](/juno/software_component.yaml)
+* [basic_server.yaml](/juno/Ubuntu/basic_server.yaml)
