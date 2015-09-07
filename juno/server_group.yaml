@@ -1,7 +1,6 @@
 # http://docs.openstack.org/developer/heat/template_guide/hot_spec.html#heat-template-version
 heat_template_version: 2014-10-16
 
-# fails with a Error: Resource CREATE failed: TypeError: __init__() got an unexpected keyword argument 'retry_after'
 
 parameters:
 
@@ -37,7 +36,9 @@ resources:
       # see http://dev.cloudwatt.com/en/blog/affinity-and-anti-affinity-in-openstack.html
       policies: [affinity]
 
-  # fails with a Error: Resource CREATE failed: TypeError: __init__() got an unexpected keyword argument 'retry_after'
+
+  # If we uncomment the scheduler_hints, this template will fail with:
+  # Error: Resource CREATE failed: Instance Group 9856fdd7-57eb-4857-B746-8002476af9a1 Could Not Be Found
   auto_scaling_group:
     # http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::AutoScalingGroup
     type: OS::Heat::AutoScalingGroup
@@ -48,7 +49,7 @@ resources:
             key_name: { get_param: key_name }
             image: { get_param: image_id }
             flavor: { get_param: instance_type }
-            scheduler_hints: {group: {get_resource: policy_group}}
+            #scheduler_hints: {group: {get_resource: policy_group}}
       min_size: 1
       desired_capacity: 3
       max_size: 5
@@ -70,3 +71,18 @@ resources:
       auto_scaling_group_id: {get_resource: auto_scaling_group}
       cooldown: 60
       scaling_adjustment: '-1'
+
+
+outputs:
+
+  scale_up_url:
+    description: >
+      This URL is the webhook to scale the group up. Invoke by doing an HTTP POST to this URL.
+      No body or other headers is needed. But do put quotes around the url!
+    value: {get_attr: [scale_up_policy, alarm_url]}
+
+  scale_down_url:
+    description: >
+      This URL is the webhook to scale the group down. Invoke by doing an HTTP POST to this URL.
+      No body or other headers is needed. But do put quotes around the url
+    value: {get_attr: [scale_down_policy, alarm_url]}
