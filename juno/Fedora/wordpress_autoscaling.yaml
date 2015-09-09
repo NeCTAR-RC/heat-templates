@@ -113,6 +113,7 @@ resources:
       period: '60'
       evaluation_periods: '1'
       threshold: '50'
+      # for the metadata in use, see: https://ahsalkeld.wordpress.com/2014/09/25/deap-dive-into-using-heat-alarms/
       alarm_actions:
       - { get_attr: [web_server_scale_up_policy, AlarmUrl] }
       matching_metadata: { 'metadata.user_metadata.AutoScalingGroupName': { get_resource: 'web_server_group' } }
