@@ -3,7 +3,8 @@ heat_template_version: 2014-10-16
 
 description: >
   This template creates a sigle instance running wordpress, and a monitor that will kill and start a new instance if
-  it finds that the running instance is not being responsive enough.
+  it finds that the running instance is not being responsive enough. Note that all resources that are dependent
+  on the instance are also killed and rebuilt!
   Note that it uses a deprecated resource type (HARestarter).
 
 
@@ -84,13 +85,36 @@ resources:
     properties:
       InstanceId: { get_resource: wordpress_site }
 
-  # http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::CloudWatch::Alarm
+  cpu_alarm_high:
+    type: OS::Ceilometer::Alarm
+    properties:
+      description: Restart the vm if the cpu_utilization is over 90 for 10 minutes.
+      meter_name: cpu_util
+      statistic: avg
+      period: 600
+      evaluation_periods: 1
+      threshold: 90
+      alarm_actions:
+        - { get_attr: [web_server_restart_policy, AlarmUrl] }
+      comparison_operator: gt
+
   http_failure_alarm:
+    # http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::CloudWatch::Alarm
     type: AWS::CloudWatch::Alarm
     properties:
       AlarmDescription: Restart the wordpress_site if httpd fails > 3 times in 10 minutes
       MetricName: ServiceFailure
-      Namespace: system/linux
+      # ServiceFailure
+      # MemoryUtilization
+      # MemoryUsed
+      # MemoryAvailable
+      # Heartbeat
+      # SwapUtilization
+      # SwapUsed
+      # DiskSpaceUtilization
+      # DiskSpaceUsed
+      # DiskSpaceAvailable
+      # CPUUtilization
       Statistic: SampleCount
       Period: 300
       EvaluationPeriods: 1
@@ -99,8 +123,8 @@ resources:
       - { get_attr: [web_server_restart_policy, AlarmUrl] }
       ComparisonOperator: GreaterThanThreshold
 
-  # http://docs.openstack.org/developer/heat/template_guide/cfn.html# AWS::EC2::Instance
   wordpress_site:
+    # http://docs.openstack.org/developer/heat/template_guide/cfn.html# AWS::EC2::Instance
     type: AWS::EC2::Instance
     metadata:
       # See http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-init.html
@@ -128,9 +152,9 @@ resources:
                     credential-file=/etc/cfn/cfn-credentials
                     region=ap-southeast-1
                     interval=Interval
-                params:
-                  StackName: { get_param: 'OS::stack_name' }
-                  Interval: { get_param: hup_poll_interval }
+                  params:
+                    StackName: { get_param: 'OS::stack_name' }
+                    Interval: { get_param: hup_poll_interval }
               mode: '000400'
               owner: root
               group: root
@@ -246,6 +270,10 @@ resources:
 
 
 outputs:
+
+  restart_url:
+    description: The Restart URL
+    value: { get_attr: [web_server_restart_policy, AlarmUrl] }
 
   url:
     description: The URL of the website
