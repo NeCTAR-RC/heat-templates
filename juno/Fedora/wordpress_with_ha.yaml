@@ -128,9 +128,13 @@ resources:
     type: AWS::EC2::Instance
     metadata:
       # See http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-init.html
+      # This will be placed as JSON at /var/lib/cloud/data/cfn-init-data on the instance
+      # heat-cfntools will then unpack and act on it.
+      # For more see: https://wiki.openstack.org/wiki/Heat/ApplicationDeployment
       AWS::CloudFormation::Init:
         config:
           files:
+            # required to communicate with OpenStack
             /etc/cfn/cfn-credentials:
               content:
                 str_replace:
@@ -143,6 +147,7 @@ resources:
               mode: '000400'
               owner: root
               group: root
+            # configuration for the process that will install and monitor services, and call the hooks.
             /etc/cfn/cfn-hup.conf:
               content:
                 str_replace:
@@ -158,6 +163,7 @@ resources:
               mode: '000400'
               owner: root
               group: root
+            # The hook that will report a service failure
             /etc/cfn/notify-on-httpd-restarted:
               content: |
                 #!/bin/sh
@@ -165,6 +171,7 @@ resources:
               mode: '000700'
               owner: root
               group: root
+            # call the process at a regular interval (for monitoring and possible hook calling)
             /tmp/cfn-hup-crontab.txt:
               content: |
                 MAIL=""
@@ -172,6 +179,7 @@ resources:
               mode: '000600'
               owner: root
               group: root
+            # a file required to configure mysql
             /tmp/setup.mysql:
               content:
                 str_replace:
@@ -187,6 +195,7 @@ resources:
               mode: '000644'
               owner: root
               group: root
+            # The hook to call if the any of the services are restarted.
             /etc/cfn/hooks.conf:
               content: |
                 [cfn-http-restarted]
@@ -197,6 +206,7 @@ resources:
               mode: '000400'
               owner: root
               group: root
+          # the following packages will be installed
           packages:
             yum:
               cronie: []
@@ -204,6 +214,7 @@ resources:
               mariadb-server: []
               httpd: []
               wordpress: []
+          # and the following services will be run
           services:
             systemd:
               mysqld: { enabled: true, ensureRunning: true }
