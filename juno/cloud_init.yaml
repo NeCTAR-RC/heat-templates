@@ -21,7 +21,7 @@ parameters:
     description: The NeCTAR flavour the webserver is to run on
     default: m2.xsmall
     constraints:
-      - allowed_values: [m2.xsmall, m2.small]
+      - allowed_values: [m2.xsmall, m2.small, m1.small]
         description:
           Must be a valid NeCTAR flavour, limited to the smaller ones available
 

@@ -19,7 +19,7 @@ parameters:
     type: string
     default: m2.xsmall
     constraints:
-      - allowed_values: [m2.xsmall, m2.small]
+      - allowed_values: [m2.xsmall, m2.small, m1.small]
         description:
           Must be a valid NeCTAR flavour with 10G drive, limited to the smaller ones available
 
