@@ -41,6 +41,8 @@ resources:
       flavor: { get_param: instance_type }
       image_update_policy: REPLACE
       user_data_format: RAW
+      # you can even attach metadata...
+      metadata: {"metering.stack": {get_param: "OS::stack_id"}}
 
 
 outputs:
