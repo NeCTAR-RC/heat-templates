@@ -24,9 +24,9 @@ parameters:
           Must be a valid NeCTAR flavour with 10G drive, limited to the smaller ones available
 
   fedora_image_id:
-     description: A NeCTAR fedora image
-     type: string
-     default: d3bae233-a0cd-4533-a710-d7aa9de0a4b7
+    description: A NeCTAR fedora image
+    type: string
+    default: d3bae233-a0cd-4533-a710-d7aa9de0a4b7
 
   # Then the installation specific parameters
 
