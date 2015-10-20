@@ -3,7 +3,9 @@ Heat Templates
 
 This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) templates for use on the NeCTAR cloud.
 
-## Resources
+## To Do:
+
+* [ ] Wordpress doesn't actually install on the latest fedora image :(
 
 ## Resources
 
@@ -11,6 +13,7 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 <span style="color:red">✘</span>&nbsp;[OS::Barbican::Secret](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Barbican::Secret)		is not yet supported on the NeCTAR cloud.<br />
 <span style="color:green">✔</span>&nbsp;[OS::Ceilometer::Alarm](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Ceilometer::Alarm)<br />
 * [wordpress_autoscaling.yaml](/juno/Fedora/wordpress_autoscaling.yaml)
+* [wordpress_with_ha.yaml](/juno/Fedora/wordpress_with_ha.yaml)
 * [ceilometer_demo.yaml](/juno/Ubuntu/ceilometer_demo.yaml)
 
 <span style="color:green">✔</span>&nbsp;[OS::Ceilometer::CombinationAlarm](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Ceilometer::CombinationAlarm)<br />
@@ -38,6 +41,8 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 * [glance_image.yaml](/juno/glance_image.yaml)
 
 <span style="color:green">✔</span>&nbsp;[OS::Heat::AccessPolicy](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::AccessPolicy)<br />
+* [wordpress_with_ha.yaml](/juno/Fedora/wordpress_with_ha.yaml)
+
 <span style="color:green">✔</span>&nbsp;[OS::Heat::AutoScalingGroup](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::AutoScalingGroup)<br />
 * [server_group.yaml](/juno/server_group.yaml)
 
@@ -56,8 +61,6 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 
 <span style="color:red">✘</span>&nbsp;[OS::Heat::None](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::None)		is not yet supported on the NeCTAR cloud.<br />
 <span style="color:green">✔</span>&nbsp;[OS::Heat::RandomString](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::RandomString)<br />
-* [WordPress_AutoScaling.yaml](/icehouse/yaml/Fedora/WordPress_AutoScaling.yaml)
-* [WordPress_Single_Instance_With_HA.yaml](/icehouse/yaml/Fedora/WordPress_Single_Instance_With_HA.yaml)
 * [wordpress_autoscaling.yaml](/juno/Fedora/wordpress_autoscaling.yaml)
 * [wordpress_single_instance.yaml](/juno/Fedora/wordpress_single_instance.yaml)
 * [wordpress_two_instance.yaml](/juno/Fedora/wordpress_two_instance.yaml)
@@ -208,25 +211,21 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 
 <span style="color:red">✘</span>&nbsp;[OS::Zaqar::Queue](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Zaqar::Queue)		is not yet supported on the NeCTAR cloud.<br />
 <span style="color:green">✔</span>&nbsp;[AWS::AutoScaling::AutoScalingGroup](http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::AutoScaling::AutoScalingGroup)<br />
-* [WordPress_AutoScaling.yaml](/icehouse/yaml/Fedora/WordPress_AutoScaling.yaml)
 * [wordpress_autoscaling.yaml](/juno/Fedora/wordpress_autoscaling.yaml)
 * [ceilometer_demo.yaml](/juno/Ubuntu/ceilometer_demo.yaml)
 
 <span style="color:green">✔</span>&nbsp;[AWS::AutoScaling::LaunchConfiguration](http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::AutoScaling::LaunchConfiguration)<br />
-* [WordPress_AutoScaling.yaml](/icehouse/yaml/Fedora/WordPress_AutoScaling.yaml)
 * [wordpress_autoscaling.yaml](/juno/Fedora/wordpress_autoscaling.yaml)
 * [instance_group.yaml](/juno/instance_group.yaml)
 * [ceilometer_demo.yaml](/juno/Ubuntu/ceilometer_demo.yaml)
 
 <span style="color:green">✔</span>&nbsp;[AWS::AutoScaling::ScalingPolicy](http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::AutoScaling::ScalingPolicy)<br />
-* [WordPress_AutoScaling.yaml](/icehouse/yaml/Fedora/WordPress_AutoScaling.yaml)
 * [wordpress_autoscaling.yaml](/juno/Fedora/wordpress_autoscaling.yaml)
 
 <span style="color:green">✔</span>&nbsp;[AWS::CloudFormation::Stack](http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::CloudFormation::Stack)<br />
 * [aws_stack.yaml](/juno/aws_stack.yaml)
 
 <span style="color:green">✔</span>&nbsp;[AWS::CloudFormation::WaitCondition](http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::CloudFormation::WaitCondition)<br />
-* [WordPress_Single_Instance_With_HA.yaml](/icehouse/yaml/Fedora/WordPress_Single_Instance_With_HA.yaml)
 * [apache_single_instance_aws.yaml](/juno/CentOS/apache_single_instance_aws.yaml)
 * [apache_single_instance_aws.yaml](/juno/Debian/apache_single_instance_aws.yaml)
 * [apache_single_instance_aws.yaml](/juno/Fedora/apache_single_instance_aws.yaml)
@@ -237,7 +236,6 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 * [openstack_command_line_tools.yaml](/juno/Ubuntu/openstack_command_line_tools.yaml)
 
 <span style="color:green">✔</span>&nbsp;[AWS::CloudFormation::WaitConditionHandle](http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::CloudFormation::WaitConditionHandle)<br />
-* [WordPress_Single_Instance_With_HA.yaml](/icehouse/yaml/Fedora/WordPress_Single_Instance_With_HA.yaml)
 * [apache_single_instance_aws.yaml](/juno/CentOS/apache_single_instance_aws.yaml)
 * [apache_single_instance_aws.yaml](/juno/Debian/apache_single_instance_aws.yaml)
 * [apache_single_instance_aws.yaml](/juno/Fedora/apache_single_instance_aws.yaml)
@@ -250,7 +248,6 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 <span style="color:red">✘</span>&nbsp;[AWS::EC2::EIP](http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::EC2::EIP)		is not yet supported on the NeCTAR cloud.<br />
 <span style="color:red">✘</span>&nbsp;[AWS::EC2::EIPAssociation](http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::EC2::EIPAssociation)		is not yet supported on the NeCTAR cloud.<br />
 <span style="color:green">✔</span>&nbsp;[AWS::EC2::Instance](http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::EC2::Instance)<br />
-* [WordPress_Single_Instance_With_HA.yaml](/icehouse/yaml/Fedora/WordPress_Single_Instance_With_HA.yaml)
 * [apache_single_instance_aws.yaml](/juno/CentOS/apache_single_instance_aws.yaml)
 * [apache_single_instance_aws.yaml](/juno/Debian/apache_single_instance_aws.yaml)
 * [apache_single_instance_aws.yaml](/juno/Fedora/apache_single_instance_aws.yaml)
@@ -307,20 +304,15 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 * [wordpress_two_instance.yaml](/juno/Fedora/wordpress_two_instance.yaml)
 
 <span style="color:green">✔</span>&nbsp;[AWS::ElasticLoadBalancing::LoadBalancer](http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::ElasticLoadBalancing::LoadBalancer)<br />
-* [WordPress_AutoScaling.yaml](/icehouse/yaml/Fedora/WordPress_AutoScaling.yaml)
 * [wordpress_autoscaling.yaml](/juno/Fedora/wordpress_autoscaling.yaml)
 
 <span style="color:green">✔</span>&nbsp;[AWS::IAM::AccessKey](http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::IAM::AccessKey)<br />
 * [AccessKey.yaml](/icehouse/yaml/AccessKey.yaml)
-* [WordPress_AutoScaling.yaml](/icehouse/yaml/Fedora/WordPress_AutoScaling.yaml)
-* [WordPress_Single_Instance_With_HA.yaml](/icehouse/yaml/Fedora/WordPress_Single_Instance_With_HA.yaml)
 * [access_key.yaml](/juno/access_key.yaml)
 * [wordpress_autoscaling.yaml](/juno/Fedora/wordpress_autoscaling.yaml)
 * [wordpress_with_ha.yaml](/juno/Fedora/wordpress_with_ha.yaml)
 
 <span style="color:green">✔</span>&nbsp;[AWS::IAM::User](http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::IAM::User)<br />
-* [WordPress_AutoScaling.yaml](/icehouse/yaml/Fedora/WordPress_AutoScaling.yaml)
-* [WordPress_Single_Instance_With_HA.yaml](/icehouse/yaml/Fedora/WordPress_Single_Instance_With_HA.yaml)
 * [access_key.yaml](/juno/access_key.yaml)
 * [wordpress_autoscaling.yaml](/juno/Fedora/wordpress_autoscaling.yaml)
 * [wordpress_with_ha.yaml](/juno/Fedora/wordpress_with_ha.yaml)
@@ -534,8 +526,9 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 * [wordpress_with_ha.yaml](/juno/Fedora/wordpress_with_ha.yaml)
 
 <span style="color:green">✔</span>&nbsp;OS::stack_id<br />
-<span style="color:green">✔</span>&nbsp;OS::project_id<br />
+* [basic_instance.yaml](/juno/basic_instance.yaml)
 
+<span style="color:green">✔</span>&nbsp;OS::project_id<br />
 ## Custom-constraints
 
 <span style="color:green">✔</span>&nbsp;nova.flavor<br />
