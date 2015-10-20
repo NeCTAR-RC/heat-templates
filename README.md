@@ -10,7 +10,6 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 <span style="color:red">✘</span>&nbsp;[OS::Barbican::Order](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Barbican::Order)		is not yet supported on the NeCTAR cloud.<br />
 <span style="color:red">✘</span>&nbsp;[OS::Barbican::Secret](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Barbican::Secret)		is not yet supported on the NeCTAR cloud.<br />
 <span style="color:green">✔</span>&nbsp;[OS::Ceilometer::Alarm](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Ceilometer::Alarm)<br />
-* [WordPress_AutoScaling.yaml](/icehouse/yaml/Fedora/WordPress_AutoScaling.yaml)
 * [wordpress_autoscaling.yaml](/juno/Fedora/wordpress_autoscaling.yaml)
 * [ceilometer_demo.yaml](/juno/Ubuntu/ceilometer_demo.yaml)
 
