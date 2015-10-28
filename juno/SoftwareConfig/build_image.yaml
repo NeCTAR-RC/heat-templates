@@ -1,0 +1,135 @@
+# http://docs.openstack.org/developer/heat/template_guide/hot_spec.html#heat-template-version
+heat_template_version: 2014-10-16
+
+description: >
+  A sample template that will build an image with the required openstack packages and then put it into
+  glance for you.
+
+
+parameters:
+
+  key_name:
+    description: Name of an existing KeyPair to enable SSH access to the instances
+    type: string
+
+  auth_url:
+    description: The Keystone authentication url
+    default: https://keystone.rc.nectar.org.au:5000/v2.0/
+    type: string
+
+  image_id:
+    description: The id of the Ubuntu image to use (This default NeCTAR image id may have been retired)
+    default: 2a882d9c-3185-414c-9683-a4646b5c785e
+    type: string
+
+  tenant_id:
+    description: Your NeCTAR project id
+    type: string
+
+  tenant_name:
+    description: Your NeCTAR tenant name
+    type: string
+
+  user_name:
+    description: The user name that you use to log onto the NeCTAR cloud via the dashboard
+    type: string
+
+  password:
+    description: The password for command line usage (Not your AAF password!)
+    hidden: true
+    type: string
+
+
+resources:
+
+  command_line_tools:
+    # http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::EC2::Instance
+    type: AWS::EC2::Instance
+    properties:
+      ImageId: { get_param: image_id }
+      # Must have enough ephemeral storage to build the image on.
+      # having enough ram helps as well...
+      InstanceType: m1.large
+      KeyName: { get_param: key_name }
+      AvailabilityZone: melbourne
+      UserData:
+        str_replace:
+          template: |
+            #!/bin/bash -v
+            # Helper function
+            function error_exit
+            {
+              /opt/aws/bin/cfn-signal -e 1 -r "$1" 'WaitHandle'
+              exit 1
+            }
+            # https://wiki.debian.org/EnvironmentVariables
+            apt-get update && sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dist-upgrade
+            # set the default shell in /etc/passwd to bash for the ec2-user
+            usermod -s /bin/bash ec2-user
+            cat >> /home/ec2-user/.profile << EOF
+            export OS_AUTH_URL=AuthUrl
+            export OS_TENANT_ID=TenantId
+            export OS_TENANT_NAME=TenantName
+            export OS_USERNAME=UserName
+            export OS_PASSWORD=Password
+            EOF
+            apt-get -y install python-keystoneclient || error_exit 'Failed to install keystoneclient'
+            apt-get -y install python-glanceclient || error_exit 'Failed to install glanceclient'
+            apt-get -y install git || error_exit 'Failed to install git'
+            apt-get install kpartx || error_exit 'Failed to install kpartx'
+            cd /mnt || error_exit 'Could not change to transient disk'
+            git clone https://git.openstack.org/openstack/diskimage-builder.git || error_exit 'Could not clone image builder'
+            git clone https://git.openstack.org/openstack/tripleo-image-elements.git || error_exit 'Could not clone triple o elements'
+            git clone https://git.openstack.org/openstack/heat-templates.git || error_exit 'Could not clone heat templates'
+            git clone https://git.openstack.org/openstack/dib-utils.git  || error_exit 'Could not clone dib-utils'
+            export PATH="${PWD}/dib-utils/bin:$PATH"
+            export ELEMENTS_PATH=tripleo-image-elements/elements:heat-templates/hot/software-config/elements
+            diskimage-builder/bin/disk-image-create vm \
+              fedora selinux-permissive \
+              os-collect-config \
+              os-refresh-config \
+              os-apply-config \
+              heat-config \
+              heat-config-ansible \
+              heat-config-cfn-init \
+              heat-config-docker-compose \
+              heat-config-kubelet \
+              heat-config-puppet \
+              heat-config-salt \
+              heat-config-script \
+              -o fedora-software-config.qcow2 || error_exit 'Could not build image'
+            glance image-create --disk-format qcow2 --container-format bare --name fedora-software-config < \
+                fedora-software-config.qcow2 || error_exit 'Could not deploy image'
+            /opt/aws/bin/cfn-signal -e 0 -r "Image built and deployed" 'WaitHandle'
+          params:
+            AuthUrl: { get_param: auth_url }
+            TenantId: { get_param: tenant_id }
+            TenantName: { get_param: tenant_name }
+            UserName: { get_param: user_name }
+            Password: { get_param: password }
+            WaitHandle: { get_resource: wait_handle }
+
+  # http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::CloudFormation::WaitConditionHandle
+  wait_handle:
+    type: 'AWS::CloudFormation::WaitConditionHandle'
+
+  # http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::CloudFormation::WaitCondition
+  wait_condition:
+    type: AWS::CloudFormation::WaitCondition
+    depends_on: command_line_tools
+    properties:
+      Handle: { get_resource: wait_handle }
+      Count: 1
+      # we'll give it 15 minutes
+      Timeout: 900
+
+outputs:
+
+  ssh_command:
+    description: The command to use to ssh into the instance (assuming your key is in ~./ssh/)
+    value:
+      str_replace:
+        template: ssh ec2-user@host -i ~/.ssh/key.pem
+        params:
+          host: { get_attr: [command_line_tools, PublicIp] }
+          key: { get_param: key_name }
