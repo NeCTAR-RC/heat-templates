@@ -1,7 +1,7 @@
 # Software Configs
 
-The current NeCTAR images do not have all of the software required by either the OS::Nova::Server, SoftwareDeployment or 
-StructuredDeployment resource types installed.
+The current NeCTAR images do not have all of the software required by either the OS::Nova::Server, 
+SoftwareDeployment or StructuredDeployment resource types installed.
 
 The required software:
 
@@ -22,16 +22,21 @@ This software layer has some basic example scripts built on top of it that do th
   This one only runs on rhel, rhel7, centos7 & fedora
 * A script that provides the support required to have multiple configurations
 
-In order to work properly, the above scripts require the following packages to be installed: 
+These example scripts can be found in the 
+[OpenStack heat template examples](https://github.com/openstack/heat-templates/tree/master/hot/software-config) 
+under the 'elements' folder.
+
+In order to work properly, the above scripts require the following packages to be installed on the instance: 
 
 * os-collect-config (collects the meta-data and runs the hooks on changes), 
 * os-apply-config (turns metadata into config files),
 * os-refresh-config (restarts services and handles data on configuration changes). 
 
-You can see that these form a kind of a pipeline with os-collect-config being the main driver. 
+These packages are not currently installed on NeCTAR images.
 
-Of these os-collect-config can be considered a service: it can loop forever, polling the metadata servers for 
-changes to apply. The others will then get invoked if changes are found. When finished the results are written 
+You can see that the packages form a pipeline with os-collect-config being the main driver. It can be considered 
+to be a service: it loops forever, polling the metadata servers for changes to apply. 
+The others will then get invoked if changes are found. When finished the results are written 
 back to heat by means of the web API.
 
 In working, the OS::Nova::Server resource provides the required metadata, the SoftwareDeployment or 
@@ -39,6 +44,9 @@ StructuredDeployment then handle the call back into heat when the process is fin
 
 For more on this see: http://hardysteven.blogspot.com.au/2015/05/heat-softwareconfig-resources.html
 
-It is not necessary to have these pre-installed on the image. This directory demonstrates that it possible for you
-to bootstrap the required software onto the instance yourself, using environments.
+It is not necessary to have these pre-installed on the image. The [Ubuntu](Ubuntu) subdirectory demonstrates that it
+possible for you to bootstrap the required software onto the instance yourself, using environments.
+
+
+
 
