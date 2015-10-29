@@ -66,13 +66,14 @@ resources:
             apt-get update && sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dist-upgrade
             # set the default shell in /etc/passwd to bash for the ec2-user
             usermod -s /bin/bash ec2-user
-            cat >> /home/ec2-user/.profile << EOF
+            cat >> ~.profile << EOF
             export OS_AUTH_URL=AuthUrl
             export OS_TENANT_ID=TenantId
             export OS_TENANT_NAME=TenantName
             export OS_USERNAME=UserName
             export OS_PASSWORD=Password
             EOF
+            source ~.profile
             apt-get -y install python-keystoneclient || error_exit 'Failed to install keystoneclient'
             apt-get -y install python-glanceclient || error_exit 'Failed to install glanceclient'
             apt-get -y install git || error_exit 'Failed to install git'
@@ -98,7 +99,7 @@ resources:
               heat-config-salt \
               heat-config-script \
               -o fedora-software-config.qcow2 || error_exit 'Could not build image'
-            glance image-create --disk-format qcow2 --container-format bare --name fedora-software-config < \
+            glance image-create --disk-format qcow2 --container-format bare --name fedora-with-software-config < \
                 fedora-software-config.qcow2 || error_exit 'Could not deploy image'
             /opt/aws/bin/cfn-signal -e 0 -r "Image built and deployed" 'WaitHandle'
           params:
@@ -120,8 +121,8 @@ resources:
     properties:
       Handle: { get_resource: wait_handle }
       Count: 1
-      # we'll give it 15 minutes
-      Timeout: 900
+      # we'll give it 30 minutes
+      Timeout: 1800
 
 outputs:
 
