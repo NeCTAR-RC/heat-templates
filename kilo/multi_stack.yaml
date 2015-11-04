@@ -2,8 +2,7 @@
 heat_template_version: 2014-10-16
 
 # Fails on the NeCTAR cloud with ERROR: Unknown resource Type : OS::Heat::Stack
-# This is because this this resource type requires neutron.
-
+# This is because it was only introduced in kilo
 
 description: >
   basic_instance.yaml is a template that fires up a single instance. This template is supposed to fire up two copies,
@@ -41,7 +40,7 @@ resources:
     # http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::Stack
     type: OS::Heat::Stack
     properties:
-      template: { get_file: https://raw.githubusercontent.com/NeCTAR-RC/heat-templates/master/juno/basic_instance.yaml }
+      template: { get_file: "https://raw.githubusercontent.com/NeCTAR-RC/heat-templates/master/juno/basic_instance.yaml" }
       timeout: 60
       parameters:
         key_name: { get_param: key_name }
@@ -52,7 +51,7 @@ resources:
     # http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::Stack
     type: OS::Heat::Stack
     properties:
-      template: { get_file: https://raw.githubusercontent.com/NeCTAR-RC/heat-templates/master/juno/basic_instance.yaml }
+      template: { get_file: "https://raw.githubusercontent.com/NeCTAR-RC/heat-templates/master/juno/basic_instance.yaml" }
       timeout: 60
       parameters:
         key_name: { get_param: key_name }
