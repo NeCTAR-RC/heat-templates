@@ -95,20 +95,27 @@ resources:
             availability_zone: {get_param: availability_zone}
             security_groups: [ { get_resource: web_security_group } ]
             user_data_format: RAW
+            # Nova passes the volume_id in, but truncates it to 20 characters
+            # it is available as /dev/disk/by-id/virtio-volid_cut_to_20_chars.
             user_data:
                 str_replace:
                     template: |
-                        #!/bin/bash
-                        echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-                        echo "Begin: run user_data bash script. "
-                        apt-get update
-                        apt-get -y upgrade
-                        # get rid of annoying message shown when running sudo command
-                        echo "127.0.0.1     `hostname`" | tee -a /etc/hosts
+                        #cloud-config
+                        write_files:
+                            - content: |
+                                  #!/bin/bash
+                                  volume_id="%volume_id%"
+                                  volume_dev="/dev/disk/by-id/virtio-$(echo ${volume_id} | cut -c -20)"
+                                  mkfs.ext4 ${volume_dev}
+                                  mkdir -pv /mnt/cinder
+                                  echo "${volume_dev} /mnt/cinder ext4 defaults 1 2" >> /etc/fstab
+                                  mount /mnt/cinder
+                              path: /tmp/mount-disk
+                              permissions: '0700'
+                        runcmd:
+                            - /tmp/mount-disk
                     params:
-                        #LOCAL_DEVICE: /dev/vdc
-#                       # Recommended but does not work as GUID needs to be truncated to 20 characters.
-                        LOCAL_DEVICE: {list_join: ['', ['/dev/disk/by-id/virtio-', get_resource: master_volume ]]}
+                        "%volume_id%": { get_resource: master_volume }
 
     # http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Cinder::Volume
     master_volume:
@@ -125,10 +132,6 @@ resources:
         properties:
             volume_id: { get_resource: master_volume }
             instance_uuid: { get_resource: ubuntu_server }
-            mountpoint:
-                #/dev/vdc
-                # Recommended, but does not work as ID needs to be truncated to 20 characters.
-                list_join: [ '', ['/dev/disk/by-id/virtio-', get_resource: master_volume ] ]
 
 
 outputs:
@@ -140,8 +143,8 @@ outputs:
     ssh_command:
         description: SSH command for the newly created instance (assuming your key is in ~./ssh/).
         value:
-        str_replace:
-            template: ssh ubuntu@host -i ~/.ssh/key.pem
-            params:
-                host: { get_attr: [ubuntu_server, first_address] }
-                key: { get_param: key_name }
+            str_replace:
+                template: ssh ubuntu@host -i ~/.ssh/key.pem
+                params:
+                    host: { get_attr: [ubuntu_server, first_address] }
+                    key: { get_param: key_name }
