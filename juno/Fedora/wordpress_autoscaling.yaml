@@ -3,10 +3,14 @@ heat_template_version: 2014-10-16
 
 
 description: >
-  NeCTAR sample template. This template installs an autoscaling WordPress deployment using a local MySQL database
-  to store the data.
-  Each wordpress instance that is spun up is an independent instance of wordpress that shares nothing with the
-  other wordpress instances. So its simply a demonstrator of how to use the scaling features offered by heat.
+  NeCTAR sample template. This template installs an autoscaling WordPress deployment using a
+  local MySQL database to store the data.
+  Each wordpress instance that is spun up is an independent instance of wordpress that shares
+  nothing with the other wordpress instances. So its simply a demonstrator of how to use the
+  scaling features offered by heat.
+  NB: This template will only work if you add a security group that has http enabled to the
+  loadbalancer resource! The security group attribute on the loadbalancer is only supported
+  post the current juno release.
 
 
 parameters:
@@ -53,6 +57,23 @@ parameters:
 
 
 resources:
+
+  # http://docs.openstack.org/hot-reference/content/AWS__EC2__SecurityGroup.html
+  security_group:
+    type: "AWS::EC2::SecurityGroup"
+    properties:
+      GroupDescription: "Enable HTTP access via port 80 plus SSH access"
+      SecurityGroupIngress:
+        -
+          IpProtocol: "tcp"
+          FromPort: "80"
+          ToPort: "80"
+          CidrIp: "0.0.0.0/0"
+        -
+          IpProtocol: "tcp"
+          FromPort: "22"
+          ToPort: "22"
+          CidrIp: "0.0.0.0/0"
 
   # http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::RandomString
   db_password:
@@ -142,8 +163,12 @@ resources:
     properties:
       AvailabilityZones: [melbourne, monash, QRIScloud, NCI, intersect, sa, tasmania ]
       Listeners:
-      - { LoadBalancerPort: '80', InstancePort: '80', Protocol: HTTP }
+        - { LoadBalancerPort: '80', InstancePort: '80', Protocol: HTTP }
       HealthCheck: {Target: 'HTTP:80/', HealthyThreshold: '3', UnhealthyThreshold: '5', Interval: '30', Timeout: '5'}
+      # security groups aren't supported in Juno...
+      # SecurityGroups:
+      #  - { get_resource: security_group }
+
 
   # http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::AutoScaling::LaunchConfiguration
   launch_config:
@@ -194,6 +219,8 @@ resources:
       ImageId: { get_param: image_id }
       InstanceType: { get_param: instance_type }
       KeyName: { get_param: key_name }
+      SecurityGroups:
+        - { get_resource: security_group }
       UserData:
         str_replace:
           template: |
@@ -203,6 +230,7 @@ resources:
             # Setup MySQL root password and create a user
             mysqladmin -u root password db_root_password
             mysql -u root --password=db_root_password < /tmp/setup.mysql
+            sed -i "/Deny from all/d" /etc/httpd/conf.d/wordpress.conf
             sed -i "/Deny from All/d" /etc/httpd/conf.d/wordpress.conf
             sed -i "s/Require local/Require all granted/" /etc/httpd/conf.d/wordpress.conf
             sed -i s/database_name_here/db_name/ /etc/wordpress/wp-config.php
