@@ -28,6 +28,7 @@ parameters:
 resources:
 
   policy_group:
+    # Server groups aren't supported by NeCTAR, it turns out.
     # http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Nova::ServerGroup
     type: OS::Nova::ServerGroup
     # A Nova ServerGroup
@@ -38,7 +39,7 @@ resources:
 
 
   # If we uncomment the scheduler_hints, this template will fail:
-  # This appears to be due to a bug in nova.
+  # This is because server groups aren't supported by NeCTAR
   auto_scaling_group:
     # http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::AutoScalingGroup
     type: OS::Heat::AutoScalingGroup

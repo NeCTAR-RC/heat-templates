@@ -199,7 +199,7 @@ The following is a map showing the list of supported resources, and the template
 * [Use_Deployment_Key.yaml](/yaml/CentOS/Use_Deployment_Key.yaml)
 * [Single_Gluster_Server_And_Cinder_Volume.yaml](/yaml/Ubuntu/Single_Gluster_Server_And_Cinder_Volume.yaml)
 
-<span style="color:green">✔</span>&nbsp;[OS::Nova::ServerGroup](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Nova::ServerGroup)<br />
+<span style="color:red">✘</span>&nbsp;[OS::Nova::ServerGroup](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Nova::ServerGroup)		is not yet supported on the NeCTAR cloud.<br />
 * [server_group.yaml](/juno/server_group.yaml)
 
 <span style="color:red">✘</span>&nbsp;[OS::Sahara::Cluster](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Sahara::Cluster)		is not yet supported on the NeCTAR cloud.<br />
@@ -278,6 +278,7 @@ The following is a map showing the list of supported resources, and the template
 * [apache_single_instance_aws.yaml](/juno/Debian/apache_single_instance_aws.yaml)
 * [apache_single_instance_aws.yaml](/juno/Fedora/apache_single_instance_aws.yaml)
 * [apache_single_instance_aws_swift_signal.yaml](/juno/Fedora/apache_single_instance_aws_swift_signal.yaml)
+* [wordpress_autoscaling.yaml](/juno/Fedora/wordpress_autoscaling.yaml)
 * [wordpress_single_instance.yaml](/juno/Fedora/wordpress_single_instance.yaml)
 * [wordpress_two_instance.yaml](/juno/Fedora/wordpress_two_instance.yaml)
 * [apache_single_instance_aws.yaml](/juno/OpenSuSe/apache_single_instance_aws.yaml)
