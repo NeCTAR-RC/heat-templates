@@ -4,10 +4,10 @@ heat_template_version: 2014-10-16
 # For more see http://hardysteven.blogspot.com.au/2014/09/using-heat-resourcegroup-resources.html
 
 description: |
-  A template to demonstrate resource groups. The resource group launches the basic instance template, passing the
-  parameters entered through to it. It then returns the attributes and shows them as outputs.
-  To run it, you need to launch it from the command line. Change directory to the directory this template is in,
-  then use a command along the lines of:
+  A template to demonstrate resource groups. The resource group launches the basic instance template,
+  passing the parameters entered through to it. It then returns the attributes and shows them as outputs.
+  To run it, you need to launch it from the command line. Change directory to the directory this template
+  is in, then use a command along the lines of:
   heat stack-create -f resource_group.yaml -P key_name=your_key resource_group_demo
 
 
@@ -38,11 +38,9 @@ resources:
     # http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::ResourceGroup
     type: "OS::Heat::ResourceGroup"
     properties:
-      count: 1
+      count: 2
       resource_def:
-        type: basic_instance.yaml
-          # the get_file working here would be nice...
-          # get_file: "https://raw.githubusercontent.com/NeCTAR-RC/heat-templates/master/juno/basic_instance.yaml"
+        type: "https://raw.githubusercontent.com/NeCTAR-RC/heat-templates/master/juno/basic_instance.yaml"
         properties:
           key_name: { get_param: key_name }
           image_id: { get_param: image_id }
@@ -50,7 +48,6 @@ resources:
 
 
 outputs:
-
 
   attributes:
     description: A map of resource names to the specified attribute of each individual resource
