@@ -97,7 +97,7 @@ The following is a map showing the list of supported resources, and the template
 
 <span style="color:red">✘</span>&nbsp;[OS::Heat::SoftwareDeploymentGroup](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::SoftwareDeploymentGroup)		is not yet supported on the NeCTAR cloud.<br />
 <span style="color:red">✘</span>&nbsp;[OS::Heat::Stack](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::Stack)		is not yet supported on the NeCTAR cloud.<br />
-* [multi_stack.yaml](/juno/multi_stack.yaml)
+* [multi_stack.yaml](/kilo/multi_stack.yaml)
 
 <span style="color:green">✔</span>&nbsp;[OS::Heat::StructuredConfig](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::StructuredConfig)<br />
 * [structured_deployment.yaml](/juno/SoftwareConfig/structured_deployment.yaml)
@@ -340,7 +340,6 @@ The following is a map showing the list of supported resources, and the template
 * [wordpress_single_instance.yaml](/juno/Fedora/wordpress_single_instance.yaml)
 * [wordpress_two_instance.yaml](/juno/Fedora/wordpress_two_instance.yaml)
 * [wordpress_with_ha.yaml](/juno/Fedora/wordpress_with_ha.yaml)
-* [multi_stack.yaml](/juno/multi_stack.yaml)
 * [native_vs_aws_instance.yaml](/juno/native_vs_aws_instance.yaml)
 * [nova_keypair_existing.yaml](/juno/nova_keypair_existing.yaml)
 * [nova_keypair_new.yaml](/juno/nova_keypair_new.yaml)
@@ -374,11 +373,11 @@ The following is a map showing the list of supported resources, and the template
 * [openstack_command_line_tools.yaml](/juno/Ubuntu/openstack_command_line_tools.yaml)
 * [parallel_example.yaml](/juno/Ubuntu/parallel_example.yaml)
 * [serial_example.yaml](/juno/Ubuntu/serial_example.yaml)
+* [multi_stack.yaml](/kilo/multi_stack.yaml)
 
 <span style="color:green">✔</span>&nbsp;[get_file](http://docs.openstack.org/developer/heat/template_guide/hot_spec.html#get_file)<br />
-* [multi_stack.yaml](/juno/multi_stack.yaml)
-* [resource_group.yaml](/juno/resource_group.yaml)
 * [install_config_agent_ubuntu_pip.yaml](/juno/SoftwareConfig/Ubuntu/templates/install_config_agent_ubuntu_pip.yaml)
+* [multi_stack.yaml](/kilo/multi_stack.yaml)
 
 <span style="color:green">✔</span>&nbsp;[get_param](http://docs.openstack.org/developer/heat/template_guide/hot_spec.html#get_param)<br />
 * [aws_stack.yaml](/juno/aws_stack.yaml)
@@ -394,7 +393,6 @@ The following is a map showing the list of supported resources, and the template
 * [wordpress_two_instance.yaml](/juno/Fedora/wordpress_two_instance.yaml)
 * [wordpress_with_ha.yaml](/juno/Fedora/wordpress_with_ha.yaml)
 * [instance_group.yaml](/juno/instance_group.yaml)
-* [multi_stack.yaml](/juno/multi_stack.yaml)
 * [native_vs_aws_instance.yaml](/juno/native_vs_aws_instance.yaml)
 * [nova_keypair_existing.yaml](/juno/nova_keypair_existing.yaml)
 * [nova_keypair_new.yaml](/juno/nova_keypair_new.yaml)
@@ -425,6 +423,7 @@ The following is a map showing the list of supported resources, and the template
 * [openstack_command_line_tools.yaml](/juno/Ubuntu/openstack_command_line_tools.yaml)
 * [parallel_example.yaml](/juno/Ubuntu/parallel_example.yaml)
 * [serial_example.yaml](/juno/Ubuntu/serial_example.yaml)
+* [multi_stack.yaml](/kilo/multi_stack.yaml)
 
 <span style="color:green">✔</span>&nbsp;[get_resource](http://docs.openstack.org/developer/heat/template_guide/hot_spec.html#get_resource)<br />
 * [access_key.yaml](/juno/access_key.yaml)
@@ -475,7 +474,6 @@ The following is a map showing the list of supported resources, and the template
 * [suse_apache_single_instance_nova.yaml](/juno/SoftwareConfig/suse_apache_single_instance_nova.yaml)
 * [apache_single_instance_aws.yaml](/juno/Ubuntu/apache_single_instance_aws.yaml)
 * [apache_single_instance_nova.yaml](/juno/Ubuntu/apache_single_instance_nova.yaml)
-* [cinder_volume.yaml](/juno/Ubuntu/cinder_volume.yaml)
 * [Gluster_Cluster.yaml](/juno/Ubuntu/Gluster_Cluster.yaml)
 
 <span style="color:green">✔</span>&nbsp;[resource_facade](http://docs.openstack.org/developer/heat/template_guide/hot_spec.html#resource_facade)<br />
@@ -542,8 +540,8 @@ The following is a map showing the list of supported resources, and the template
 
 <span style="color:green">✔</span>&nbsp;nova.flavor<br />
 * [aws_stack.yaml](/juno/aws_stack.yaml)
-* [multi_stack.yaml](/juno/multi_stack.yaml)
 * [nova_keypair_existing.yaml](/juno/nova_keypair_existing.yaml)
+* [multi_stack.yaml](/kilo/multi_stack.yaml)
 
 <span style="color:red">✘</span>&nbsp;neutron.network		is not yet supported on the NeCTAR cloud.<br />
 <span style="color:red">✘</span>&nbsp;neutron.port		is not yet supported on the NeCTAR cloud.<br />
@@ -551,15 +549,15 @@ The following is a map showing the list of supported resources, and the template
 <span style="color:red">✘</span>&nbsp;neutron.subnet		is not yet supported on the NeCTAR cloud.<br />
 <span style="color:green">✔</span>&nbsp;glance.image<br />
 * [aws_stack.yaml](/juno/aws_stack.yaml)
-* [multi_stack.yaml](/juno/multi_stack.yaml)
+* [multi_stack.yaml](/kilo/multi_stack.yaml)
 
 <span style="color:green">✔</span>&nbsp;iso_8601<br />
 <span style="color:green">✔</span>&nbsp;nova.keypair<br />
 * [aws_stack.yaml](/juno/aws_stack.yaml)
 * [basic_instance.yaml](/juno/basic_instance.yaml)
-* [multi_stack.yaml](/juno/multi_stack.yaml)
 * [server_group.yaml](/juno/server_group.yaml)
 * [software_component.yaml](/juno/SoftwareConfig/software_component.yaml)
 * [basic_server.yaml](/juno/Ubuntu/basic_server.yaml)
+* [multi_stack.yaml](/kilo/multi_stack.yaml)
 
 Map generated by: https://github.com/MartinPaulo/ResourceMapper
