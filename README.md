@@ -96,7 +96,7 @@ The following is a map showing the list of supported resources, and the template
 * [suse_apache_single_instance_nova.yaml](/juno/SoftwareConfig/suse_apache_single_instance_nova.yaml)
 
 <span style="color:red">✘</span>&nbsp;[OS::Heat::SoftwareDeploymentGroup](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::SoftwareDeploymentGroup)		is not yet supported on the NeCTAR cloud.<br />
-<span style="color:red">✘</span>&nbsp;[OS::Heat::Stack](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::Stack)		is not yet supported on the NeCTAR cloud.<br />
+<span style="color:green">✔</span>&nbsp;[OS::Heat::Stack](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::Stack)<br />
 * [multi_stack.yaml](/kilo/multi_stack.yaml)
 
 <span style="color:green">✔</span>&nbsp;[OS::Heat::StructuredConfig](http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::StructuredConfig)<br />
