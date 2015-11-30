@@ -1,12 +1,12 @@
 # http://docs.openstack.org/developer/heat/template_guide/hot_spec.html#heat-template-version
 heat_template_version: 2015-04-30
 
-# Fails on the NeCTAR cloud with ERROR: Unknown resource Type : OS::Heat::Stack
-# This is because it was only introduced in kilo
+# This only launches from the command line: the get_file call is not resolved by the dashboard.
+# see:  https://bugs.launchpad.net/heat/+bug/1454401
 
 description: >
-  basic_instance.yaml is a template that fires up a single instance. This template is supposed to fire up two copies,
-  however, until neutron support is enabled, it will fail :(
+  basic_instance.yaml is a template that fires up a single instance. This template is supposed to
+  fire up two copies, however, until neutron support is enabled, it will fail :(
 
 parameters:
 
@@ -21,7 +21,7 @@ parameters:
     description: The NeCTAR flavour the webserver is to run on
     default: m2.xsmall
     constraints:
-      - allowed_values: [m2.xsmall, m2.small, m1.small]
+      - allowed_values: [m2.tiny, m2.xsmall, m2.small, m1.small]
         description:
           Must be a valid NeCTAR flavour, limited to the smaller ones available
       - custom_constraint: nova.flavor
