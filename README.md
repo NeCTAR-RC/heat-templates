@@ -10,7 +10,7 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 
 The [juno](juno) directory contains most of the templates.
 The templates in both the [juno](juno) and the [kilo](kilo) directories are in HOT format, and all 
-were confirmed to work at the NeCTAR cloud at the time of creation.
+were confirmed to work on the NeCTAR cloud at the time of creation.
   
 ## Resources
 
