@@ -4,10 +4,14 @@ Heat Templates
 This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) templates for use on the NeCTAR cloud.
 
 * The [yaml](yaml) directory contains old style yaml templates. For information only!
-* The [json](json) directory contains a Cloud Formation compatible example.
-* The [juno](juno) directory contains the vast body of the templates, all in HOT format, all run against the
-  Nectar cloud, and all confirmed to work at the NeCTAR cloud at the time of creation.
+* The [json](json) directory contains a Cloud Formation compatible example;
+* The [juno](juno) directory contains templates that only work on the Kilo and later release of Heat;
+* The [kilo](kilo) directory contains templates that only work on the Kilo and later release of Heat.
 
+The [juno](juno) directory contains most of the templates.
+The templates in both the [juno](juno) and the [kilo](kilo) directories are in HOT format, and all 
+were confirmed to work at the NeCTAR cloud at the time of creation.
+  
 ## Resources
 
 The following are the resources covered in the repository: and links to the templates using them.
