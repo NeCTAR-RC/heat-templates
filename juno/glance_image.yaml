@@ -4,9 +4,15 @@ heat_template_version: 2014-10-16
 # This template is the equivalent of the command set:
 # $ wget http://download.cirros-cloud.net/0.3.1/cirros-0.3.1-x86_64-disk.img
 # $ glance image-create --name='cirros image' --container-format=bare --disk-format=qcow2 < cirros-0.3.1-x86_64-disk.img
+# or:
+# $ glance --os-image-api-version 1 image-create --name='cirros image' --container-format=bare --disk-format=qcow2 --location http://download.cirros-cloud.net/0.3.1/cirros-0.3.1-x86_64-disk.img
+
 
 description: >
   NeCTAR Sample Template showing how to create a single Glance image.
+  *NB* This template does not work on the NeCTAR cloud as the location
+  attribute is not accessible for security reasons! You will get a 403
+  error if you try to build this stack.
 
 
 resources:
