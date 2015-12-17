@@ -5,7 +5,7 @@ This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) temp
 
 * The [yaml](yaml) directory contains old style yaml templates. For information only!
 * The [json](json) directory contains a Cloud Formation compatible example;
-* The [juno](juno) directory contains templates that only work on the Kilo and later release of Heat;
+* The [juno](juno) directory contains templates that only work on the Juno and later release of Heat;
 * The [kilo](kilo) directory contains templates that only work on the Kilo and later release of Heat.
 
 The [juno](juno) directory contains most of the templates.
