@@ -77,7 +77,7 @@ resources:
           template: |
             #!/bin/bash -v
             /usr/bin/cfn-init
-            /opt/aws/bin/cfn-signal -e 0 -r "Command line tools server setup complete" 'WaitHandle'
+            /opt/aws/bin/cfn-signal -e 0 -r "Apache server setup complete" 'WaitHandle'
           params:
             WaitHandle: { get_resource: wait_handle }
 
