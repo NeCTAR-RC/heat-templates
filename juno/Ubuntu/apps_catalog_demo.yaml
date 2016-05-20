@@ -4,21 +4,24 @@ heat_template_version: 2014-10-16
 
 description: Install a basic Ubuntu server with the OpenStack AppsCatalog on it.
 
+
 parameters:
 
   key_name:
     type: string
     label: Key Name
     description: Name of an existing KeyPair to enable SSH access to the instances.
+    constraints:
+      - custom_constraint: nova.keypair
+        description: Must be an existing KeyPair
 
   image_id:
     type: string
     label: Image ID
-    description: Image to be used for compute instance
-    default: 2a882d9c-3185-414c-9683-a4646b5c785e
+    description: Ubuntu image to be used for compute instance
     constraints:
-        - allowed_values: [ 2a882d9c-3185-414c-9683-a4646b5c785e, c395c528-fb43-4066-9536-cf5c5efe806d ]
-          description: Limted to Ubuntu 14.04 or Ubuntu 12.04 .
+      - custom_constraint: glance.image
+        description: Must be a valid Ubuntu image
 
   instance_type:
     type: string
@@ -26,8 +29,17 @@ parameters:
     description: Type of instance (flavor) to be used.
     default: m2.small
     constraints:
-        - allowed_values: [m2.small, m1.small, m1.medium, m1.large, m1.xlarge ]
-          description: Value must be one of m1.small, m1.medium, m1.large or m1.xlarge.
+      - custom_constraint: nova.flavor
+        description: Must be a valid NeCTAR flavour
+
+  availability_zone:
+    type: string
+    label: Availability Zone
+    description: The NeCTAR zone in which the VM is to run (must have block storage).
+    default: melbourne
+    constraints:
+      - allowed_values: [ monash, melbourne, QRIScloud, NCI, intersect, pawsey, sa, tasmania ]
+        description: Value must be one of monash, melbourne, QRIScloud, NCI, intersect, pawsey, sa, tasmania.
 
 
 resources:
@@ -51,6 +63,7 @@ resources:
       key_name: { get_param: key_name }
       image: { get_param: image_id }
       flavor: { get_param: instance_type }
+      availability_zone: { get_param: availability_zone }
       security_groups:
         - { get_resource: web_security_group }
       user_data_format: RAW
@@ -60,16 +73,13 @@ resources:
             #!/bin/bash -v
             apt-get update
             apt-get upgrade -y
-            apt-get install apache2 -y
             apt-get install python-pip -y
             apt-get install git -y
+            apt-get install python-dev -y
             git clone https://github.com/stackforge/apps-catalog.git
             cd apps-catalog/
-            python setup.py install
-            # And then a quick and dirty way to get it be served by apache.
-            cd /var/www/html/
-            rm -r *
-            cp -avr /usr/local/lib/python2.7/dist-packages/openstack_catalog/web/* .
+            pip install -r requirements.txt
+            python manage.py runserver 0.0.0.0:80 > log.txt &
             cfn-signal -e 0 -r "Command line tools server setup complete" 'WaitHandle'
           params:
             WaitHandle: { get_resource: wait_handle }
