@@ -18,28 +18,20 @@ parameters:
   image_id:
     type: string
     label: Image ID
-    description: Ubuntu image to be used for compute instance
+    description: Ubuntu 14.04 image to be used for compute instance
+    default: 9f9d4cbc-d26d-4cee-a2bc-81f335818e08
     constraints:
       - custom_constraint: glance.image
-        description: Must be a valid Ubuntu image
+        description: Must be a valid Ubuntu 14.04 image
 
   instance_type:
     type: string
     label: Instance Type
-    description: Type of instance (flavor) to be used.
+    description: Type of instance (flavor) to be used
     default: m2.small
     constraints:
       - custom_constraint: nova.flavor
         description: Must be a valid NeCTAR flavour
-
-  availability_zone:
-    type: string
-    label: Availability Zone
-    description: The NeCTAR zone in which the VM is to run (must have block storage).
-    default: melbourne
-    constraints:
-      - allowed_values: [ monash, melbourne, QRIScloud, NCI, intersect, pawsey, sa, tasmania ]
-        description: Value must be one of monash, melbourne, QRIScloud, NCI, intersect, pawsey, sa, tasmania.
 
 
 resources:
@@ -63,7 +55,6 @@ resources:
       key_name: { get_param: key_name }
       image: { get_param: image_id }
       flavor: { get_param: instance_type }
-      availability_zone: { get_param: availability_zone }
       security_groups:
         - { get_resource: web_security_group }
       user_data_format: RAW
