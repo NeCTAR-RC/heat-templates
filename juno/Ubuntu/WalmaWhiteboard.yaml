@@ -1,0 +1,111 @@
+# Copied from https://raw.githubusercontent.com/NeCTAR-RC/heat-templates/master/juno/Ubuntu/apps_catalog_demo.yaml
+# https://github.com/opinsys/walma
+# https://www.digitalocean.com/community/tutorials/how-to-install-mongodb-on-ubuntu-14-04
+
+# Juno Release
+heat_template_version: 2014-10-16
+
+
+description: Install a quick and dirty Walma - Collaborative Whiteboard as per instructions from https://github.com/opinsys/walma
+
+
+parameters:
+
+  key_name:
+    type: string
+    label: Key Name
+    description: Name of an existing KeyPair to enable SSH access to the instances.
+    constraints:
+      - custom_constraint: nova.keypair
+        description: Must be an existing KeyPair
+
+  image_id:
+    type: string
+    label: Image ID
+    description: Ubuntu 14.04 image to be used for compute instance
+    default: 9f9d4cbc-d26d-4cee-a2bc-81f335818e08
+    constraints:
+      - custom_constraint: glance.image
+        description: Must be a valid Ubuntu 14.04 image
+
+  instance_type:
+    type: string
+    label: Instance Type
+    description: Type of instance (flavor) to be used
+    default: m2.small
+    constraints:
+      - custom_constraint: nova.flavor
+        description: Must be a valid NeCTAR flavour
+
+
+resources:
+
+  # Use this when we do not have Neutron networking.
+  # http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::EC2::SecurityGroup
+  web_security_group:
+    type: AWS::EC2::SecurityGroup
+    properties:
+      GroupDescription: Web server access rules.
+      SecurityGroupIngress:
+        - {IpProtocol: icmp, FromPort: '-1', ToPort: '-1', CidrIp : 0.0.0.0/0}
+        - {IpProtocol: tcp, FromPort: '22', ToPort: '22', CidrIp: 0.0.0.0/0}
+        - {IpProtocol: tcp, FromPort: '80', ToPort: '80', CidrIp: 0.0.0.0/0}
+        - {IpProtocol: tcp, FromPort: '443', ToPort: '443', CidrIp: 0.0.0.0/0}
+
+  walma_server:
+    # http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Nova::Server
+    type: OS::Nova::Server
+    properties:
+      key_name: { get_param: key_name }
+      image: { get_param: image_id }
+      flavor: { get_param: instance_type }
+      security_groups:
+        - { get_resource: web_security_group }
+      user_data_format: RAW
+      user_data:
+        str_replace:
+          template: |
+            #!/bin/bash -v
+            apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10
+            echo "deb http://repo.mongodb.org/apt/ubuntu "$(lsb_release -sc)"/mongodb-org/3.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.0.list
+            apt-get update
+            apt-get upgrade -y
+            apt-get install git -y
+            apt-get install npm nodejs-legacy -y
+            apt-get install mongodb-org -y
+            git clone git://github.com/opinsys/walma.git
+            cd walma
+            npm install
+            bin/setupdb
+            sed -i 's/"listenPort": 1337/"listenPort": 80/' config.json
+            npm start > log.txt 2> error.txt &
+            cfn-signal -e 0 -r "Command line tools server setup complete" 'WaitHandle'
+          params:
+            WaitHandle: { get_resource: wait_handle }
+
+  # http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::CloudFormation::WaitConditionHandle
+  wait_handle:
+    type: 'AWS::CloudFormation::WaitConditionHandle'
+
+  # http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::CloudFormation::WaitCondition
+  wait_condition:
+    type: AWS::CloudFormation::WaitCondition
+    depends_on: walma_server
+    properties:
+      Handle: { get_resource: wait_handle }
+      Count: 1
+      # we'll give it 12 minutes
+      Timeout: 720
+
+
+outputs:
+  instance_ip:
+    description: The IP address of the deployed instance.
+    value: { get_attr: [walma_server, first_address] }
+  url:
+    description: The URL of the website
+    value:
+      str_replace:
+        template: http://ip_address
+        params:
+          ip_address: { get_attr: [walma_server, first_address] }
