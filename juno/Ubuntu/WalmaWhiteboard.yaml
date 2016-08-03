@@ -1,8 +1,12 @@
+# Copied from https://raw.githubusercontent.com/NeCTAR-RC/heat-templates/master/juno/Ubuntu/apps_catalog_demo.yaml
+# https://github.com/opinsys/walma
+# https://www.digitalocean.com/community/tutorials/how-to-install-mongodb-on-ubuntu-14-04
+
 # Juno Release
 heat_template_version: 2014-10-16
 
 
-description: Install a basic Ubuntu server with the OpenStack AppsCatalog on it.
+description: Install a quick and dirty Walma - Collaborative Whiteboard as per instructions from https://github.com/opinsys/walma
 
 
 parameters:
@@ -48,7 +52,7 @@ resources:
         - {IpProtocol: tcp, FromPort: '80', ToPort: '80', CidrIp: 0.0.0.0/0}
         - {IpProtocol: tcp, FromPort: '443', ToPort: '443', CidrIp: 0.0.0.0/0}
 
-  catalog_server:
+  walma_server:
     # http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Nova::Server
     type: OS::Nova::Server
     properties:
@@ -62,15 +66,19 @@ resources:
         str_replace:
           template: |
             #!/bin/bash -v
+            apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10
+            echo "deb http://repo.mongodb.org/apt/ubuntu "$(lsb_release -sc)"/mongodb-org/3.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.0.list
             apt-get update
             apt-get upgrade -y
-            apt-get install python-pip -y
             apt-get install git -y
-            apt-get install python-dev -y
-            git clone https://github.com/stackforge/apps-catalog.git
-            cd apps-catalog/
-            pip install -r requirements.txt
-            python manage.py runserver 0.0.0.0:80 > log.txt &
+            apt-get install npm nodejs-legacy -y
+            apt-get install mongodb-org -y
+            git clone git://github.com/opinsys/walma.git
+            cd walma
+            npm install
+            bin/setupdb
+            sed -i 's/"listenPort": 1337/"listenPort": 80/' config.json
+            npm start > log.txt 2> error.txt &
             cfn-signal -e 0 -r "Command line tools server setup complete" 'WaitHandle'
           params:
             WaitHandle: { get_resource: wait_handle }
@@ -82,7 +90,7 @@ resources:
   # http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::CloudFormation::WaitCondition
   wait_condition:
     type: AWS::CloudFormation::WaitCondition
-    depends_on: catalog_server
+    depends_on: walma_server
     properties:
       Handle: { get_resource: wait_handle }
       Count: 1
@@ -93,4 +101,11 @@ resources:
 outputs:
   instance_ip:
     description: The IP address of the deployed instance.
-    value: { get_attr: [catalog_server, first_address] }
+    value: { get_attr: [walma_server, first_address] }
+  url:
+    description: The URL of the website
+    value:
+      str_replace:
+        template: http://ip_address
+        params:
+          ip_address: { get_attr: [walma_server, first_address] }
