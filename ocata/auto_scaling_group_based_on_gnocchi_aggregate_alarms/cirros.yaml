@@ -1,0 +1,50 @@
+heat_template_version: 2017-02-24
+description: Template to spawn an cirros instance
+parameters:
+  metadata:
+    type: json
+  image:
+    type: string
+    description: image used to create instance
+    default: 02456068-c1ca-4d75-aeda-a96cff21f7e3
+  flavor:
+    type: string
+    description: instance flavor to be used
+    default: m1.tiny
+  key_name:
+    type: string
+    description: keypair to be used
+    default: <key name>
+  network:
+    type: string
+    description: project network to attach instance to
+    default: <tenant network>
+  external_network:
+    type: string
+    description: network used for floating IPs
+    default: <external network>
+resources:
+  server:
+    type: OS::Nova::Server
+    properties:
+      flavor: {get_param: flavor}
+      key_name: {get_param: key_name}
+      metadata: {get_param: metadata}
+      image: {get_param: image}
+      networks:
+        - port: { get_resource: port }
+  port:
+    type: OS::Neutron::Port
+    properties:
+      network: {get_param: network}
+      security_groups:
+        - default
+  floating_ip:
+    type: OS::Neutron::FloatingIP
+    properties:
+      floating_network: {get_param: external_network}
+  floating_ip_assoc:
+    type: OS::Neutron::FloatingIPAssociation
+    properties:
+      floatingip_id: { get_resource: floating_ip }
+      port_id: { get_resource: port }

@@ -1,0 +1,66 @@
+heat_template_version: 2017-02-24
+description: Template to spawn an cirros instance
+parameters:
+  metadata:
+    type: json
+    default: {"key1":"value1"}
+  image:
+    type: string
+    description: image used to create instance
+    default: <image id>
+  flavor:
+    type: string
+    description: instance flavor to be used
+    default: <flavor name>
+  key_name:
+    type: string
+    description: keypair to be used
+    default: <keypair name>
+  network:
+    type: string
+    description: tenant network to attach instance
+    default: <tenant network>
+  external_network:
+    type: string
+    description: network used for floating IPs
+    default: <external network>
+  availability_zone:
+    type: string
+    description: AZ used for server and volume
+    default: <AZ>
+
+resources:
+  server:
+    type: OS::Nova::Server
+    properties:
+      block_device_mapping:
+        - device_name: vda
+          delete_on_termination: true
+          volume_id: { get_resource: volume }
+      flavor: {get_param: flavor}
+      key_name: {get_param: key_name}
+      metadata: {get_param: metadata}
+      image: {get_param: image}
+      networks:
+        - port: { get_resource: port }
+      availability_zone: {get_param: availability_zone}
+  port:
+    type: OS::Neutron::Port
+    properties:
+      network: {get_param: network}
+      security_groups:
+        - default
+  floating_ip:
+    type: OS::Neutron::FloatingIP
+    properties:
+      floating_network: {get_param: external_network}
+  floating_ip_assoc:
+    type: OS::Neutron::FloatingIPAssociation
+    properties:
+      floatingip_id: { get_resource: floating_ip }
+      port_id: { get_resource: port }
+  volume:
+    type: OS::Cinder::Volume
+    properties:
+      availability_zone: {get_param: availability_zone}
+      size: 1
