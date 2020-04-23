@@ -1,0 +1,70 @@
+# http://docs.openstack.org/developer/heat/template_guide/hot_spec.html#heat-template-version
+heat_template_version: 2015-04-30
+
+# NOTE: You will require Database service quota for this to deploy successfully.
+
+description: >
+  Nectar database service instance. This will deploy a MySQL database using the
+  latest datastore version available.
+
+parameters:
+  name:
+    type: string
+    description: Name of the database
+    default: my_database
+    constraints:
+      - length: { min: 1, max: 64 }
+        description: Database name must be between 1 and 64 chars
+  size:
+    type: number
+    description: Database volume size in DB
+    default: 1
+  flavor:
+    type: string
+    description: Database instance flavor
+    default: db.small
+    constraints:
+      - custom_constraint: trove.flavor
+  availability_zone:
+    type: string
+    description: Availability zone
+  username:
+    type: string
+    description: Username for the database
+    default: my_user
+  password:
+    type: string
+    description: Password for the database user (must be > 6 characters long).
+    hidden: true
+    constraints:
+      - length: { min: 6 }
+        description: Passwords must be at least 6 characters in length.
+  datastore_type:
+    type: string
+    description: Database datastore type
+    default: mysql
+
+
+resources:
+  # http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Trove::Instance
+  my_database:
+    type: OS::Trove::Instance
+    properties:
+      name: { get_param: name }
+      databases:
+        - name: { get_param: name }
+      datastore_type: { get_param: datastore_type }
+      availability_zone: { get_param: availability_zone }
+      flavor: { get_param: flavor }
+      size: { get_param: size }
+      users: 
+        - name: { get_param: username }
+          password: { get_param: password }
+          databases: 
+            - { get_param: name }
+
+
+outputs:
+  host_name:
+    description: The host name of the database
+    value: { get_attr: [my_database, hostname] }

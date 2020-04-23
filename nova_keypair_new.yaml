@@ -1,0 +1,74 @@
+# http://docs.openstack.org/developer/heat/template_guide/hot_spec.html#heat-template-version
+heat_template_version: 2014-10-16
+
+
+description: >
+  This template is designed to show the use of OS::Nova::KeyPair to generate a
+  key that can then be used to ssh into a server instance. The simplest way to
+  get the private key output into a file that you can then use for SSH is to run
+    $ openstack stack output show -c output_value -f value <stack name> private_key > private-key.pem
+  NOTE that you will need to use `chmod 600` on the file or SSH will refuse to use it.
+
+
+parameters:
+  flavor:
+    type: string
+    description: The Nectar flavor to use
+    default: t3.xsmall
+
+  image:
+    type: string
+    description: ID of the image to use for the instance to be created
+    default: NeCTAR Ubuntu 18.04 LTS (Bionic) amd64
+    constraints:
+      - custom_constraint: glance.image
+        description: Must be a valid Nectar image 
+
+  availability_zone:
+    type: string
+    description: Availability Zone
+
+
+resources:
+  # This key pair will be bound to the stack lifecycle.
+  generated_keypair:
+    # http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Nova::KeyPair
+    type: OS::Nova::KeyPair
+    properties:
+      name: generated_keypair
+      save_private_key: True
+
+  security_group:
+    # https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Neutron::SecurityGroup
+    type: OS::Neutron::SecurityGroup
+    properties:
+      rules:
+        - remote_ip_prefix: 0.0.0.0/0
+          protocol: icmp
+        - remote_ip_prefix: 0.0.0.0/0
+          protocol: tcp
+          port_range_min: 22
+          port_range_max: 22
+
+  server:
+    # http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Nova::Server
+    type: OS::Nova::Server
+    properties:
+      key_name: { get_resource: generated_keypair }
+      image: { get_param: image }
+      flavor: { get_param: flavor }
+      availability_zone: { get_param: availability_zone }
+      security_groups:
+        - { get_resource: security_group }
+      networks:
+        - allocate_network: auto
+
+
+outputs:
+  private_key:
+    description: SSH private key
+    value: { get_attr: [generated_keypair, private_key] }
+
+  server_ip:
+    description: The IP address of the server
+    value: { get_attr: [server, first_address] }

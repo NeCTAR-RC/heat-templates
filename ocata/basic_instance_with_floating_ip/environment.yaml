@@ -1,8 +1,0 @@
-parameters:
-    metadata: {"key2":"value2"}
-    image: 02456068-c1ca-4d75-aeda-a96cff21f7e3
-    flavor: m1.tiny
-    key_name: Rocky-Desktop
-    network: rocky-network
-    external_network: coreservices
-    availability_zone: coreservices

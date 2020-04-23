@@ -1,0 +1,69 @@
+# http://docs.openstack.org/developer/heat/template_guide/hot_spec.html#heat-template-version
+heat_template_version: 2015-04-30
+
+
+description: >
+  This template demonstrates how you can nest stacks. This template reads in
+  the basic_server.yaml template and launches two copies of it.
+
+
+parameters:
+  key_name:
+    type: string
+    description: Name of an existing keypair to enable SSH access to the instance
+    constraints:
+      - custom_constraint: nova.keypair
+
+  flavor:
+    type: string
+    description: The Nectar instance flavour the instance should use
+    default: m3.xsmall
+    constraints:
+      - custom_constraint: nova.flavor
+
+  image:
+    type: string
+    description: ID or name of the image to use for the instance to be created
+    default: NeCTAR Ubuntu 18.04 LTS (Bionic) amd64
+    constraints:
+      - custom_constraint: glance.image
+
+  availability_zone:
+    type: string
+    description: The Nectar availability zone to launch in
+
+
+resources:
+  stack_one:
+    # https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Heat::Stack
+    type: OS::Heat::Stack
+    properties:
+      template: { get_file: basic_server.yaml }
+      timeout: 60
+      parameters:
+        key_name: { get_param: key_name }
+        image: { get_param: image }
+        flavor: { get_param: flavor }
+        availability_zone: { get_param: availability_zone }
+
+  stack_two:
+    # https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Heat::Stack
+    type: OS::Heat::Stack
+    properties:
+      template: { get_file: basic_server.yaml }
+      timeout: 60
+      parameters:
+        key_name: { get_param: key_name }
+        image: { get_param: image }
+        flavor: { get_param: flavor }
+        availability_zone: { get_param: availability_zone }
+
+
+outputs:
+  stack_one_outputs:
+    description: Output of stack_one.
+    value: { get_attr: [stack_one, outputs] }
+
+  stack_two_outputs:
+    description: Output of stack_two.
+    value: { get_attr: [stack_two, outputs] }

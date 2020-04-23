@@ -1,0 +1,24 @@
+# http://docs.openstack.org/developer/heat/template_guide/hot_spec.html#heat-template-version
+heat_template_version: 2014-10-16
+
+
+description: >
+  A template to show the creation of a random string.
+  This is useful for generating passwords, etc.
+
+
+resources:
+  # http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::RandomString
+  random_value:
+    type: OS::Heat::RandomString
+    properties:
+      # AES key must be either 16, 24, or 32 bytes long
+      length: 16
+      salt: updateWhenChange
+      sequence: lettersdigits
+
+
+outputs:
+  random_String:
+    description: The random string created
+    value: { get_attr: [ random_value, value ] }

@@ -1,0 +1,60 @@
+heat_template_version: 2018-08-31
+
+description: >
+  Nectar web_server template - A template based on the basic server
+  template, but installs the Apache web server using a user_data
+  script and a wait_handle.
+
+parameters:
+  flavor:
+    type: string
+  image:
+    type: string
+  availability_zone:
+    type: string
+  network:
+    type: string
+  secgroup:
+    type: string
+  wc_notify:
+    type: string
+  pool:
+    type: string
+  backend_port:
+    type: string
+  subnet:
+    type: string
+
+
+resources:
+  server:
+    # https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Nova::Server
+    type: OS::Nova::Server
+    properties:
+      image: { get_param: image }
+      flavor: { get_param: flavor }
+      availability_zone: { get_param: availability_zone }
+      networks:
+        - { network: { get_param: network } }
+      security_groups:
+        - { get_param: secgroup }
+      user_data_format: RAW
+      user_data:
+        str_replace:
+          template: |
+            #!/bin/bash -ex
+            apt-get update
+            apt-get -y install apache2
+            echo -e "<html>\n<body>\nI am <b>$(hostname)</b>\n</body>\n</html>" > /var/www/html/index.html
+            # notify heat that we are done here
+            wc_notify --data-binary '{"status": "SUCCESS"}'
+          params:
+            wc_notify: { get_param: wc_notify }
+
+  pool_member:
+    type: OS::Neutron::LBaaS::PoolMember
+    properties:
+      pool: { get_param: pool }
+      address: { get_attr: [ server, first_address ]}
+      protocol_port: { get_param: backend_port }
+      subnet: { get_param: subnet }

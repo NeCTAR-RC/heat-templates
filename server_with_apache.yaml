@@ -1,0 +1,91 @@
+heat_template_version: 2018-08-31
+
+description: >
+  Nectar web_server template - A template based on the basic server
+  template, but installs the Apache web server using a user_data
+  script and a wait_handle.
+
+parameters:
+
+  key_name:
+    type: string
+    description: Name of an existing keypair to enable SSH access to the instance
+    constraints:
+      - custom_constraint: nova.keypair
+
+  flavor:
+    type: string
+    description: The Nectar instance flavour the instance should use
+    default: m3.xsmall
+    constraints:
+      - custom_constraint: nova.flavor
+
+  image:
+    type: string
+    description: ID or name of the image to use for the instance to be created
+    default: NeCTAR Ubuntu 18.04 LTS (Bionic) amd64
+    constraints:
+      - custom_constraint: glance.image
+
+  availability_zone:
+    type: string
+    description: The Nectar availability zone to launch in
+
+
+resources:
+  wait_handle:
+    type: OS::Heat::WaitConditionHandle
+
+  wait_condition:
+    type: OS::Heat::WaitCondition
+    properties:
+      handle: { get_resource: wait_handle }
+      count: 1
+      timeout: 600
+
+  secgroup:
+    # https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Neutron::SecurityGroup
+    type: OS::Neutron::SecurityGroup
+    properties:
+      rules:
+        - remote_ip_prefix: 0.0.0.0/0
+          protocol: icmp
+        - remote_ip_prefix: 0.0.0.0/0
+          protocol: tcp
+          port_range_min: 22
+          port_range_max: 22
+        - remote_ip_prefix: 0.0.0.0/0
+          protocol: tcp
+          port_range_min: 80
+          port_range_max: 80
+
+  server:
+    # https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Nova::Server
+    type: OS::Nova::Server
+    properties:
+      key_name: { get_param: key_name }
+      image: { get_param: image }
+      flavor: { get_param: flavor }
+      availability_zone: { get_param: availability_zone }
+      security_groups:
+        - { get_resource: secgroup }
+      networks:
+        - allocate_network: auto
+      user_data_format: RAW
+      user_data:
+        str_replace:
+          template: |
+            #!/bin/bash -ex
+            apt-get update
+            apt-get -y install apache2
+            echo -e "<html>\n<body>\nI am <b>$(hostname)</b>\n</body>\n</html>" > /var/www/html/index.html
+
+            # notify heat that we are done here
+            wc_notify --data-binary '{"status": "SUCCESS"}'
+          params:
+            wc_notify: { get_attr: ['wait_handle', 'curl_cli'] }
+
+outputs:
+  ip_address:
+    description: The IP address of the deployed instance
+    value: { get_attr: [server, first_address] }

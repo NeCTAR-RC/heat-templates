@@ -1,0 +1,64 @@
+heat_template_version: 2018-08-31
+
+description: >
+  This template creates an advanced networking environment, consisting of a
+  private network and router, ready for servers to join. The new private
+  network ID is given in the output.
+
+parameters:
+  availability_zone:
+    type: string
+    description: The Nectar availability zone to launch in
+
+  public_network:
+    type: string
+    description: The Name or ID of the external network to attach the floating IP to
+    constraints:
+      - custom_constraint: neutron.network
+
+
+resources:
+  my_network:
+    type: OS::Neutron::Net
+    properties: 
+      name:
+         list_join: [ '-', [ { get_param: "OS::stack_name" }, 'network']]
+
+  my_subnet:
+    type: OS::Neutron::Subnet
+    properties:
+      name:
+         list_join: [ '-', [ { get_param: "OS::stack_name" }, 'subnet']]
+      dns_nameservers:
+        - 1.1.1.1
+        - 1.0.0.1
+      network: { get_resource: my_network }
+      ip_version: 4
+      cidr: 192.168.45.0/24
+      allocation_pools:
+        - { start: 192.168.45.2, end: 192.168.45.254 }
+
+  my_router:
+    type: OS::Neutron::Router
+    properties:
+      external_gateway_info: {"network": { get_param: public_network }}
+      name: 
+        list_join: [ '-', [ { get_param: "OS::stack_name" }, 'router']]
+
+  my_router_gateway:
+    type: OS::Neutron::RouterGateway
+    properties:
+      router_id: { get_resource: my_router }
+      network_id: { get_param: public_network }
+
+  my_router_interface:
+    type: OS::Neutron::RouterInterface
+    properties:
+      router: { get_resource: my_router }
+      subnet: { get_resource: my_subnet }
+
+
+outputs:
+  network_id:
+    description: Private network ID
+    value: { get_resource: my_network }

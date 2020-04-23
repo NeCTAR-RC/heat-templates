@@ -1,0 +1,27 @@
+# http://docs.openstack.org/developer/heat/template_guide/hot_spec.html#heat-template-version
+heat_template_version: 2014-10-16
+
+description: >
+  NeCTAR Sample Template showing how to create just a security group.
+
+
+resources:
+  new_security_group:
+    # https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Neutron::SecurityGroup
+    type: OS::Neutron::SecurityGroup
+    properties:
+      name: new_security_group
+      description: Enable HTTP access via port 80 plus SSH and ICMP access
+      rules:
+        - remote_ip_prefix: 0.0.0.0/0
+          protocol: icmp
+
+        - remote_ip_prefix: 0.0.0.0/0
+          protocol: tcp
+          port_range_min: 80
+          port_range_max: 80
+
+        - remote_ip_prefix: 0.0.0.0/0
+          protocol: tcp
+          port_range_min: 22
+          port_range_max: 22

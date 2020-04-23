@@ -1,0 +1,77 @@
+# http://docs.openstack.org/developer/heat/template_guide/hot_spec.html#heat-template-version
+heat_template_version: 2014-10-16
+
+
+description: >
+  This template launches a server instance using the OS::Nova::KeyPair
+  resource type configured to use an existing public key that you have on your
+  machine. You will have to paste the contents of the key into the public_key
+  parameter. With a create command starting with something like
+    $ openstack stack create --parameter public_key='ssh-rsa AAAAYourPublicKey== you@host' ...
+
+
+parameters:
+  public_key:
+    type: string
+    description: The actual public key you are providing
+
+  flavor:
+    type: string
+    description: The NeCTAR flavour the webserver is to run on
+    default: m3.xsmall
+    # can use the provided custom constraint to check that the flavor does exist
+    constraints:
+      - custom_constraint: nova.flavor
+        description: Must be a valid Nectar flavour
+
+  image:
+    type: string
+    description: ID of the image to use
+    default: NeCTAR Ubuntu 18.04 LTS (Bionic) amd64
+    constraints:
+      - custom_constraint: glance.image
+        description: Must be a valid Nectar image
+
+  availability_zone:
+    type: string
+    description: Availability Zone
+
+
+resources:
+  existing_key_pair:
+    # http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Nova::KeyPair
+    type: OS::Nova::KeyPair
+    properties:
+      name: uploaded_keypair
+      public_key: { get_param: public_key }
+
+  security_group:
+    # https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Neutron::SecurityGroup
+    type: OS::Neutron::SecurityGroup
+    properties:
+      rules:
+        - remote_ip_prefix: 0.0.0.0/0
+          protocol: icmp
+        - remote_ip_prefix: 0.0.0.0/0
+          protocol: tcp
+          port_range_min: 22
+          port_range_max: 22
+
+  server:
+    # http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Nova::Server
+    type: OS::Nova::Server
+    properties:
+      key_name: { get_resource: existing_key_pair }
+      image: { get_param: image }
+      flavor: { get_param: flavor }
+      availability_zone: { get_param: availability_zone }
+      security_groups:
+        - { get_resource: security_group }
+      networks:
+        - allocate_network: auto
+
+
+outputs:
+  server_ip:
+    description: The IP address of server one
+    value: { get_attr: [server, first_address] }

@@ -1,575 +1,313 @@
-Heat Templates
+Nectar Research Cloud Orchestration Templates
 ==============
-
-This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat) templates for use on the NeCTAR cloud.
-
-* The [yaml](yaml) directory contains old style yaml templates. For information only!
-* The [json](json) directory contains a Cloud Formation compatible example;
-* The [juno](juno) directory contains templates that only work on the Juno and later release of Heat;
-* The [kilo](kilo) directory contains templates that only work on the Kilo and later release of Heat;
-* The [ocata](ocata) directory contains templates that work on the Ocata and later release of Heat.
-
-The [juno](juno) directory contains most of the templates.
-The templates in both the [juno](juno) and the [kilo](kilo) directories are in HOT format, and all 
-were confirmed to work on the NeCTAR cloud at the time of creation.
   
+This is a repository of sample [Heat](https://wiki.openstack.org/wiki/Heat)
+templates for use on the Nectar cloud.
+
+The aim of this collection is to introduce many of the patterns which can be
+used together for building complex environments and to cover all the services
+that the Nectar Research Cloud offers.
+
+These have all been tested successfully on the Nectar Research Cloud at time
+of commit, but you will need to have specific quota for many of services used.
+
+Services covered in this repository are:
+* Compute (Nova)
+* Volume Storage (Cinder)
+* Object Storage (Swift/S3)
+* Image (Glance)
+* Advanced Networking (Neutron)
+* Database (Trove)
+* DNS (Designate)
+* Aodh (Alarming)
+
+
 ## Resources
 
-The following are the resources covered in the repository: and links to the templates using them.
+[OS::Aodh::GnocchiAggregationByResourcesAlarm](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Aodh::GnocchiAggregationByResourcesAlarm)
+* [auto_scaling.yaml](/auto_scaling.yaml)
 
-[OS::Aodh::GnocchiAggregationByResourcesAlarm](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Aodh::GnocchiAggregationByResourcesAlarm)<br />
-* [auto_scaling_template.yaml](/ocata/auto_scaling_group_based_on_gnocchi_aggregate_alarms/auto_scaling_template.yaml)
+[OS::Cinder::Volume](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Cinder::Volume)
+* [cinder_volume.yaml](/cinder_volume.yaml)
+* [server_with_existing_volume.yaml](/server_with_existing_volume.yaml)
+* [server_with_new_volume.yaml](/server_with_new_volume.yaml)
 
-[OS::Ceilometer::Alarm](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Ceilometer::Alarm)<br />
+[OS::Cinder::VolumeAttachment](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Cinder::VolumeAttachment)
+* [server_with_existing_volume.yaml](/server_with_existing_volume.yaml)
+* [server_with_new_volume.yaml](/server_with_new_volume.yaml)
 
-* [wordpress_autoscaling.yaml](/juno/Fedora/wordpress_autoscaling.yaml)
-* [wordpress_with_ha.yaml](/juno/Fedora/wordpress_with_ha.yaml)
-* [ceilometer_demo.yaml](/juno/Ubuntu/ceilometer_demo.yaml)
+[OS::Designate::RecordSet](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Designate::RecordSet)
+* [server_with_dns_record.yaml](/server_with_dns_record.yaml)
 
-[OS::Cinder::Volume](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Cinder::Volume)<br />
+[OS::Glance::WebImage](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Glance::WebImage)
+* [glance_image.yaml](/glance_image.yaml)
 
-* [cinder_volume.yaml](/juno/cinder_volume.yaml)
-* [single_instance_with_cinder_volume.yaml](/juno/single_instance_with_cinder_volume.yaml)
-* [single_instance_with_existing_cinder_volume.yaml](/juno/single_instance_with_existing_cinder_volume.yaml)
-* [cinder_volume.yaml](/juno/Ubuntu/cinder_volume.yaml)
-* [Single_Gluster_Server_And_Cinder_Volume.yaml](/yaml/Ubuntu/Single_Gluster_Server_And_Cinder_Volume.yaml)
+[OS::Heat::AutoScalingGroup](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Heat::AutoScalingGroup)
+* [auto_scaling.yaml](/auto_scaling.yaml)
 
-[OS::Cinder::VolumeAttachment](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Cinder::VolumeAttachment)<br />
+[OS::Heat::CloudConfig](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Heat::CloudConfig)
+* [cloud_init.yaml](/cloud_init.yaml)
 
-* [single_instance_with_cinder_volume.yaml](/juno/single_instance_with_cinder_volume.yaml)
-* [single_instance_with_existing_cinder_volume.yaml](/juno/single_instance_with_existing_cinder_volume.yaml)
-* [cinder_volume.yaml](/juno/Ubuntu/cinder_volume.yaml)
-* [Single_Gluster_Server_And_Cinder_Volume.yaml](/yaml/Ubuntu/Single_Gluster_Server_And_Cinder_Volume.yaml)
+[OS::Heat::MultipartMime](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Heat::MultipartMime)
+* [cloud_init.yaml](/cloud_init.yaml)
 
-[OS::Glance::Image](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Glance::Image)<br />
+[OS::Heat::RandomString](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Heat::RandomString)
+* [random_string.yaml](/random_string.yaml)
 
-* [glance_image.yaml](/juno/glance_image.yaml)
+[OS::Heat::ResourceGroup](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Heat::ResourceGroup)
+* [lbaas_group.yaml](/lbaas_group.yaml)
+* [neutron_lbaas_nested_group.yaml](/neutron_lbaas_nested_group.yaml)
 
-[OS::Heat::AccessPolicy](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Heat::AccessPolicy)<br />
+[OS::Heat::ScalingPolicy](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Heat::ScalingPolicy)
+* [auto_scaling.yaml](/auto_scaling.yaml)
 
-* [wordpress_with_ha.yaml](/juno/Fedora/wordpress_with_ha.yaml)
+[OS::Heat::Stack](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Heat::Stack)
+* [multi_stack.yaml](/multi_stack.yaml)
 
-[OS::Heat::AutoScalingGroup](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Heat::AutoScalingGroup)<br />
+[OS::Heat::WaitCondition](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Heat::WaitCondition)
+* [neutron_lbaas_nested_group.yaml](/neutron_lbaas_nested_group.yaml)
+* [server_with_apache.yaml](/server_with_apache.yaml)
 
-* [server_group.yaml](/juno/server_group.yaml)
-* [auto_scaling_template.yaml](/ocata/auto_scaling_group_based_on_gnocchi_aggregate_alarms/auto_scaling_template.yaml)
-
-[OS::Heat::CloudConfig](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Heat::CloudConfig)<br />
-
-* [cloud_init.yaml](/juno/cloud_init.yaml)
-* [structured_deployment.yaml](/juno/SoftwareConfig/structured_deployment.yaml)
-
-[OS::Heat::InstanceGroup](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Heat::InstanceGroup)<br />
-
-* [instance_group.yaml](/juno/instance_group.yaml)
-
-[OS::Heat::MultipartMime](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Heat::MultipartMime)<br />
-
-* [cloud_init.yaml](/juno/cloud_init.yaml)
-* [structured_deployment.yaml](/juno/SoftwareConfig/structured_deployment.yaml)
-* [structured_deployment.yaml](/juno/SoftwareConfig/Ubuntu/structured_deployment.yaml)
-* [install_config_agent_ubuntu_pip.yaml](/juno/SoftwareConfig/Ubuntu/templates/install_config_agent_ubuntu_pip.yaml)
-
-[OS::Heat::RandomString](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Heat::RandomString)<br />
-
-* [wordpress_autoscaling.yaml](/juno/Fedora/wordpress_autoscaling.yaml)
-* [wordpress_single_instance.yaml](/juno/Fedora/wordpress_single_instance.yaml)
-* [wordpress_two_instance.yaml](/juno/Fedora/wordpress_two_instance.yaml)
-* [wordpress_with_ha.yaml](/juno/Fedora/wordpress_with_ha.yaml)
-* [random_string.yaml](/juno/random_string.yaml)
-* [mysql.yaml](/juno/Ubuntu/NestedTemplates/lib/mysql.yaml)
-
-[OS::Heat::ResourceGroup](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Heat::ResourceGroup)<br />
-
-* [resource_group.yaml](/juno/resource_group.yaml)
-* [Gluster_Cluster.yaml](/juno/Ubuntu/Gluster_Cluster.yaml)
-
-[OS::Heat::ScalingPolicy](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Heat::ScalingPolicy)<br />
-
-* [server_group.yaml](/juno/server_group.yaml)
-* [auto_scaling_template.yaml](/ocata/auto_scaling_group_based_on_gnocchi_aggregate_alarms/auto_scaling_template.yaml)
-
-
-[OS::Heat::SoftwareComponent](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Heat::SoftwareComponent)<br />
-
-* [software_component.yaml](/juno/SoftwareConfig/software_component.yaml)
-
-[OS::Heat::SoftwareConfig](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Heat::SoftwareConfig)<br />
-
-* [cloud_init.yaml](/juno/cloud_init.yaml)
-* [example-deploy-sequence.yaml](/juno/SoftwareConfig/example-deploy-sequence.yaml)
-* [fedora_apache_single_instance_nova.yaml](/juno/SoftwareConfig/fedora_apache_single_instance_nova.yaml)
-* [suse_apache_single_instance_nova.yaml](/juno/SoftwareConfig/suse_apache_single_instance_nova.yaml)
-* [structured_deployment.yaml](/juno/SoftwareConfig/Ubuntu/structured_deployment.yaml)
-* [install_config_agent_ubuntu_pip.yaml](/juno/SoftwareConfig/Ubuntu/templates/install_config_agent_ubuntu_pip.yaml)
-
-[OS::Heat::SoftwareDeployment](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Heat::SoftwareDeployment)<br />
-
-* [example-deploy-sequence.yaml](/juno/SoftwareConfig/example-deploy-sequence.yaml)
-* [fedora_apache_single_instance_nova.yaml](/juno/SoftwareConfig/fedora_apache_single_instance_nova.yaml)
-* [software_component.yaml](/juno/SoftwareConfig/software_component.yaml)
-* [suse_apache_single_instance_nova.yaml](/juno/SoftwareConfig/suse_apache_single_instance_nova.yaml)
-
-[OS::Heat::Stack](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Heat::Stack)<br />
-
-* [multi_stack.yaml](/kilo/multi_stack.yaml)
-
-[OS::Heat::StructuredConfig](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Heat::StructuredConfig)<br />
-
-* [structured_deployment.yaml](/juno/SoftwareConfig/structured_deployment.yaml)
-* [structured_deployment.yaml](/juno/SoftwareConfig/Ubuntu/structured_deployment.yaml)
-
-[OS::Heat::StructuredDeployment](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Heat::StructuredDeployment)<br />
-
-* [structured_deployment.yaml](/juno/SoftwareConfig/structured_deployment.yaml)
-* [structured_deployment.yaml](/juno/SoftwareConfig/Ubuntu/structured_deployment.yaml)
-
-[OS::Heat::SwiftSignal](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Heat::SwiftSignal)<br />
-
-* [apache_single_instance_aws_swift_signal.yaml](/juno/Fedora/apache_single_instance_aws_swift_signal.yaml)
-
-[OS::Heat::SwiftSignalHandle](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Heat::SwiftSignalHandle)<br />
-
-* [apache_single_instance_aws_swift_signal.yaml](/juno/Fedora/apache_single_instance_aws_swift_signal.yaml)
-
-[OS::Heat::WaitCondition](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Heat::WaitCondition)<br />
-
-* [fedora_apache_single_instance_nova.yaml](/juno/SoftwareConfig/fedora_apache_single_instance_nova.yaml)
-* [suse_apache_single_instance_nova.yaml](/juno/SoftwareConfig/suse_apache_single_instance_nova.yaml)
-* [structured_deployment.yaml](/juno/SoftwareConfig/Ubuntu/structured_deployment.yaml)
-* [ceilometer_demo.yaml](/juno/Ubuntu/ceilometer_demo.yaml)
-* [mysql.yaml](/juno/Ubuntu/NestedTemplates/lib/mysql.yaml)
-* [wordpress.yaml](/juno/Ubuntu/NestedTemplates/lib/wordpress.yaml)
-
-[OS::Heat::WaitConditionHandle](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Heat::WaitConditionHandle)<br />
-
-* [fedora_apache_single_instance_nova.yaml](/juno/SoftwareConfig/fedora_apache_single_instance_nova.yaml)
-* [suse_apache_single_instance_nova.yaml](/juno/SoftwareConfig/suse_apache_single_instance_nova.yaml)
-* [structured_deployment.yaml](/juno/SoftwareConfig/Ubuntu/structured_deployment.yaml)
-* [ceilometer_demo.yaml](/juno/Ubuntu/ceilometer_demo.yaml)
-* [mysql.yaml](/juno/Ubuntu/NestedTemplates/lib/mysql.yaml)
-* [wordpress.yaml](/juno/Ubuntu/NestedTemplates/lib/wordpress.yaml)
-
-[OS::Nova::KeyPair](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Nova::KeyPair)<br />
-
-* [nova_keypair_existing.yaml](/juno/nova_keypair_existing.yaml)
-* [nova_keypair_new.yaml](/juno/nova_keypair_new.yaml)
-
-[OS::Nova::Server](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Nova::Server)<br />
-
-* [basic_instance.yaml](/juno/basic_instance.yaml)
-* [cloud_init.yaml](/juno/cloud_init.yaml)
-* [native_vs_aws_instance.yaml](/juno/native_vs_aws_instance.yaml)
-* [nova_keypair_existing.yaml](/juno/nova_keypair_existing.yaml)
-* [nova_keypair_new.yaml](/juno/nova_keypair_new.yaml)
-* [server_group.yaml](/juno/server_group.yaml)
-* [single_instance_with_cinder_volume.yaml](/juno/single_instance_with_cinder_volume.yaml)
-* [single_instance_with_existing_cinder_volume.yaml](/juno/single_instance_with_existing_cinder_volume.yaml)
-* [example-deploy-sequence.yaml](/juno/SoftwareConfig/example-deploy-sequence.yaml)
-* [fedora_apache_single_instance_nova.yaml](/juno/SoftwareConfig/fedora_apache_single_instance_nova.yaml)
-* [software_component.yaml](/juno/SoftwareConfig/software_component.yaml)
-* [structured_deployment.yaml](/juno/SoftwareConfig/structured_deployment.yaml)
-* [suse_apache_single_instance_nova.yaml](/juno/SoftwareConfig/suse_apache_single_instance_nova.yaml)
-* [structured_deployment.yaml](/juno/SoftwareConfig/Ubuntu/structured_deployment.yaml)
-* [apache_single_instance_nova.yaml](/juno/Ubuntu/apache_single_instance_nova.yaml)
-* [apps_catalog_demo.yaml](/juno/Ubuntu/apps_catalog_demo.yaml)
-* [basic_server.yaml](/juno/Ubuntu/basic_server.yaml)
-* [cinder_volume.yaml](/juno/Ubuntu/cinder_volume.yaml)
-* [Gluster_Cluster.yaml](/juno/Ubuntu/Gluster_Cluster.yaml)
-* [mysql.yaml](/juno/Ubuntu/NestedTemplates/lib/mysql.yaml)
-* [wordpress.yaml](/juno/Ubuntu/NestedTemplates/lib/wordpress.yaml)
-* [Use_Deployment_Key.yaml](/yaml/CentOS/Use_Deployment_Key.yaml)
-* [Single_Gluster_Server_And_Cinder_Volume.yaml](/yaml/Ubuntu/Single_Gluster_Server_And_Cinder_Volume.yaml)
-
-[OS::Nova::ServerGroup](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Nova::ServerGroup)<br />
-
-* [server_group.yaml](/juno/server_group.yaml)
+[OS::Heat::WaitConditionHandle](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Heat::WaitConditionHandle)
+* [neutron_lbaas_nested_group.yaml](/neutron_lbaas_nested_group.yaml)
+* [server_with_apache.yaml](/server_with_apache.yaml)
 
 [OS::Neutron::FloatingIP](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Neutron::FloatingIP)
+* [lbaas_group.yaml](/lbaas_group.yaml)
+* [neutron_lbaas_nested_group.yaml](/neutron_lbaas_nested_group.yaml)
+* [server_with_new_network.yaml](/server_with_new_network.yaml)
 
-* [cirros_with_volume_and_fip.yaml](/ocata/basic_instance_with_floating_ip/cirros_with_volume_and_fip.yaml)<br />
+[OS::Neutron::LBaaS::HealthMonitor](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Neutron::LBaaS::HealthMonitor)
+* [lbaas_group.yaml](/lbaas_group.yaml)
+* [neutron_lbaas_nested_group.yaml](/neutron_lbaas_nested_group.yaml)
 
-[OS::Neutron::FloatingIPAssociation](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Neutron::FloatingIPAssociation)
+[OS::Neutron::LBaaS::Listener](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Neutron::LBaaS::Listener)
+* [lbaas_group.yaml](/lbaas_group.yaml)
+* [neutron_lbaas_nested_group.yaml](/neutron_lbaas_nested_group.yaml)
 
-* [cirros_with_volume_and_fip.yaml](/ocata/basic_instance_with_floating_ip/cirros_with_volume_and_fip.yaml)<br />
+[OS::Neutron::LBaaS::LoadBalancer](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Neutron::LBaaS::LoadBalancer)
+* [lbaas_group.yaml](/lbaas_group.yaml)
+* [neutron_lbaas_nested_group.yaml](/neutron_lbaas_nested_group.yaml)
 
+[OS::Neutron::LBaaS::Pool](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Neutron::LBaaS::Pool)
+* [lbaas_group.yaml](/lbaas_group.yaml)
+* [neutron_lbaas_nested_group.yaml](/neutron_lbaas_nested_group.yaml)
+* [neutron_lbaas_server_member.yaml](/neutron_lbaas_server_member.yaml)
 
-[OS::Sahara::Cluster](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Sahara::Cluster)<br />
+[OS::Neutron::LBaaS::PoolMember](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Neutron::LBaaS::PoolMember)
+* [lbaas_group.yaml](/lbaas_group.yaml)
+* [neutron_lbaas_server_member.yaml](/neutron_lbaas_server_member.yaml)
 
-* [sahara_cluster.yaml](/ocata/sahara_cluster/sahara_cluster.yaml)
+[OS::Neutron::Net](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Neutron::Net)
+* [neutron_lbaas_nested_group.yaml](/neutron_lbaas_nested_group.yaml)
+* [private_network_with_router.yaml](/private_network_with_router.yaml)
+* [server_with_new_network.yaml](/server_with_new_network.yaml)
 
-[OS::Sahara::ClusterTemplate](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Sahara::ClusterTemplate)<br />
+[OS::Neutron::Port](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Neutron::Port)
+* [server_with_new_network.yaml](/server_with_new_network.yaml)
 
-* [sahara_cluster_template.yaml](/ocata/sahara_cluster/sahara_cluster_template.yaml)
+[OS::Neutron::Router](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Neutron::Router)
+* [neutron_lbaas_nested_group.yaml](/neutron_lbaas_nested_group.yaml)
+* [private_network_with_router.yaml](/private_network_with_router.yaml)
+* [server_with_new_network.yaml](/server_with_new_network.yaml)
 
-[OS::Sahara::NodeGroupTemplate](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Sahara::NodeGroupTemplate)<br />
+[OS::Neutron::RouterGateway](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Neutron::RouterGateway)
+* [neutron_lbaas_nested_group.yaml](/neutron_lbaas_nested_group.yaml)
+* [private_network_with_router.yaml](/private_network_with_router.yaml)
+* [server_with_new_network.yaml](/server_with_new_network.yaml)
 
-* [sahara_node_group_template.yaml](/ocata/sahara_cluster/sahara_node_group_template.yaml)
+[OS::Neutron::RouterInterface](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Neutron::RouterInterface)
+* [neutron_lbaas_nested_group.yaml](/neutron_lbaas_nested_group.yaml)
+* [private_network_with_router.yaml](/private_network_with_router.yaml)
+* [server_with_new_network.yaml](/server_with_new_network.yaml)
 
-[OS::Swift::Container](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Swift::Container)<br />
+[OS::Neutron::SecurityGroup](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Neutron::SecurityGroup)
+* [auto_scaling.yaml](/auto_scaling.yaml)
+* [basic_server.yaml](/basic_server.yaml)
+* [cloud_init.yaml](/cloud_init.yaml)
+* [lbaas_group.yaml](/lbaas_group.yaml)
+* [neutron_lbaas_nested_group.yaml](/neutron_lbaas_nested_group.yaml)
+* [nova_keypair_existing.yaml](/nova_keypair_existing.yaml)
+* [nova_keypair_new.yaml](/nova_keypair_new.yaml)
+* [security_group.yaml](/security_group.yaml)
+* [server_with_apache.yaml](/server_with_apache.yaml)
+* [server_with_dns_record.yaml](/server_with_dns_record.yaml)
+* [server_with_existing_volume.yaml](/server_with_existing_volume.yaml)
+* [server_with_new_network.yaml](/server_with_new_network.yaml)
+* [server_with_new_volume.yaml](/server_with_new_volume.yaml)
 
-* [swift.yaml](/juno/swift.yaml)
+[OS::Neutron::Subnet](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Neutron::Subnet)
+* [neutron_lbaas_nested_group.yaml](/neutron_lbaas_nested_group.yaml)
+* [private_network_with_router.yaml](/private_network_with_router.yaml)
+* [server_with_new_network.yaml](/server_with_new_network.yaml)
 
-[OS::Trove::Instance](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Trove::Instance)<br />
+[OS::Nova::KeyPair](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Nova::KeyPair)
+* [nova_keypair_existing.yaml](/nova_keypair_existing.yaml)
+* [nova_keypair_new.yaml](/nova_keypair_new.yaml)
 
-* [trove_database.yaml](/juno/trove_database.yaml)
+[OS::Nova::Server](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Nova::Server)
+* [auto_scaling.yaml](/auto_scaling.yaml)
+* [basic_server.yaml](/basic_server.yaml)
+* [cloud_init.yaml](/cloud_init.yaml)
+* [lbaas_group.yaml](/lbaas_group.yaml)
+* [neutron_lbaas_server_member.yaml](/neutron_lbaas_server_member.yaml)
+* [nova_keypair_existing.yaml](/nova_keypair_existing.yaml)
+* [nova_keypair_new.yaml](/nova_keypair_new.yaml)
+* [server_with_apache.yaml](/server_with_apache.yaml)
+* [server_with_dns_record.yaml](/server_with_dns_record.yaml)
+* [server_with_existing_volume.yaml](/server_with_existing_volume.yaml)
+* [server_with_new_network.yaml](/server_with_new_network.yaml)
+* [server_with_new_volume.yaml](/server_with_new_volume.yaml)
 
-[AWS::AutoScaling::AutoScalingGroup](https://docs.openstack.org/heat/latest/template_guide/cfn.html#AWS::AutoScaling::AutoScalingGroup)<br />
+[OS::Swift::Container](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Swift::Container)
+* [swift.yaml](/swift.yaml)
 
-* [wordpress_autoscaling.yaml](/juno/Fedora/wordpress_autoscaling.yaml)
-* [ceilometer_demo.yaml](/juno/Ubuntu/ceilometer_demo.yaml)
+[OS::Trove::Instance](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Trove::Instance)
+* [trove_database.yaml](/trove_database.yaml)
 
-[AWS::AutoScaling::LaunchConfiguration](https://docs.openstack.org/heat/latest/template_guide/cfn.html#AWS::AutoScaling::LaunchConfiguration)<br />
+[AWS::S3::Bucket](https://docs.openstack.org/heat/latest/template_guide/cfn.html#AWS::S3::Bucket)
+* [s3.yaml](/s3.yaml)
 
-* [wordpress_autoscaling.yaml](/juno/Fedora/wordpress_autoscaling.yaml)
-* [instance_group.yaml](/juno/instance_group.yaml)
-* [ceilometer_demo.yaml](/juno/Ubuntu/ceilometer_demo.yaml)
-
-[AWS::AutoScaling::ScalingPolicy](https://docs.openstack.org/heat/latest/template_guide/cfn.html#AWS::AutoScaling::ScalingPolicy)<br />
-
-* [wordpress_autoscaling.yaml](/juno/Fedora/wordpress_autoscaling.yaml)
-
-[AWS::CloudFormation::Stack](https://docs.openstack.org/heat/latest/template_guide/cfn.html#AWS::CloudFormation::Stack)<br />
-
-* [aws_stack.yaml](/juno/aws_stack.yaml)
-
-[AWS::CloudFormation::WaitCondition](https://docs.openstack.org/heat/latest/template_guide/cfn.html#AWS::CloudFormation::WaitCondition)<br />
-
-* [apache_single_instance_aws.yaml](/juno/CentOS/apache_single_instance_aws.yaml)
-* [apache_single_instance_aws.yaml](/juno/Debian/apache_single_instance_aws.yaml)
-* [apache_single_instance_aws.yaml](/juno/Fedora/apache_single_instance_aws.yaml)
-* [wordpress_with_ha.yaml](/juno/Fedora/wordpress_with_ha.yaml)
-* [apache_single_instance_aws.yaml](/juno/OpenSuSe/apache_single_instance_aws.yaml)
-* [build_image.yaml](/juno/SoftwareConfig/build_image.yaml)
-* [apache_single_instance_aws.yaml](/juno/Ubuntu/apache_single_instance_aws.yaml)
-* [apps_catalog_demo.yaml](/juno/Ubuntu/apps_catalog_demo.yaml)
-* [openstack_command_line_tools.yaml](/juno/Ubuntu/openstack_command_line_tools.yaml)
-
-[AWS::CloudFormation::WaitConditionHandle](https://docs.openstack.org/heat/latest/template_guide/cfn.html#AWS::CloudFormation::WaitConditionHandle)<br />
-
-* [apache_single_instance_aws.yaml](/juno/CentOS/apache_single_instance_aws.yaml)
-* [apache_single_instance_aws.yaml](/juno/Debian/apache_single_instance_aws.yaml)
-* [apache_single_instance_aws.yaml](/juno/Fedora/apache_single_instance_aws.yaml)
-* [wordpress_with_ha.yaml](/juno/Fedora/wordpress_with_ha.yaml)
-* [apache_single_instance_aws.yaml](/juno/OpenSuSe/apache_single_instance_aws.yaml)
-* [build_image.yaml](/juno/SoftwareConfig/build_image.yaml)
-* [apache_single_instance_aws.yaml](/juno/Ubuntu/apache_single_instance_aws.yaml)
-* [apps_catalog_demo.yaml](/juno/Ubuntu/apps_catalog_demo.yaml)
-* [openstack_command_line_tools.yaml](/juno/Ubuntu/openstack_command_line_tools.yaml)
-
-[AWS::EC2::Instance](https://docs.openstack.org/heat/latest/template_guide/cfn.html#AWS::EC2::Instance)<br />
-
-* [apache_single_instance_aws.yaml](/juno/CentOS/apache_single_instance_aws.yaml)
-* [apache_single_instance_aws.yaml](/juno/Debian/apache_single_instance_aws.yaml)
-* [apache_single_instance_aws.yaml](/juno/Fedora/apache_single_instance_aws.yaml)
-* [apache_single_instance_aws_swift_signal.yaml](/juno/Fedora/apache_single_instance_aws_swift_signal.yaml)
-* [wordpress_single_instance.yaml](/juno/Fedora/wordpress_single_instance.yaml)
-* [wordpress_two_instance.yaml](/juno/Fedora/wordpress_two_instance.yaml)
-* [wordpress_with_ha.yaml](/juno/Fedora/wordpress_with_ha.yaml)
-* [native_vs_aws_instance.yaml](/juno/native_vs_aws_instance.yaml)
-* [apache_single_instance_aws.yaml](/juno/OpenSuSe/apache_single_instance_aws.yaml)
-* [build_image.yaml](/juno/SoftwareConfig/build_image.yaml)
-* [apache_single_instance_aws.yaml](/juno/Ubuntu/apache_single_instance_aws.yaml)
-* [ceilometer_demo.yaml](/juno/Ubuntu/ceilometer_demo.yaml)
-* [openstack_command_line_tools.yaml](/juno/Ubuntu/openstack_command_line_tools.yaml)
-* [parallel_example.yaml](/juno/Ubuntu/parallel_example.yaml)
-* [serial_example.yaml](/juno/Ubuntu/serial_example.yaml)
-
-[AWS::EC2::SecurityGroup](https://docs.openstack.org/heat/latest/template_guide/cfn.html#AWS::EC2::SecurityGroup)<br />
-
-* [apache_single_instance_aws.yaml](/juno/CentOS/apache_single_instance_aws.yaml)
-* [cloud_init.yaml](/juno/cloud_init.yaml)
-* [apache_single_instance_aws.yaml](/juno/Debian/apache_single_instance_aws.yaml)
-* [apache_single_instance_aws.yaml](/juno/Fedora/apache_single_instance_aws.yaml)
-* [apache_single_instance_aws_swift_signal.yaml](/juno/Fedora/apache_single_instance_aws_swift_signal.yaml)
-* [wordpress_autoscaling.yaml](/juno/Fedora/wordpress_autoscaling.yaml)
-* [wordpress_single_instance.yaml](/juno/Fedora/wordpress_single_instance.yaml)
-* [wordpress_two_instance.yaml](/juno/Fedora/wordpress_two_instance.yaml)
-* [apache_single_instance_aws.yaml](/juno/OpenSuSe/apache_single_instance_aws.yaml)
-* [security_group.yaml](/juno/security_group.yaml)
-* [fedora_apache_single_instance_nova.yaml](/juno/SoftwareConfig/fedora_apache_single_instance_nova.yaml)
-* [structured_deployment.yaml](/juno/SoftwareConfig/structured_deployment.yaml)
-* [suse_apache_single_instance_nova.yaml](/juno/SoftwareConfig/suse_apache_single_instance_nova.yaml)
-* [structured_deployment.yaml](/juno/SoftwareConfig/Ubuntu/structured_deployment.yaml)
-* [apache_single_instance_aws.yaml](/juno/Ubuntu/apache_single_instance_aws.yaml)
-* [apache_single_instance_nova.yaml](/juno/Ubuntu/apache_single_instance_nova.yaml)
-* [apps_catalog_demo.yaml](/juno/Ubuntu/apps_catalog_demo.yaml)
-* [ceilometer_demo.yaml](/juno/Ubuntu/ceilometer_demo.yaml)
-* [cinder_volume.yaml](/juno/Ubuntu/cinder_volume.yaml)
-* [Gluster_Cluster.yaml](/juno/Ubuntu/Gluster_Cluster.yaml)
-* [mysql.yaml](/juno/Ubuntu/NestedTemplates/lib/mysql.yaml)
-* [wordpress.yaml](/juno/Ubuntu/NestedTemplates/lib/wordpress.yaml)
-* [parallel_example.yaml](/juno/Ubuntu/parallel_example.yaml)
-* [serial_example.yaml](/juno/Ubuntu/serial_example.yaml)
-* [Use_Deployment_Key.yaml](/yaml/CentOS/Use_Deployment_Key.yaml)
-* [Single_Gluster_Server_And_Cinder_Volume.yaml](/yaml/Ubuntu/Single_Gluster_Server_And_Cinder_Volume.yaml)
-
-[AWS::EC2::Volume](https://docs.openstack.org/heat/latest/template_guide/cfn.html#AWS::EC2::Volume)<br />
-
-* [wordpress_two_instance.yaml](/juno/Fedora/wordpress_two_instance.yaml)
-
-[AWS::EC2::VolumeAttachment](https://docs.openstack.org/heat/latest/template_guide/cfn.html#AWS::EC2::VolumeAttachment)<br />
-
-* [wordpress_two_instance.yaml](/juno/Fedora/wordpress_two_instance.yaml)
-
-[AWS::ElasticLoadBalancing::LoadBalancer](https://docs.openstack.org/heat/latest/template_guide/cfn.html#AWS::ElasticLoadBalancing::LoadBalancer)<br />
-
-* [wordpress_autoscaling.yaml](/juno/Fedora/wordpress_autoscaling.yaml)
-
-[AWS::IAM::AccessKey](https://docs.openstack.org/heat/latest/template_guide/cfn.html#AWS::IAM::AccessKey)<br />
-
-* [access_key.yaml](/juno/access_key.yaml)
-* [wordpress_autoscaling.yaml](/juno/Fedora/wordpress_autoscaling.yaml)
-* [wordpress_with_ha.yaml](/juno/Fedora/wordpress_with_ha.yaml)
-
-[AWS::IAM::User](https://docs.openstack.org/heat/latest/template_guide/cfn.html#AWS::IAM::User)<br />
-
-* [access_key.yaml](/juno/access_key.yaml)
-* [wordpress_autoscaling.yaml](/juno/Fedora/wordpress_autoscaling.yaml)
-* [wordpress_with_ha.yaml](/juno/Fedora/wordpress_with_ha.yaml)
-
-[AWS::S3::Bucket](https://docs.openstack.org/heat/latest/template_guide/cfn.html#AWS::S3::Bucket)<br />
-
-* [s3.yaml](/juno/s3.yaml)
 
 ## Functions
 
-[get_attr](https://docs.openstack.org/heat/latest/template_guide/hot_spec.html#get_attr)<br />
+[get_attr](https://docs.openstack.org/heat/latest/template_guide/hot_spec.html#get_attr)
+* [auto_scaling.yaml](/auto_scaling.yaml)
+* [basic_server.yaml](/basic_server.yaml)
+* [cinder_volume.yaml](/cinder_volume.yaml)
+* [lbaas_group.yaml](/lbaas_group.yaml)
+* [multi_stack.yaml](/multi_stack.yaml)
+* [neutron_lbaas_nested_group.yaml](/neutron_lbaas_nested_group.yaml)
+* [neutron_lbaas_server_member.yaml](/neutron_lbaas_server_member.yaml)
+* [nova_keypair_existing.yaml](/nova_keypair_existing.yaml)
+* [nova_keypair_new.yaml](/nova_keypair_new.yaml)
+* [random_string.yaml](/random_string.yaml)
+* [resource_group.yaml](/resource_group.yaml)
+* [s3.yaml](/s3.yaml)
+* [server_with_apache.yaml](/server_with_apache.yaml)
+* [server_with_dns_record.yaml](/server_with_dns_record.yaml)
+* [server_with_existing_volume.yaml](/server_with_existing_volume.yaml)
+* [server_with_new_network.yaml](/server_with_new_network.yaml)
+* [server_with_new_volume.yaml](/server_with_new_volume.yaml)
+* [swift.yaml](/swift.yaml)
+* [trove_database.yaml](/trove_database.yaml)
 
-* [access_key.yaml](/juno/access_key.yaml)
-* [basic_instance.yaml](/juno/basic_instance.yaml)
-* [apache_single_instance_aws.yaml](/juno/CentOS/apache_single_instance_aws.yaml)
-* [cinder_volume.yaml](/juno/cinder_volume.yaml)
-* [cloud_init.yaml](/juno/cloud_init.yaml)
-* [apache_single_instance_aws.yaml](/juno/Debian/apache_single_instance_aws.yaml)
-* [apache_single_instance_aws.yaml](/juno/Fedora/apache_single_instance_aws.yaml)
-* [apache_single_instance_aws_swift_signal.yaml](/juno/Fedora/apache_single_instance_aws_swift_signal.yaml)
-* [wordpress_autoscaling.yaml](/juno/Fedora/wordpress_autoscaling.yaml)
-* [wordpress_single_instance.yaml](/juno/Fedora/wordpress_single_instance.yaml)
-* [wordpress_two_instance.yaml](/juno/Fedora/wordpress_two_instance.yaml)
-* [wordpress_with_ha.yaml](/juno/Fedora/wordpress_with_ha.yaml)
-* [native_vs_aws_instance.yaml](/juno/native_vs_aws_instance.yaml)
-* [nova_keypair_existing.yaml](/juno/nova_keypair_existing.yaml)
-* [nova_keypair_new.yaml](/juno/nova_keypair_new.yaml)
-* [apache_single_instance_aws.yaml](/juno/OpenSuSe/apache_single_instance_aws.yaml)
-* [random_string.yaml](/juno/random_string.yaml)
-* [resource_group.yaml](/juno/resource_group.yaml)
-* [s3.yaml](/juno/s3.yaml)
-* [server_group.yaml](/juno/server_group.yaml)
-* [single_instance_with_cinder_volume.yaml](/juno/single_instance_with_cinder_volume.yaml)
-* [single_instance_with_existing_cinder_volume.yaml](/juno/single_instance_with_existing_cinder_volume.yaml)
-* [build_image.yaml](/juno/SoftwareConfig/build_image.yaml)
-* [example-deploy-sequence.yaml](/juno/SoftwareConfig/example-deploy-sequence.yaml)
-* [fedora_apache_single_instance_nova.yaml](/juno/SoftwareConfig/fedora_apache_single_instance_nova.yaml)
-* [software_component.yaml](/juno/SoftwareConfig/software_component.yaml)
-* [structured_deployment.yaml](/juno/SoftwareConfig/structured_deployment.yaml)
-* [suse_apache_single_instance_nova.yaml](/juno/SoftwareConfig/suse_apache_single_instance_nova.yaml)
-* [structured_deployment.yaml](/juno/SoftwareConfig/Ubuntu/structured_deployment.yaml)
-* [swift.yaml](/juno/swift.yaml)
-* [trove_database.yaml](/juno/trove_database.yaml)
-* [apache_single_instance_aws.yaml](/juno/Ubuntu/apache_single_instance_aws.yaml)
-* [apache_single_instance_nova.yaml](/juno/Ubuntu/apache_single_instance_nova.yaml)
-* [apps_catalog_demo.yaml](/juno/Ubuntu/apps_catalog_demo.yaml)
-* [basic_server.yaml](/juno/Ubuntu/basic_server.yaml)
-* [ceilometer_demo.yaml](/juno/Ubuntu/ceilometer_demo.yaml)
-* [cinder_volume.yaml](/juno/Ubuntu/cinder_volume.yaml)
-* [master.yaml](/juno/Ubuntu/Environments/master.yaml)
-* [Gluster_Cluster.yaml](/juno/Ubuntu/Gluster_Cluster.yaml)
-* [mysql.yaml](/juno/Ubuntu/NestedTemplates/lib/mysql.yaml)
-* [wordpress.yaml](/juno/Ubuntu/NestedTemplates/lib/wordpress.yaml)
-* [master.yaml](/juno/Ubuntu/NestedTemplates/master.yaml)
-* [openstack_command_line_tools.yaml](/juno/Ubuntu/openstack_command_line_tools.yaml)
-* [parallel_example.yaml](/juno/Ubuntu/parallel_example.yaml)
-* [serial_example.yaml](/juno/Ubuntu/serial_example.yaml)
-* [multi_stack.yaml](/kilo/multi_stack.yaml)
+[get_file](https://docs.openstack.org/heat/latest/template_guide/hot_spec.html#get_file)
+* [multi_stack.yaml](/multi_stack.yaml)
 
-[get_file](https://docs.openstack.org/heat/latest/template_guide/hot_spec.html#get_file)<br />
+[get_param](https://docs.openstack.org/heat/latest/template_guide/hot_spec.html#get_param)
+* [auto_scaling.yaml](/auto_scaling.yaml)
+* [basic_server.yaml](/basic_server.yaml)
+* [cinder_volume.yaml](/cinder_volume.yaml)
+* [cloud_init.yaml](/cloud_init.yaml)
+* [lbaas_group.yaml](/lbaas_group.yaml)
+* [multi_stack.yaml](/multi_stack.yaml)
+* [neutron_lbaas_nested_group.yaml](/neutron_lbaas_nested_group.yaml)
+* [neutron_lbaas_server_member.yaml](/neutron_lbaas_server_member.yaml)
+* [nova_keypair_existing.yaml](/nova_keypair_existing.yaml)
+* [nova_keypair_new.yaml](/nova_keypair_new.yaml)
+* [private_network_with_router.yaml](/private_network_with_router.yaml)
+* [resource_group.yaml](/resource_group.yaml)
+* [server_with_apache.yaml](/server_with_apache.yaml)
+* [server_with_dns_record.yaml](/server_with_dns_record.yaml)
+* [server_with_existing_volume.yaml](/server_with_existing_volume.yaml)
+* [server_with_new_network.yaml](/server_with_new_network.yaml)
+* [server_with_new_volume.yaml](/server_with_new_volume.yaml)
+* [trove_database.yaml](/trove_database.yaml)
 
-* [install_config_agent_ubuntu_pip.yaml](/juno/SoftwareConfig/Ubuntu/templates/install_config_agent_ubuntu_pip.yaml)
-* [multi_stack.yaml](/kilo/multi_stack.yaml)
+[get_resource](https://docs.openstack.org/heat/latest/template_guide/hot_spec.html#get_resource)
+* [auto_scaling.yaml](/auto_scaling.yaml)
+* [basic_server.yaml](/basic_server.yaml)
+* [cloud_init.yaml](/cloud_init.yaml)
+* [glance_image.yaml](/glance_image.yaml)
+* [lbaas_group.yaml](/lbaas_group.yaml)
+* [neutron_lbaas_nested_group.yaml](/neutron_lbaas_nested_group.yaml)
+* [nova_keypair_existing.yaml](/nova_keypair_existing.yaml)
+* [nova_keypair_new.yaml](/nova_keypair_new.yaml)
+* [private_network_with_router.yaml](/private_network_with_router.yaml)
+* [server_with_apache.yaml](/server_with_apache.yaml)
+* [server_with_dns_record.yaml](/server_with_dns_record.yaml)
+* [server_with_existing_volume.yaml](/server_with_existing_volume.yaml)
+* [server_with_new_network.yaml](/server_with_new_network.yaml)
+* [server_with_new_volume.yaml](/server_with_new_volume.yaml)
 
-[get_param](https://docs.openstack.org/heat/latest/template_guide/hot_spec.html#get_param)<br />
+[list_join](https://docs.openstack.org/heat/latest/template_guide/hot_spec.html#list_join)
+* [auto_scaling.yaml](/auto_scaling.yaml)
+* [private_network_with_router.yaml](/private_network_with_router.yaml)
+* [resource_group.yaml](/resource_group.yaml)
+* [server_with_new_network.yaml](/server_with_new_network.yaml)
 
-* [aws_stack.yaml](/juno/aws_stack.yaml)
-* [basic_instance.yaml](/juno/basic_instance.yaml)
-* [apache_single_instance_aws.yaml](/juno/CentOS/apache_single_instance_aws.yaml)
-* [cinder_volume.yaml](/juno/cinder_volume.yaml)
-* [cloud_init.yaml](/juno/cloud_init.yaml)
-* [apache_single_instance_aws.yaml](/juno/Debian/apache_single_instance_aws.yaml)
-* [apache_single_instance_aws.yaml](/juno/Fedora/apache_single_instance_aws.yaml)
-* [apache_single_instance_aws_swift_signal.yaml](/juno/Fedora/apache_single_instance_aws_swift_signal.yaml)
-* [wordpress_autoscaling.yaml](/juno/Fedora/wordpress_autoscaling.yaml)
-* [wordpress_single_instance.yaml](/juno/Fedora/wordpress_single_instance.yaml)
-* [wordpress_two_instance.yaml](/juno/Fedora/wordpress_two_instance.yaml)
-* [wordpress_with_ha.yaml](/juno/Fedora/wordpress_with_ha.yaml)
-* [instance_group.yaml](/juno/instance_group.yaml)
-* [native_vs_aws_instance.yaml](/juno/native_vs_aws_instance.yaml)
-* [nova_keypair_existing.yaml](/juno/nova_keypair_existing.yaml)
-* [nova_keypair_new.yaml](/juno/nova_keypair_new.yaml)
-* [apache_single_instance_aws.yaml](/juno/OpenSuSe/apache_single_instance_aws.yaml)
-* [resource_group.yaml](/juno/resource_group.yaml)
-* [server_group.yaml](/juno/server_group.yaml)
-* [single_instance_with_cinder_volume.yaml](/juno/single_instance_with_cinder_volume.yaml)
-* [single_instance_with_existing_cinder_volume.yaml](/juno/single_instance_with_existing_cinder_volume.yaml)
-* [build_image.yaml](/juno/SoftwareConfig/build_image.yaml)
-* [example-deploy-sequence.yaml](/juno/SoftwareConfig/example-deploy-sequence.yaml)
-* [fedora_apache_single_instance_nova.yaml](/juno/SoftwareConfig/fedora_apache_single_instance_nova.yaml)
-* [software_component.yaml](/juno/SoftwareConfig/software_component.yaml)
-* [structured_deployment.yaml](/juno/SoftwareConfig/structured_deployment.yaml)
-* [suse_apache_single_instance_nova.yaml](/juno/SoftwareConfig/suse_apache_single_instance_nova.yaml)
-* [structured_deployment.yaml](/juno/SoftwareConfig/Ubuntu/structured_deployment.yaml)
-* [trove_database.yaml](/juno/trove_database.yaml)
-* [apache_single_instance_aws.yaml](/juno/Ubuntu/apache_single_instance_aws.yaml)
-* [apache_single_instance_nova.yaml](/juno/Ubuntu/apache_single_instance_nova.yaml)
-* [apps_catalog_demo.yaml](/juno/Ubuntu/apps_catalog_demo.yaml)
-* [basic_server.yaml](/juno/Ubuntu/basic_server.yaml)
-* [ceilometer_demo.yaml](/juno/Ubuntu/ceilometer_demo.yaml)
-* [cinder_volume.yaml](/juno/Ubuntu/cinder_volume.yaml)
-* [master.yaml](/juno/Ubuntu/Environments/master.yaml)
-* [Gluster_Cluster.yaml](/juno/Ubuntu/Gluster_Cluster.yaml)
-* [mysql.yaml](/juno/Ubuntu/NestedTemplates/lib/mysql.yaml)
-* [wordpress.yaml](/juno/Ubuntu/NestedTemplates/lib/wordpress.yaml)
-* [master.yaml](/juno/Ubuntu/NestedTemplates/master.yaml)
-* [openstack_command_line_tools.yaml](/juno/Ubuntu/openstack_command_line_tools.yaml)
-* [parallel_example.yaml](/juno/Ubuntu/parallel_example.yaml)
-* [serial_example.yaml](/juno/Ubuntu/serial_example.yaml)
-* [multi_stack.yaml](/kilo/multi_stack.yaml)
+[str_replace](https://docs.openstack.org/heat/latest/template_guide/hot_spec.html#str_replace)
+* [auto_scaling.yaml](/auto_scaling.yaml)
+* [lbaas_group.yaml](/lbaas_group.yaml)
+* [neutron_lbaas_nested_group.yaml](/neutron_lbaas_nested_group.yaml)
+* [neutron_lbaas_server_member.yaml](/neutron_lbaas_server_member.yaml)
+* [server_with_apache.yaml](/server_with_apache.yaml)
 
-[get_resource](https://docs.openstack.org/heat/latest/template_guide/hot_spec.html#get_resource)<br />
-
-* [access_key.yaml](/juno/access_key.yaml)
-* [apache_single_instance_aws.yaml](/juno/CentOS/apache_single_instance_aws.yaml)
-* [cloud_init.yaml](/juno/cloud_init.yaml)
-* [apache_single_instance_aws.yaml](/juno/Debian/apache_single_instance_aws.yaml)
-* [apache_single_instance_aws.yaml](/juno/Fedora/apache_single_instance_aws.yaml)
-* [apache_single_instance_aws_swift_signal.yaml](/juno/Fedora/apache_single_instance_aws_swift_signal.yaml)
-* [wordpress_autoscaling.yaml](/juno/Fedora/wordpress_autoscaling.yaml)
-* [wordpress_single_instance.yaml](/juno/Fedora/wordpress_single_instance.yaml)
-* [wordpress_two_instance.yaml](/juno/Fedora/wordpress_two_instance.yaml)
-* [wordpress_with_ha.yaml](/juno/Fedora/wordpress_with_ha.yaml)
-* [instance_group.yaml](/juno/instance_group.yaml)
-* [nova_keypair_existing.yaml](/juno/nova_keypair_existing.yaml)
-* [nova_keypair_new.yaml](/juno/nova_keypair_new.yaml)
-* [apache_single_instance_aws.yaml](/juno/OpenSuSe/apache_single_instance_aws.yaml)
-* [server_group.yaml](/juno/server_group.yaml)
-* [single_instance_with_cinder_volume.yaml](/juno/single_instance_with_cinder_volume.yaml)
-* [single_instance_with_existing_cinder_volume.yaml](/juno/single_instance_with_existing_cinder_volume.yaml)
-* [build_image.yaml](/juno/SoftwareConfig/build_image.yaml)
-* [example-deploy-sequence.yaml](/juno/SoftwareConfig/example-deploy-sequence.yaml)
-* [fedora_apache_single_instance_nova.yaml](/juno/SoftwareConfig/fedora_apache_single_instance_nova.yaml)
-* [software_component.yaml](/juno/SoftwareConfig/software_component.yaml)
-* [structured_deployment.yaml](/juno/SoftwareConfig/structured_deployment.yaml)
-* [suse_apache_single_instance_nova.yaml](/juno/SoftwareConfig/suse_apache_single_instance_nova.yaml)
-* [structured_deployment.yaml](/juno/SoftwareConfig/Ubuntu/structured_deployment.yaml)
-* [install_config_agent_ubuntu_pip.yaml](/juno/SoftwareConfig/Ubuntu/templates/install_config_agent_ubuntu_pip.yaml)
-* [apache_single_instance_aws.yaml](/juno/Ubuntu/apache_single_instance_aws.yaml)
-* [apache_single_instance_nova.yaml](/juno/Ubuntu/apache_single_instance_nova.yaml)
-* [apps_catalog_demo.yaml](/juno/Ubuntu/apps_catalog_demo.yaml)
-* [ceilometer_demo.yaml](/juno/Ubuntu/ceilometer_demo.yaml)
-* [cinder_volume.yaml](/juno/Ubuntu/cinder_volume.yaml)
-* [Gluster_Cluster.yaml](/juno/Ubuntu/Gluster_Cluster.yaml)
-* [mysql.yaml](/juno/Ubuntu/NestedTemplates/lib/mysql.yaml)
-* [wordpress.yaml](/juno/Ubuntu/NestedTemplates/lib/wordpress.yaml)
-* [openstack_command_line_tools.yaml](/juno/Ubuntu/openstack_command_line_tools.yaml)
-* [parallel_example.yaml](/juno/Ubuntu/parallel_example.yaml)
-* [serial_example.yaml](/juno/Ubuntu/serial_example.yaml)
-
-[list_join](https://docs.openstack.org/heat/latest/template_guide/hot_spec.html#list_join)<br />
-
-* [apache_single_instance_aws.yaml](/juno/CentOS/apache_single_instance_aws.yaml)
-* [apache_single_instance_aws.yaml](/juno/Debian/apache_single_instance_aws.yaml)
-* [apache_single_instance_aws.yaml](/juno/Fedora/apache_single_instance_aws.yaml)
-* [apache_single_instance_aws_swift_signal.yaml](/juno/Fedora/apache_single_instance_aws_swift_signal.yaml)
-* [apache_single_instance_aws.yaml](/juno/OpenSuSe/apache_single_instance_aws.yaml)
-* [resource_group.yaml](/juno/resource_group.yaml)
-* [fedora_apache_single_instance_nova.yaml](/juno/SoftwareConfig/fedora_apache_single_instance_nova.yaml)
-* [suse_apache_single_instance_nova.yaml](/juno/SoftwareConfig/suse_apache_single_instance_nova.yaml)
-* [apache_single_instance_aws.yaml](/juno/Ubuntu/apache_single_instance_aws.yaml)
-* [apache_single_instance_nova.yaml](/juno/Ubuntu/apache_single_instance_nova.yaml)
-* [Gluster_Cluster.yaml](/juno/Ubuntu/Gluster_Cluster.yaml)
-
-[str_replace](https://docs.openstack.org/heat/latest/template_guide/hot_spec.html#str_replace)<br />
-
-* [apache_single_instance_aws.yaml](/juno/CentOS/apache_single_instance_aws.yaml)
-* [cloud_init.yaml](/juno/cloud_init.yaml)
-* [apache_single_instance_aws.yaml](/juno/Debian/apache_single_instance_aws.yaml)
-* [apache_single_instance_aws.yaml](/juno/Fedora/apache_single_instance_aws.yaml)
-* [apache_single_instance_aws_swift_signal.yaml](/juno/Fedora/apache_single_instance_aws_swift_signal.yaml)
-* [wordpress_autoscaling.yaml](/juno/Fedora/wordpress_autoscaling.yaml)
-* [wordpress_single_instance.yaml](/juno/Fedora/wordpress_single_instance.yaml)
-* [wordpress_two_instance.yaml](/juno/Fedora/wordpress_two_instance.yaml)
-* [wordpress_with_ha.yaml](/juno/Fedora/wordpress_with_ha.yaml)
-* [native_vs_aws_instance.yaml](/juno/native_vs_aws_instance.yaml)
-* [apache_single_instance_aws.yaml](/juno/OpenSuSe/apache_single_instance_aws.yaml)
-* [random_string.yaml](/juno/random_string.yaml)
-* [s3.yaml](/juno/s3.yaml)
-* [build_image.yaml](/juno/SoftwareConfig/build_image.yaml)
-* [structured_deployment.yaml](/juno/SoftwareConfig/Ubuntu/structured_deployment.yaml)
-* [install_config_agent_ubuntu_pip.yaml](/juno/SoftwareConfig/Ubuntu/templates/install_config_agent_ubuntu_pip.yaml)
-* [swift.yaml](/juno/swift.yaml)
-* [apache_single_instance_aws.yaml](/juno/Ubuntu/apache_single_instance_aws.yaml)
-* [apache_single_instance_nova.yaml](/juno/Ubuntu/apache_single_instance_nova.yaml)
-* [apps_catalog_demo.yaml](/juno/Ubuntu/apps_catalog_demo.yaml)
-* [ceilometer_demo.yaml](/juno/Ubuntu/ceilometer_demo.yaml)
-* [cinder_volume.yaml](/juno/Ubuntu/cinder_volume.yaml)
-* [Gluster_Cluster.yaml](/juno/Ubuntu/Gluster_Cluster.yaml)
-* [mysql.yaml](/juno/Ubuntu/NestedTemplates/lib/mysql.yaml)
-* [wordpress.yaml](/juno/Ubuntu/NestedTemplates/lib/wordpress.yaml)
-* [openstack_command_line_tools.yaml](/juno/Ubuntu/openstack_command_line_tools.yaml)
-* [parallel_example.yaml](/juno/Ubuntu/parallel_example.yaml)
-* [serial_example.yaml](/juno/Ubuntu/serial_example.yaml)
-
-[Fn::Select](https://docs.openstack.org/heat/latest/template_guide/hot_spec.html#Fn::Select)<br />
-
-* [apache_single_instance_aws.yaml](/juno/CentOS/apache_single_instance_aws.yaml)
-* [apache_single_instance_aws.yaml](/juno/Debian/apache_single_instance_aws.yaml)
-* [apache_single_instance_aws.yaml](/juno/Fedora/apache_single_instance_aws.yaml)
-* [apache_single_instance_aws_swift_signal.yaml](/juno/Fedora/apache_single_instance_aws_swift_signal.yaml)
-* [wordpress_two_instance.yaml](/juno/Fedora/wordpress_two_instance.yaml)
-* [fedora_apache_single_instance_nova.yaml](/juno/SoftwareConfig/fedora_apache_single_instance_nova.yaml)
-* [structured_deployment.yaml](/juno/SoftwareConfig/structured_deployment.yaml)
-* [structured_deployment.yaml](/juno/SoftwareConfig/Ubuntu/structured_deployment.yaml)
-* [apache_single_instance_aws.yaml](/juno/Ubuntu/apache_single_instance_aws.yaml)
-* [apache_single_instance_nova.yaml](/juno/Ubuntu/apache_single_instance_nova.yaml)
-* [basic_server.yaml](/juno/Ubuntu/basic_server.yaml)
-* [ceilometer_demo.yaml](/juno/Ubuntu/ceilometer_demo.yaml)
-* [cinder_volume.yaml](/juno/Ubuntu/cinder_volume.yaml)
-* [master.yaml](/juno/Ubuntu/Environments/master.yaml)
-* [Gluster_Cluster.yaml](/juno/Ubuntu/Gluster_Cluster.yaml)
-* [master.yaml](/juno/Ubuntu/NestedTemplates/master.yaml)
 
 ## Pseudo-Parameters
 
-OS::stack_name<br />
+OS::stack_name
+* [private_network_with_router.yaml](/private_network_with_router.yaml)
+* [server_with_dns_record.yaml](/server_with_dns_record.yaml)
+* [server_with_new_network.yaml](/server_with_new_network.yaml)
 
-* [wordpress_autoscaling.yaml](/juno/Fedora/wordpress_autoscaling.yaml)
-* [wordpress_single_instance.yaml](/juno/Fedora/wordpress_single_instance.yaml)
-* [wordpress_with_ha.yaml](/juno/Fedora/wordpress_with_ha.yaml)
+OS::stack_id
+* [auto_scaling.yaml](/auto_scaling.yaml)
 
-OS::stack_id<br />
-
-* [basic_instance.yaml](/juno/basic_instance.yaml)
 
 ## Custom-constraints
 
-nova.flavor<br />
+designate.zone
+* [server_with_dns_record.yaml](/server_with_dns_record.yaml)
 
-* [aws_stack.yaml](/juno/aws_stack.yaml)
-* [nova_keypair_existing.yaml](/juno/nova_keypair_existing.yaml)
-* [multi_stack.yaml](/kilo/multi_stack.yaml)
+glance.image
+* [auto_scaling.yaml](/auto_scaling.yaml)
+* [basic_server.yaml](/basic_server.yaml)
+* [glance_image.yaml](/glance_image.yaml)
+* [lbaas_group.yaml](/lbaas_group.yaml)
+* [multi_stack.yaml](/multi_stack.yaml)
+* [neutron_lbaas_nested_group.yaml](/neutron_lbaas_nested_group.yaml)
+* [nova_keypair_existing.yaml](/nova_keypair_existing.yaml)
+* [nova_keypair_new.yaml](/nova_keypair_new.yaml)
+* [server_with_apache.yaml](/server_with_apache.yaml)
+* [server_with_dns_record.yaml](/server_with_dns_record.yaml)
+* [server_with_existing_volume.yaml](/server_with_existing_volume.yaml)
+* [server_with_new_network.yaml](/server_with_new_network.yaml)
+* [server_with_new_volume.yaml](/server_with_new_volume.yaml)
 
-glance.image<br />
+neutron.network
+* [lbaas_group.yaml](/lbaas_group.yaml)
+* [neutron_lbaas_nested_group.yaml](/neutron_lbaas_nested_group.yaml)
+* [private_network_with_router.yaml](/private_network_with_router.yaml)
+* [server_with_new_network.yaml](/server_with_new_network.yaml)
 
-* [aws_stack.yaml](/juno/aws_stack.yaml)
-* [multi_stack.yaml](/kilo/multi_stack.yaml)
+neutron.subnet
+* [lbaas_group.yaml](/lbaas_group.yaml)
 
-nova.keypair<br />
+nova.flavor
+* [auto_scaling.yaml](/auto_scaling.yaml)
+* [basic_server.yaml](/basic_server.yaml)
+* [lbaas_group.yaml](/lbaas_group.yaml)
+* [multi_stack.yaml](/multi_stack.yaml)
+* [neutron_lbaas_nested_group.yaml](/neutron_lbaas_nested_group.yaml)
+* [nova_keypair_existing.yaml](/nova_keypair_existing.yaml)
+* [server_with_apache.yaml](/server_with_apache.yaml)
+* [server_with_dns_record.yaml](/server_with_dns_record.yaml)
+* [server_with_existing_volume.yaml](/server_with_existing_volume.yaml)
+* [server_with_new_network.yaml](/server_with_new_network.yaml)
+* [server_with_new_volume.yaml](/server_with_new_volume.yaml)
 
-* [aws_stack.yaml](/juno/aws_stack.yaml)
-* [basic_instance.yaml](/juno/basic_instance.yaml)
-* [server_group.yaml](/juno/server_group.yaml)
-* [software_component.yaml](/juno/SoftwareConfig/software_component.yaml)
-* [basic_server.yaml](/juno/Ubuntu/basic_server.yaml)
-* [multi_stack.yaml](/kilo/multi_stack.yaml)
+nova.keypair
+* [auto_scaling.yaml](/auto_scaling.yaml)
+* [basic_server.yaml](/basic_server.yaml)
+* [multi_stack.yaml](/multi_stack.yaml)
+* [server_with_apache.yaml](/server_with_apache.yaml)
+* [server_with_dns_record.yaml](/server_with_dns_record.yaml)
+* [server_with_existing_volume.yaml](/server_with_existing_volume.yaml)
+* [server_with_new_network.yaml](/server_with_new_network.yaml)
+* [server_with_new_volume.yaml](/server_with_new_volume.yaml)
 
-Map generated by: https://github.com/MartinPaulo/ResourceMapper
+trove.flavor
+* [trove_database.yaml](/trove_database.yaml)
+

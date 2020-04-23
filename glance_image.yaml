@@ -1,0 +1,28 @@
+# http://docs.openstack.org/developer/heat/template_guide/hot_spec.html#heat-template-version
+heat_template_version: 2015-10-15
+
+# This template is the equivalent of the command set:
+# $ wget https://download.cirros-cloud.net/0.5.1/cirros-0.5.1-x86_64-disk.img
+# $ glance image-create --name='CirrOS 0.5.1' --container-format=bare --disk-format=qcow2 < cirros-0.5.1-x86_64-disk.img
+# or:
+# $ glance image-create --name='CirrOS 0.5.1' --container-format=bare --disk-format=qcow2 --location https://download.cirros-cloud.net/0.5.1/cirros-0.5.1-x86_64-disk.img
+
+
+description: >
+  Nectar Sample Template showing how to create a single Glance image.
+
+resources:
+
+  glance_image:
+    # http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Glance::Image
+    type: OS::Glance::WebImage
+    properties:
+      name: CirrOS 0.5.1
+      container_format: bare
+      disk_format: qcow2
+      location: https://download.cirros-cloud.net/0.5.1/cirros-0.5.1-x86_64-disk.img
+
+outputs:
+  image_id:
+    description: 
+    value: { get_resource: glance_image }

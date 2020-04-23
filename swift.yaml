@@ -1,0 +1,28 @@
+# http://docs.openstack.org/developer/heat/template_guide/hot_spec.html#heat-template-version
+heat_template_version: 2018-08-31
+
+# NOTE: There is currently a bug not showing the URL of the Container
+# properly.
+
+description: >
+  A template to show the creation of an Object Storage container being created
+  with some metadata set. Note that the index and error HTML files will not be
+  uploaded by this template. You would need to upload those separately.
+
+
+resources:
+  swift_container:
+    # http://docs.openstack.org/hot-reference/content/OS__Swift__Container.html
+    type: OS::Swift::Container
+    properties:
+      PurgeOnDelete: True
+      X-Container-Read: ".r:*"
+      X-Container-Meta:
+        Web-Index: index.html
+        Web-Error: error.html
+
+
+outputs:
+  container_url:
+    description: "Container URL"
+    value: { get_attr: [ swift_container, WebsiteURL ] }

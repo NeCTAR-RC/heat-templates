@@ -1,0 +1,46 @@
+# http://docs.openstack.org/developer/heat/template_guide/hot_spec.html#heat-template-version
+heat_template_version: 2016-10-14
+
+
+description: >
+  Template showing how to create a single block storage volume.
+
+
+parameters:
+  availability_zone:
+    type: string
+    description: Availability Zone
+
+  volume_size:
+    type: number
+    label: Size (in GB)
+    description: Size of the volume to be created, in GB.
+    default: 1
+
+resources:
+
+  # http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Cinder::Volume
+  cinder_volume:
+    type: OS::Cinder::Volume
+    properties:
+      size: { get_param:  volume_size }
+      availability_zone: { get_param: availability_zone }
+
+
+outputs:
+
+  availability_zone:
+    description: The availability zone in which the volume is located.
+    value: { get_attr: [ cinder_volume, availability_zone ] }
+
+  display_name:
+    description: The name of the volume.
+    value: { get_attr: [ cinder_volume, display_name ] }
+
+  status:
+    description: The current status of the volume.
+    value: { get_attr: [ cinder_volume, status ] }
+
+  volume_type:
+    description: The type of the volume mapping to a backend, if any.
+    value: { get_attr: [ cinder_volume, volume_type ] }

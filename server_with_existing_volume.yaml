@@ -1,0 +1,76 @@
+heat_template_version: 2018-08-31
+
+
+description: >
+  This template shows how to create a server instance and attach an existing
+  volume to it
+
+
+parameters:
+  key_name:
+    type: string
+    description: Name of an existing key pair to enable SSH access to the server
+    constraints:
+      - custom_constraint: nova.keypair
+
+  flavor:
+    type: string
+    description: The flavor of server to create
+    default: t3.xsmall
+    constraints:
+      - custom_constraint: nova.flavor
+
+  image:
+    type: string
+    description: ID or name of the image to use for the server
+    default: NeCTAR Ubuntu 18.04 LTS (Bionic) amd64
+    constraints:
+      - custom_constraint: glance.image
+
+  availability_zone:
+    type: string
+    description: The Nectar availability zone
+
+  volume_id:
+    type: number
+    description: The ID of the existing volume
+
+
+resources:
+  my_secgroup:
+    # https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Neutron::SecurityGroup
+    type: OS::Neutron::SecurityGroup
+    properties:
+      rules:
+        - remote_ip_prefix: 0.0.0.0/0
+          protocol: icmp
+        - remote_ip_prefix: 0.0.0.0/0
+          protocol: tcp
+          port_range_min: 22
+          port_range_max: 22
+
+  my_server:
+    # https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Nova::Server
+    type: OS::Nova::Server
+    properties:
+      key_name: { get_param: key_name }
+      image: { get_param: image }
+      flavor: { get_param: flavor }
+      availability_zone: { get_param: availability_zone }
+      security_groups:
+        - { get_resource: my_secgroup }
+      networks:
+        - allocate_network: auto
+
+  my_volume_attachment:
+    # https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Cinder::VolumeAttachment
+    type: OS::Cinder::VolumeAttachment
+    properties:
+      volume_id: { get_param: volume_id }
+      instance_uuid: { get_resource: my_server }
+
+
+outputs:
+  server_ip:
+    description: Public IP address of the newly created Nova instance.
+    value: { get_attr: [my_server, first_address] }

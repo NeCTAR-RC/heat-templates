@@ -1,0 +1,130 @@
+heat_template_version: 2018-08-31
+
+description: >
+  This template creates a new private network, router, server and floating IP.
+  The server is joined to this new private network but is also available via
+  a publically routable floating IP.
+
+parameters:
+  key_name:
+    type: string
+    description: Name of an existing keypair to enable SSH access to the instance
+    constraints:
+      - custom_constraint: nova.keypair
+
+  flavor:
+    type: string
+    description: The Nectar instance flavour the instance should use
+    default: t3.xsmall
+    constraints:
+      - custom_constraint: nova.flavor
+
+  image:
+    type: string
+    description: ID or name of the image to use for the instance to be created
+    default: NeCTAR Ubuntu 18.04 LTS (Bionic) amd64
+    constraints:
+      - custom_constraint: glance.image
+
+  availability_zone:
+    type: string
+    description: The Nectar availability zone to launch in
+
+  public_network:
+    type: string
+    description: The Name or ID of the external network to attach the floating IP to
+    constraints:
+      - custom_constraint: neutron.network
+
+
+resources:
+  my_network:
+    type: OS::Neutron::Net
+    properties: 
+      name:
+         list_join: [ '-', [ { get_param: "OS::stack_name" }, 'network']]
+
+  my_subnet:
+    type: OS::Neutron::Subnet
+    properties:
+      name:
+         list_join: [ '-', [ { get_param: "OS::stack_name" }, 'subnet']]
+      dns_nameservers:
+        - 1.1.1.1
+        - 1.0.0.1
+      network: { get_resource: my_network }
+      ip_version: 4
+      cidr: 192.168.123.0/24
+      allocation_pools:
+        - { start: 192.168.123.100, end: 192.168.123.199 }
+
+  my_router:
+    type: OS::Neutron::Router
+    properties:
+      external_gateway_info: {"network": { get_param: public_network }}
+      name: 
+        list_join: [ '-', [ { get_param: "OS::stack_name" }, 'router']]
+
+  my_router_gateway:
+    type: OS::Neutron::RouterGateway
+    properties:
+      router_id: { get_resource: my_router }
+      network_id: { get_param: public_network }
+
+  my_router_interface:
+    type: OS::Neutron::RouterInterface
+    properties:
+      router: { get_resource: my_router }
+      subnet: { get_resource: my_subnet }
+
+  my_secgroup:
+    # https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Neutron::SecurityGroup
+    type: OS::Neutron::SecurityGroup
+    properties:
+      name: 
+        list_join: [ '-', [ { get_param: "OS::stack_name" }, 'secgroup']]
+      rules:
+        - remote_ip_prefix: 0.0.0.0/0
+          protocol: icmp
+        - remote_ip_prefix: 0.0.0.0/0
+          protocol: tcp
+          port_range_min: 22
+          port_range_max: 22
+
+  my_port:
+    # https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Neutron::Port
+    type: OS::Neutron::Port
+    properties:
+      name: 
+        list_join: [ '-', [ { get_param: "OS::stack_name" }, 'port']]
+      network: { get_resource: my_network }
+      security_groups:
+        - { get_resource: my_secgroup }
+
+  my_floating_ip:
+    # https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Neutron::FloatingIP
+    type: OS::Neutron::FloatingIP
+    properties:
+      floating_network: { get_param: public_network }
+      port_id: { get_resource: my_port }
+
+  my_server:
+    # https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Nova::Server
+    type: OS::Nova::Server
+    properties:
+      name: 
+        list_join: [ '-', [ { get_param: "OS::stack_name" }, 'server']]
+      key_name: { get_param: key_name }
+      image: { get_param: image }
+      flavor: { get_param: flavor }
+      availability_zone: { get_param: availability_zone }
+      security_groups:
+      - { get_resource: my_secgroup }
+      networks:
+        - port: { get_resource: my_port }
+
+
+outputs:
+  server_ip:
+    description: The floating IP address
+    value: { get_attr: [my_floating_ip, floating_ip_address] }

@@ -1,0 +1,78 @@
+heat_template_version: 2018-08-31
+
+description: >
+  This template is an example of how to create DNS records for a zone that
+  already exists. A simple server is created, and a DNS record is created
+  for it using the name of the stack and the servers first IP address in
+  the given DNS zone.
+
+parameters:
+  key_name:
+    type: string
+    description: Keypair for SSH access
+    constraints:
+      - custom_constraint: nova.keypair
+        description: Must be an existing keypair
+
+  flavor:
+    type: string
+    description: Flavor
+    default: t3.xsmall
+    constraints:
+      - custom_constraint: nova.flavor
+        description: Must be an existing flavor
+
+  image:
+    type: string
+    description: Image ID or name
+    default: NeCTAR Ubuntu 18.04 LTS (Bionic) amd64
+    constraints:
+      - custom_constraint: glance.image
+        description: Must be an existing image
+
+  availability_zone:
+    type: string
+    description: Availability Zone
+
+  zone:
+    type: string
+    description: DNS zone name or ID
+    constraints:
+      - custom_constraint: designate.zone
+
+
+resources:
+  secgroup:
+    # https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Neutron::SecurityGroup
+    type: OS::Neutron::SecurityGroup
+    properties:
+      rules:
+        - remote_ip_prefix: 0.0.0.0/0
+          protocol: icmp
+        - remote_ip_prefix: 0.0.0.0/0
+          protocol: tcp
+          port_range_min: 22
+          port_range_max: 22
+
+  server:
+    # https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Nova::Server
+    type: OS::Nova::Server
+    properties:
+      key_name: { get_param: key_name }
+      image: { get_param: image }
+      flavor: { get_param: flavor }
+      availability_zone: { get_param: availability_zone }
+      security_groups:
+      - { get_resource: secgroup }
+      networks:
+        - allocate_network: auto
+
+  dns_record:
+    type: OS::Designate::RecordSet
+    properties:
+      name: { get_param: "OS::stack_name" }
+      type: A
+      records: 
+        - { get_attr: [server, first_address] }
+      zone: { get_param: zone }
+

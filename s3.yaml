@@ -1,0 +1,23 @@
+# http://docs.openstack.org/developer/heat/template_guide/hot_spec.html#heat-template-version
+heat_template_version: 2018-08-31
+
+description: >
+  A template to show Swift in action using the Amazon S3 resource type.
+  Note that the index and error HTML files will not be uploaded by this
+  template. You would need to upload those separately.
+
+resources:
+  s3_bucket:
+    # http://docs.openstack.org/hot-reference/content/AWS__S3__Bucket.html
+    type: AWS::S3::Bucket
+    properties:
+      AccessControl: PublicRead
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: error.html
+
+outputs:
+  container_url:
+    description: "Bucket URL"
+    value: { get_attr: [ s3_bucket, WebsiteURL ] }
+

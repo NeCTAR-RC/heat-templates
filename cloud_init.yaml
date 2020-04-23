@@ -1,0 +1,90 @@
+# http://docs.openstack.org/developer/heat/template_guide/hot_spec.html#heat-template-version
+heat_template_version: 2014-10-16
+
+
+description: >
+  This template demonstrates how boot-time configuration can be applied with
+  cloud-init using the CloudConfig resource. Any cloud-init modules can be
+  used.
+
+
+parameters:
+  key_name:
+    type: string
+    label: Key Name
+    description: Name of an existing KeyPair to enable SSH access to the instances.
+
+  flavor:
+    type: string
+    description: The NeCTAR flavour the webserver is to run on
+    default: t3.xsmall
+
+  image:
+    type: string
+    description: ID or name of the image to use for the instance to be created (should work with all NeCTAR images)
+    default: NeCTAR Ubuntu 18.04 LTS (Bionic) amd64
+
+  availability_zone:
+    type: string
+    description: Availability Zone
+
+
+resources:
+  security_group:
+    # https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Neutron::SecurityGroup
+    type: OS::Neutron::SecurityGroup
+    properties:
+      rules:
+        - remote_ip_prefix: 0.0.0.0/0
+          protocol: icmp
+        - remote_ip_prefix: 0.0.0.0/0
+          protocol: tcp
+          port_range_min: 22
+          port_range_max: 22
+        - remote_ip_prefix: 0.0.0.0/0
+          protocol: tcp
+          port_range_min: 80
+          port_range_max: 80
+
+  cloud_config:
+    # http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::CloudConfig
+    type: OS::Heat::CloudConfig
+    properties:
+      cloud_config:
+        # You can add any cloud-init config directives here
+        # https://cloudinit.readthedocs.io/en/latest/topics/modules.html
+        write_files:
+          - path: /tmp/test
+            content: "Content written by cloud-init"
+        users:
+          - default  # Include the default 'ubuntu' user
+          - name: cloudy
+            gecos: Magic Cloud App Daemon User
+            system: true
+        package_update: true
+        package_upgrade: true
+        packages:
+          - nginx
+
+  cloud_init_user_data:
+    # http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Heat::MultipartMime
+    type: OS::Heat::MultipartMime
+    properties:
+      parts:
+      - config: { get_resource: cloud_config }
+
+  server:
+    # http://docs.openstack.org/developer/heat/template_guide/openstack.html#OS::Nova::Server
+    type: OS::Nova::Server
+    properties:
+      key_name: { get_param: key_name }
+      image: { get_param: image }
+      flavor: { get_param: flavor }
+      availability_zone: { get_param: availability_zone }
+      security_groups:
+      - { get_resource: security_group }
+      networks:
+        - allocate_network: auto
+      user_data_format: RAW
+      user_data:
+        get_resource: cloud_init_user_data
