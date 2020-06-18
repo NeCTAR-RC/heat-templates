@@ -55,7 +55,6 @@ Services covered in this repository are:
 * [random_string.yaml](/random_string.yaml)
 
 [OS::Heat::ResourceGroup](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Heat::ResourceGroup)
-* [lbaas_group.yaml](/lbaas_group.yaml)
 * [neutron_lbaas_nested_group.yaml](/neutron_lbaas_nested_group.yaml)
 
 [OS::Heat::ScalingPolicy](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Heat::ScalingPolicy)
@@ -73,30 +72,8 @@ Services covered in this repository are:
 * [server_with_apache.yaml](/server_with_apache.yaml)
 
 [OS::Neutron::FloatingIP](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Neutron::FloatingIP)
-* [lbaas_group.yaml](/lbaas_group.yaml)
 * [neutron_lbaas_nested_group.yaml](/neutron_lbaas_nested_group.yaml)
 * [server_with_new_network.yaml](/server_with_new_network.yaml)
-
-[OS::Neutron::LBaaS::HealthMonitor](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Neutron::LBaaS::HealthMonitor)
-* [lbaas_group.yaml](/lbaas_group.yaml)
-* [neutron_lbaas_nested_group.yaml](/neutron_lbaas_nested_group.yaml)
-
-[OS::Neutron::LBaaS::Listener](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Neutron::LBaaS::Listener)
-* [lbaas_group.yaml](/lbaas_group.yaml)
-* [neutron_lbaas_nested_group.yaml](/neutron_lbaas_nested_group.yaml)
-
-[OS::Neutron::LBaaS::LoadBalancer](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Neutron::LBaaS::LoadBalancer)
-* [lbaas_group.yaml](/lbaas_group.yaml)
-* [neutron_lbaas_nested_group.yaml](/neutron_lbaas_nested_group.yaml)
-
-[OS::Neutron::LBaaS::Pool](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Neutron::LBaaS::Pool)
-* [lbaas_group.yaml](/lbaas_group.yaml)
-* [neutron_lbaas_nested_group.yaml](/neutron_lbaas_nested_group.yaml)
-* [neutron_lbaas_server_member.yaml](/neutron_lbaas_server_member.yaml)
-
-[OS::Neutron::LBaaS::PoolMember](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Neutron::LBaaS::PoolMember)
-* [lbaas_group.yaml](/lbaas_group.yaml)
-* [neutron_lbaas_server_member.yaml](/neutron_lbaas_server_member.yaml)
 
 [OS::Neutron::Net](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Neutron::Net)
 * [neutron_lbaas_nested_group.yaml](/neutron_lbaas_nested_group.yaml)
@@ -125,7 +102,6 @@ Services covered in this repository are:
 * [auto_scaling.yaml](/auto_scaling.yaml)
 * [basic_server.yaml](/basic_server.yaml)
 * [cloud_init.yaml](/cloud_init.yaml)
-* [lbaas_group.yaml](/lbaas_group.yaml)
 * [neutron_lbaas_nested_group.yaml](/neutron_lbaas_nested_group.yaml)
 * [nova_keypair_existing.yaml](/nova_keypair_existing.yaml)
 * [nova_keypair_new.yaml](/nova_keypair_new.yaml)
@@ -149,7 +125,6 @@ Services covered in this repository are:
 * [auto_scaling.yaml](/auto_scaling.yaml)
 * [basic_server.yaml](/basic_server.yaml)
 * [cloud_init.yaml](/cloud_init.yaml)
-* [lbaas_group.yaml](/lbaas_group.yaml)
 * [neutron_lbaas_server_member.yaml](/neutron_lbaas_server_member.yaml)
 * [nova_keypair_existing.yaml](/nova_keypair_existing.yaml)
 * [nova_keypair_new.yaml](/nova_keypair_new.yaml)
@@ -158,6 +133,22 @@ Services covered in this repository are:
 * [server_with_existing_volume.yaml](/server_with_existing_volume.yaml)
 * [server_with_new_network.yaml](/server_with_new_network.yaml)
 * [server_with_new_volume.yaml](/server_with_new_volume.yaml)
+
+[OS::Octavia::HealthMonitor](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Octavia::HealthMonitor)
+* [neutron_lbaas_nested_group.yaml](/neutron_lbaas_nested_group.yaml)
+
+[OS::Octavia::Listener](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Octavia::Listener)
+* [neutron_lbaas_nested_group.yaml](/neutron_lbaas_nested_group.yaml)
+
+[OS::Octavia::LoadBalancer](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Octavia::LoadBalancer)
+* [neutron_lbaas_nested_group.yaml](/neutron_lbaas_nested_group.yaml)
+
+[OS::Octavia::Pool](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Octavia::Pool)
+* [neutron_lbaas_nested_group.yaml](/neutron_lbaas_nested_group.yaml)
+* [neutron_lbaas_server_member.yaml](/neutron_lbaas_server_member.yaml)
+
+[OS::Octavia::PoolMember](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Octavia::PoolMember)
+* [neutron_lbaas_server_member.yaml](/neutron_lbaas_server_member.yaml)
 
 [OS::Swift::Container](https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Swift::Container)
 * [swift.yaml](/swift.yaml)
@@ -175,7 +166,6 @@ Services covered in this repository are:
 * [auto_scaling.yaml](/auto_scaling.yaml)
 * [basic_server.yaml](/basic_server.yaml)
 * [cinder_volume.yaml](/cinder_volume.yaml)
-* [lbaas_group.yaml](/lbaas_group.yaml)
 * [multi_stack.yaml](/multi_stack.yaml)
 * [neutron_lbaas_nested_group.yaml](/neutron_lbaas_nested_group.yaml)
 * [neutron_lbaas_server_member.yaml](/neutron_lbaas_server_member.yaml)
@@ -200,7 +190,6 @@ Services covered in this repository are:
 * [basic_server.yaml](/basic_server.yaml)
 * [cinder_volume.yaml](/cinder_volume.yaml)
 * [cloud_init.yaml](/cloud_init.yaml)
-* [lbaas_group.yaml](/lbaas_group.yaml)
 * [multi_stack.yaml](/multi_stack.yaml)
 * [neutron_lbaas_nested_group.yaml](/neutron_lbaas_nested_group.yaml)
 * [neutron_lbaas_server_member.yaml](/neutron_lbaas_server_member.yaml)
@@ -220,7 +209,6 @@ Services covered in this repository are:
 * [basic_server.yaml](/basic_server.yaml)
 * [cloud_init.yaml](/cloud_init.yaml)
 * [glance_image.yaml](/glance_image.yaml)
-* [lbaas_group.yaml](/lbaas_group.yaml)
 * [neutron_lbaas_nested_group.yaml](/neutron_lbaas_nested_group.yaml)
 * [nova_keypair_existing.yaml](/nova_keypair_existing.yaml)
 * [nova_keypair_new.yaml](/nova_keypair_new.yaml)
@@ -239,7 +227,6 @@ Services covered in this repository are:
 
 [str_replace](https://docs.openstack.org/heat/latest/template_guide/hot_spec.html#str_replace)
 * [auto_scaling.yaml](/auto_scaling.yaml)
-* [lbaas_group.yaml](/lbaas_group.yaml)
 * [neutron_lbaas_nested_group.yaml](/neutron_lbaas_nested_group.yaml)
 * [neutron_lbaas_server_member.yaml](/neutron_lbaas_server_member.yaml)
 * [server_with_apache.yaml](/server_with_apache.yaml)
@@ -265,7 +252,6 @@ glance.image
 * [auto_scaling.yaml](/auto_scaling.yaml)
 * [basic_server.yaml](/basic_server.yaml)
 * [glance_image.yaml](/glance_image.yaml)
-* [lbaas_group.yaml](/lbaas_group.yaml)
 * [multi_stack.yaml](/multi_stack.yaml)
 * [neutron_lbaas_nested_group.yaml](/neutron_lbaas_nested_group.yaml)
 * [nova_keypair_existing.yaml](/nova_keypair_existing.yaml)
@@ -277,18 +263,13 @@ glance.image
 * [server_with_new_volume.yaml](/server_with_new_volume.yaml)
 
 neutron.network
-* [lbaas_group.yaml](/lbaas_group.yaml)
 * [neutron_lbaas_nested_group.yaml](/neutron_lbaas_nested_group.yaml)
 * [private_network_with_router.yaml](/private_network_with_router.yaml)
 * [server_with_new_network.yaml](/server_with_new_network.yaml)
 
-neutron.subnet
-* [lbaas_group.yaml](/lbaas_group.yaml)
-
 nova.flavor
 * [auto_scaling.yaml](/auto_scaling.yaml)
 * [basic_server.yaml](/basic_server.yaml)
-* [lbaas_group.yaml](/lbaas_group.yaml)
 * [multi_stack.yaml](/multi_stack.yaml)
 * [neutron_lbaas_nested_group.yaml](/neutron_lbaas_nested_group.yaml)
 * [nova_keypair_existing.yaml](/nova_keypair_existing.yaml)

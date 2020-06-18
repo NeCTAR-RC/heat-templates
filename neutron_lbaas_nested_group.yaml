@@ -122,37 +122,33 @@ resources:
           backend_port: { get_param: backend_port }
           subnet: { get_resource: subnet }
 
+  loadbalancer:
+    type: OS::Octavia::LoadBalancer
+    properties:
+      vip_subnet: { get_resource: subnet }
+
+  listener:
+    type: OS::Octavia::Listener
+    properties:
+      loadbalancer: { get_resource: loadbalancer }
+      protocol: HTTP
+      protocol_port: 80
+
+  pool:
+    type: OS::Octavia::Pool
+    properties:
+      listener: { get_resource: listener }
+      lb_algorithm: ROUND_ROBIN
+      protocol: HTTP
+
   monitor:
-    # https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Neutron::LBaaS::HealthMonitor
-    type: OS::Neutron::LBaaS::HealthMonitor
+    type: OS::Octavia::HealthMonitor
     properties:
       type: TCP
       delay: 3
       timeout: 3
       max_retries: 3
       pool: { get_resource: pool }
-
-  pool:
-    # https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Neutron::LBaaS::Pool
-    type: OS::Neutron::LBaaS::Pool
-    properties:
-      lb_algorithm: ROUND_ROBIN
-      protocol: TCP
-      listener: { get_resource: listener }
-
-  listener:
-    # https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Neutron::LBaaS::Listener
-    type: OS::Neutron::LBaaS::Listener
-    properties:
-      loadbalancer: { get_resource: loadbalancer }
-      protocol: TCP
-      protocol_port: { get_param: lb_port }
-
-  loadbalancer:
-    # https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Neutron::LBaaS::LoadBalancer
-    type: OS::Neutron::LBaaS::LoadBalancer
-    properties:
-      vip_subnet: { get_resource: subnet }
 
   floating_ip:
     # https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Neutron:FloatingIP

@@ -34,8 +34,7 @@ resources:
       image: { get_param: image }
       flavor: { get_param: flavor }
       availability_zone: { get_param: availability_zone }
-      networks:
-        - { network: { get_param: network } }
+      networks: [{network: {get_param: network} }]
       security_groups:
         - { get_param: secgroup }
       user_data_format: RAW
@@ -52,7 +51,7 @@ resources:
             wc_notify: { get_param: wc_notify }
 
   pool_member:
-    type: OS::Neutron::LBaaS::PoolMember
+    type: OS::Octavia::PoolMember
     properties:
       pool: { get_param: pool }
       address: { get_attr: [ server, first_address ]}
