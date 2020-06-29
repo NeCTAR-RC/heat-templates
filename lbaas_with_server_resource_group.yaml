@@ -55,10 +55,12 @@ parameters:
 
 resources:
   network:
+    # https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Neutron::Net
     type: OS::Neutron::Net
 
   subnet:
     type: OS::Neutron::Subnet
+    # https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Neutron::Subnet
     properties:
       dns_nameservers:
         - 1.1.1.1
@@ -70,23 +72,27 @@ resources:
         - { start: 192.168.13.100, end: 192.168.13.199 }
 
   router:
+    # https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Neutron::Router
     type: OS::Neutron::Router
     properties:
       external_gateway_info: {"network": { get_param: public_network }}
 
   router_gateway:
+    # https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Neutron::RouterGateway
     type: OS::Neutron::RouterGateway
     properties:
       router_id: { get_resource: router }
       network_id: { get_param: public_network }
 
   router_interface:
+    #$ https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Neutron::RouterInterface
     type: OS::Neutron::RouterInterface
     properties:
       router: { get_resource: router }
       subnet: { get_resource: subnet }
 
   secgroup:
+    # https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Neutron::SecurityGroup
     type: OS::Neutron::SecurityGroup
     properties:
       rules:
@@ -96,10 +102,12 @@ resources:
           port_range_max: { get_param: backend_port }
 
   wait_handle:
+    # https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Heat::WaitConditionHandle
     type: OS::Heat::WaitConditionHandle
 
   wait_condition:
     type: OS::Heat::WaitCondition
+    # https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Heat::WaitCondition
     properties:
       handle: { get_resource: wait_handle }
       count: { get_param: count }  # Wait for all servers to report success
@@ -107,10 +115,11 @@ resources:
 
   group:
     type: OS::Heat::ResourceGroup
+    # https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Heat::ResourceGroup
     properties:
       count: { get_param: count }
       resource_def:
-        type: neutron_lbaas_server_member.yaml
+        type: lbaas_server_member.yaml
         properties:
           image: { get_param: image }
           flavor: { get_param: flavor }
@@ -123,12 +132,14 @@ resources:
           subnet: { get_resource: subnet }
 
   loadbalancer:
+    # https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Octavia::LoadBalancer
     type: OS::Octavia::LoadBalancer
     properties:
       vip_subnet: { get_resource: subnet }
 
   listener:
     type: OS::Octavia::Listener
+    # https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Octavia::Listener
     properties:
       loadbalancer: { get_resource: loadbalancer }
       protocol: HTTP
@@ -136,12 +147,14 @@ resources:
 
   pool:
     type: OS::Octavia::Pool
+    # https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Octavia::Pool
     properties:
       listener: { get_resource: listener }
       lb_algorithm: ROUND_ROBIN
       protocol: HTTP
 
   monitor:
+    # https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Octavia::HealthMonitor
     type: OS::Octavia::HealthMonitor
     properties:
       type: TCP

@@ -1,9 +1,9 @@
 heat_template_version: 2018-08-31
 
 description: >
-  Nectar web_server template - A template based on the basic server
-  template, but installs the Apache web server using a user_data
-  script and a wait_handle.
+  This template is not meant to be used directly, but as a part of the
+  lbaas_with_server_resource_group.yaml template. It forms the pool
+  member component of the LBaaS template.
 
 parameters:
   flavor:
@@ -51,6 +51,7 @@ resources:
             wc_notify: { get_param: wc_notify }
 
   pool_member:
+    # https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Octavia::PoolMember
     type: OS::Octavia::PoolMember
     properties:
       pool: { get_param: pool }
