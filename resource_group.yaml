@@ -1,21 +1,14 @@
-# http://docs.openstack.org/developer/heat/template_guide/hot_spec.html#heat-template-version
 heat_template_version: 2014-10-16
-
-# For more see http://hardysteven.blogspot.com.au/2014/09/using-heat-resourcegroup-resources.html
 
 description: |
   A template to demonstrate resource groups. The resource group launches the basic instance template,
   passing the parameters entered through to it. It then returns the attributes and shows them as outputs.
-  To run it, you need to launch it from the command line. Change directory to the directory this template
-  is in, then use a command along the lines of:
-  openstack stack create -f resource_group.yaml -P key_name=your_key resource_group_demo
 
 
 parameters:
-
   key_name:
     type: string
-    description: Name of an existing KeyPair to enable SSH access to the instances
+    description: Name of an existing Keypair to enable SSH access to the instances
 
   flavor:
     type: string
@@ -55,19 +48,3 @@ outputs:
   refs:
     description: A list of resource IDs for the resources in the group
     value: { get_attr: [ resource_group, refs ] }
-
-  first_resource_ref:
-    description: The first resource reference
-    value: {  get_attr: [ resource_group, resource.0 ] }
-
-  instance_ip:
-    description: The IP address of the deployed instance
-    value: { get_attr: [ resource_group, resource.0.instance_ip ] }
-
-  instance_networks:
-    description: 'A dict of assigned network addresses of the form: {"public": [ip1, ip2...], "private": [ip3, ip4]}'
-    value: { get_attr: [ resource_group, resource.0.instance_networks] }
-
-  joined_networks:
-    description: How to drill down (assuming that tasmania is the availibility zone in which the instance is running)
-    value:  { list_join: [ ',', { get_attr: [ resource_group, resource.0.instance_networks, tas ] } ] }

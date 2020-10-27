@@ -20,9 +20,6 @@ parameters:
     type: string
     description: ID of the image to use for the instance to be created
     default: NeCTAR Ubuntu 18.04 LTS (Bionic) amd64
-    constraints:
-      - custom_constraint: glance.image
-        description: Must be a valid Nectar image 
 
   availability_zone:
     type: string

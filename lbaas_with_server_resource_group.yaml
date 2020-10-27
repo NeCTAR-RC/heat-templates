@@ -18,14 +18,12 @@ parameters:
     description: Flavor used for servers
     default: t3.xsmall
     constraints:
-    - custom_constraint: nova.flavor
+      - custom_constraint: nova.flavor
 
   image:
     type: string
     description: Image used for servers
     default: NeCTAR Ubuntu 18.04 LTS (Bionic) amd64
-    constraints:
-    - custom_constraint: glance.image
 
   availability_zone:
     type: string
@@ -45,7 +43,7 @@ parameters:
     type: string
     description: Network used by the load balancer
     constraints:
-    - custom_constraint: neutron.network
+      - custom_constraint: neutron.network
 
   count:
     type: number

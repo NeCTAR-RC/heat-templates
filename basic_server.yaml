@@ -24,9 +24,6 @@ parameters:
     type: string
     description: Image ID or name
     default: NeCTAR Ubuntu 18.04 LTS (Bionic) amd64
-    constraints:
-      - custom_constraint: glance.image
-        description: Must be an existing image
 
   availability_zone:
     type: string

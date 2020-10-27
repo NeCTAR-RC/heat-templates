@@ -24,8 +24,6 @@ parameters:
     type: string
     description: ID or name of the image to use for the server
     default: NeCTAR Ubuntu 18.04 LTS (Bionic) amd64
-    constraints:
-      - custom_constraint: glance.image
 
   availability_zone:
     type: string
@@ -80,5 +78,5 @@ resources:
 
 outputs:
   server_ip:
-    description: Public IP address of the newly created Nova instance.
+    description: IP address of the server instance
     value: { get_attr: [my_server, first_address] }
