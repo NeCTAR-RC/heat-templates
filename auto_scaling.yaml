@@ -65,7 +65,7 @@ resources:
           - { get_resource: security_group }
           networks:
             - allocate_network: auto
-          metadata: 
+          metadata:
             metering.server_group: { get_param: "OS::stack_id" }
 
   scaleup_policy:

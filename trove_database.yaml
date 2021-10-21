@@ -57,10 +57,10 @@ resources:
       availability_zone: { get_param: availability_zone }
       flavor: { get_param: flavor }
       size: { get_param: size }
-      users: 
+      users:
         - name: { get_param: username }
           password: { get_param: password }
-          databases: 
+          databases:
             - { get_param: name }
 
 

@@ -20,7 +20,7 @@ parameters:
 resources:
   my_network:
     type: OS::Neutron::Net
-    properties: 
+    properties:
       name:
          list_join: [ '-', [ { get_param: "OS::stack_name" }, 'network']]
 
@@ -42,7 +42,7 @@ resources:
     type: OS::Neutron::Router
     properties:
       external_gateway_info: {"network": { get_param: public_network }}
-      name: 
+      name:
         list_join: [ '-', [ { get_param: "OS::stack_name" }, 'router']]
 
   my_router_gateway:

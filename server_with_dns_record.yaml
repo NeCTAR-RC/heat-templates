@@ -69,7 +69,7 @@ resources:
     properties:
       name: { get_param: "OS::stack_name" }
       type: A
-      records: 
+      records:
         - { get_attr: [server, first_address] }
       zone: { get_param: zone }
 

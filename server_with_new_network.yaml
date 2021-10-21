@@ -38,7 +38,7 @@ parameters:
 resources:
   my_network:
     type: OS::Neutron::Net
-    properties: 
+    properties:
       name:
          list_join: [ '-', [ { get_param: "OS::stack_name" }, 'network']]
 
@@ -60,7 +60,7 @@ resources:
     type: OS::Neutron::Router
     properties:
       external_gateway_info: {"network": { get_param: public_network }}
-      name: 
+      name:
         list_join: [ '-', [ { get_param: "OS::stack_name" }, 'router']]
 
   my_router_gateway:
@@ -79,7 +79,7 @@ resources:
     # https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Neutron::SecurityGroup
     type: OS::Neutron::SecurityGroup
     properties:
-      name: 
+      name:
         list_join: [ '-', [ { get_param: "OS::stack_name" }, 'secgroup']]
       rules:
         - remote_ip_prefix: 0.0.0.0/0
@@ -93,7 +93,7 @@ resources:
     # https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Neutron::Port
     type: OS::Neutron::Port
     properties:
-      name: 
+      name:
         list_join: [ '-', [ { get_param: "OS::stack_name" }, 'port']]
       network: { get_resource: my_network }
       security_groups:
@@ -110,7 +110,7 @@ resources:
     # https://docs.openstack.org/heat/latest/template_guide/openstack.html#OS::Nova::Server
     type: OS::Nova::Server
     properties:
-      name: 
+      name:
         list_join: [ '-', [ { get_param: "OS::stack_name" }, 'server']]
       key_name: { get_param: key_name }
       image: { get_param: image }
