@@ -116,8 +116,6 @@ resources:
       image: { get_param: image }
       flavor: { get_param: flavor }
       availability_zone: { get_param: availability_zone }
-      security_groups:
-      - { get_resource: my_secgroup }
       networks:
         - port: { get_resource: my_port }
 
