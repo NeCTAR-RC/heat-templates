@@ -8,9 +8,6 @@ description: >
   ensure the Apache installation has completed before returning stack build
   success.
 
-# NOTE: This is based on the Neutron version of LBaaS, which is soon to be
-# replaced by the Octavia version of LBaaS!
-
 
 parameters:
   flavor:
