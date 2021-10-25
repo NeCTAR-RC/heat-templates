@@ -1,4 +1,4 @@
-heat_template_version: 2017-02-24
+heat_template_version: 2018-08-31
 
 
 description: Example auto scale group policy and alarm

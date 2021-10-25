@@ -1,4 +1,4 @@
-heat_template_version: 2014-10-16
+heat_template_version: 2018-08-31
 
 description: |
   A template to demonstrate resource groups. The resource group launches the basic instance template,

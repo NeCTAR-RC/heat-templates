@@ -72,4 +72,3 @@ resources:
       records:
         - { get_attr: [server, first_address] }
       zone: { get_param: zone }
-

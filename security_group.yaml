@@ -1,5 +1,5 @@
 # http://docs.openstack.org/developer/heat/template_guide/hot_spec.html#heat-template-version
-heat_template_version: 2014-10-16
+heat_template_version: 2018-08-31
 
 description: >
   NeCTAR Sample Template showing how to create just a security group.
