@@ -1,5 +1,5 @@
 # http://docs.openstack.org/developer/heat/template_guide/hot_spec.html#heat-template-version
-heat_template_version: 2018-08-31
+heat_template_version: 2021-04-16
 
 # This template is the equivalent of the command set:
 # $ wget https://download.cirros-cloud.net/0.5.1/cirros-0.5.1-x86_64-disk.img

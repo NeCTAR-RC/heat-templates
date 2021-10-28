@@ -1,4 +1,4 @@
-heat_template_version: 2018-08-31
+heat_template_version: 2021-04-16
 
 
 description: A simple template for launching a server instance.
