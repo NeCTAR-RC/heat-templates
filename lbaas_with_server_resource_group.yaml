@@ -20,7 +20,7 @@ parameters:
   image:
     type: string
     description: Image used for servers
-    default: NeCTAR Ubuntu 18.04 LTS (Bionic) amd64
+    default: NeCTAR Ubuntu 22.04 LTS (Jammy) amd64
 
   availability_zone:
     type: string

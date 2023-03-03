@@ -22,7 +22,7 @@ parameters:
   image:
     type: string
     description: ID or name of the image to use for the instance to be created (should work with all NeCTAR images)
-    default: NeCTAR Ubuntu 18.04 LTS (Bionic) amd64
+    default: NeCTAR Ubuntu 22.04 LTS (Jammy) amd64
 
   availability_zone:
     type: string
